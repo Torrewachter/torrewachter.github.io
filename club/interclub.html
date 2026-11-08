@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Interclub KRST 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: one section per team: callouts, standings table with match-point bars, then the club players' individual games */
+:root{
+  --bg:#f3f5f2; --surface:#ffffff; --fg:#1b221e; --muted:#67716b; --line:#dbe1dc;
+  --win:#2e9b57; --win-soft:#b7dfc4; --loss:#d0453a; --loss-soft:#f0c2bd; --open:#e6eae6; --zone:#f7efb8; --accent:#2f5d4b; --me:#eef5f0;
+  --display:"Saira Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121715; --surface:#1a201d; --fg:#e6ece8; --muted:#97a29b; --line:#2b3430;
+  --win:#4cc27a; --win-soft:#2c5a3c; --loss:#ef6d62; --loss-soft:#5e2f2b; --open:#29312d; --zone:#4a4422; --accent:#8fc5ad; --me:#1f2b25; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121715; --surface:#1a201d; --fg:#e6ece8; --muted:#97a29b; --line:#2b3430;
+  --win:#4cc27a; --win-soft:#2c5a3c; --loss:#ef6d62; --loss-soft:#5e2f2b; --open:#29312d; --zone:#4a4422; --accent:#8fc5ad; --me:#1f2b25; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 var(--body)}
+.wrap{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:24px 40px;display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-direction:column;gap:4px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--display);font-size:clamp(30px,5vw,44px);line-height:1;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:0;max-width:70ch}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tabs a{text-decoration:none;font:600 15px var(--body);padding:7px 16px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg);cursor:pointer}
+.tabs a:hover{border-color:var(--accent)}
+.tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;color:var(--muted)}
+.meta b{color:var(--fg);font-variant-numeric:tabular-nums}
+.board{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:720px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+thead th{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;background:var(--surface)}
+tbody tr:last-child td{border-bottom:none}
+td.pl{font-family:var(--display);font-size:20px;color:var(--muted);width:2.5em}
+td.nm,th.nm{text-align:left}
+td.nm{font-weight:600}
+td.nm .elo{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+tr.me td{background:var(--me)}
+td.pts{font-family:var(--display);font-size:24px;line-height:1}
+td.max{font-weight:700}
+td.barc{width:30%;min-width:180px;padding-block:10px}
+.bar{position:relative;display:grid;grid-template-columns:repeat(var(--n,18),1fr);height:22px;border-radius:4px;overflow:hidden;background:var(--open)}
+.c{border-right:1px solid var(--surface)}
+.c:nth-child(2n){border-right:2px solid var(--surface)}
+.c:last-of-type{border-right:none}
+.c.y{background:var(--zone)}
+.c.w{background:var(--win)}
+.c.b{background:var(--win-soft)}
+.c.l{background:var(--loss)}
+.c.f{background:repeating-linear-gradient(135deg,var(--loss) 0 4px,var(--loss-soft) 4px 8px)}
+.lead{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);opacity:.55}
+.scale{display:grid;grid-template-columns:repeat(9,1fr);font-size:11px;color:var(--muted);margin-top:3px}
+.scale span{text-align:right}
+.chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:2px}
+.chip.in{background:var(--win-soft);color:var(--fg)}
+.chip.out{background:var(--open);color:var(--muted)}
+.chip.sure{background:var(--win);color:var(--surface)}
+tr.cut td{border-bottom:2px dashed var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;color:var(--muted);align-items:center}
+.sw{display:inline-block;width:18px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:6px}
+.notes{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px;max-width:80ch}
+.notes p{margin:0}
+.all{display:flex;flex-direction:column;gap:34px}
+section{display:flex;flex-direction:column;gap:10px;scroll-margin-top:12px}
+h2{font-family:var(--display);font-size:28px;margin:0;line-height:1}
+td.de{font-weight:600}
+td.ch{min-width:64px}
+.pc{font-weight:700;display:block}.pc.hi{color:var(--win)}.pc.mid{color:var(--fg)}.pc.lo{color:var(--muted)}
+.pb{display:block;height:4px;background:var(--open);border-radius:2px;margin-top:3px;overflow:hidden}.pb i{display:block;height:100%;background:var(--win)}
+.need{margin:0;font-size:17px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding:10px 14px;border-left:4px solid var(--win);background:var(--surface);border-radius:0 8px 8px 0}
+.need b{font-family:var(--display);font-size:24px;color:var(--win)}
+.need.likely{border-left-color:var(--accent)}
+.need.likely b{color:var(--accent)}
+.need span{font-size:13px;color:var(--muted)}
+td.sf .nw{display:block;font-size:12px;color:var(--muted)}
+td.sf .na{white-space:normal;display:inline-block;max-width:12ch;line-height:1.2}
+.todo{color:var(--accent)}
+td.de .na,td.de .todo{white-space:normal;display:inline-block;max-width:16ch;text-align:right;line-height:1.2}
+.de .nw{display:block;font-size:12px;font-weight:400;color:var(--muted)}
+.up{color:var(--win)}.down{color:var(--loss)}.na{color:var(--muted);font-weight:400}
+@media (max-width:560px){td.pl{font-size:16px}td.pts{font-size:20px}}
+.callouts{display:flex;flex-direction:column;gap:8px}
+.need{margin:0;font-size:17px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding:10px 14px;border-left:4px solid var(--win);background:var(--surface);border-radius:0 8px 8px 0}
+.need b{font-family:var(--display);font-size:24px;color:var(--win)}
+.need.likely{border-left-color:var(--accent)}.need.likely b{color:var(--accent)}
+.need span{font-size:13px;color:var(--muted)}
+td.ch{min-width:70px}
+.pc{font-weight:700;display:block}.pc.hi{color:var(--win)}.pc.mid{color:var(--fg)}.pc.lo2{color:var(--loss)}
+.pb{display:block;height:4px;background:var(--open);border-radius:2px;margin-top:3px;overflow:hidden}.pb i{display:block;height:100%;background:var(--win)}.pb.red i{background:var(--loss)}
+.pb{position:relative}.pb i{position:relative}.pb b{position:absolute;top:0;bottom:0;background:var(--win);opacity:.28}.pb.red b{background:var(--loss)}
+.rg{display:block;font-size:11px;color:var(--muted);font-weight:400}
+.up{color:var(--win)}.down{color:var(--loss)}
+.krst{display:flex;flex-direction:column;gap:10px}
+h2{font-family:var(--display);font-size:28px;margin:0;line-height:1}
+table.ind{min-width:640px}
+section.ser{display:flex;flex-direction:column;gap:12px}
+section.ser+section.ser{margin-top:28px}
+h2 small{font-family:var(--body);font-size:15px;font-weight:400;color:var(--muted);margin-left:8px}
+h3{font-size:16px;margin:6px 0 0}
+table.ov{min-width:720px}table.ov a{color:var(--fg);font-weight:600;text-decoration:none}table.ov a:hover{text-decoration:underline}
+.wa{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:12px}
+.wa summary{cursor:pointer;font-weight:700}.wa summary span{font-weight:400;color:var(--muted);font-size:13px;margin-left:6px}
+.wa-top{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:10px 0}.wa-n{color:var(--accent);font-weight:600}
+.wa-list{display:grid;gap:6px;margin-bottom:8px}.wa-m{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.wa-t{text-align:right;overflow-wrap:anywhere}.wa-t.r{text-align:left}.wa-m.me .wa-t{font-weight:700}
+.wa select,.wa button{font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+.wa button{cursor:pointer}.wa-on{color:var(--accent)}
+</style>
+<style id="pdfcss">
+.pdfbtn{position:fixed;right:16px;bottom:16px;z-index:50;font:600 14px system-ui,sans-serif;padding:9px 14px;border-radius:999px;border:1px solid #2f5d4b;background:#2f5d4b;color:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.pdfbtn:hover{filter:brightness(1.1)}.pdfbtn:focus-visible{outline:2px solid #2f5d4b;outline-offset:3px}
+.bronlijn{font-size:12px;color:#67716b;margin:0}.bronlijn.fout{color:#b3261e}
+@media print{
+ .pdfbtn,#cfg,.toplinks,.links,.pickrow select,input[type=search],.controls,.cfgbtn,.hint{display:none!important}
+ :root{color-scheme:light}
+ body{background:#fff!important;color:#000!important;font-size:11pt}
+ .board{break-inside:avoid}.agenda li{break-inside:avoid}
+ tr{break-inside:avoid}
+ .grid{display:block!important}.grid>*{margin-bottom:10px}
+ .list{max-height:none!important;overflow:visible!important}
+ a{color:inherit;text-decoration:none}
+ @page{size:A4;margin:12mm}
+}
+</style>
+<style>.stlk{color:var(--accent);text-decoration:none;font-weight:700;margin-left:4px}.stlk:hover{text-decoration:underline}</style>
+<style>html:not(.online) .alleenonline{display:none!important}html.online .pdfbtn{background:transparent!important;color:inherit!important;border:1px solid rgba(128,128,128,.45)!important;box-shadow:none!important;font-size:12px!important;font-weight:500!important;padding:4px 10px!important;opacity:.5}html.online .pdfbtn:hover,html.online .pdfbtn[aria-expanded="true"]{opacity:1}</style>
+<script>if(/^https?:$/.test(location.protocol))document.documentElement.classList.add('online')</script>
+</head>
+<body>
+<p style="margin:8px 14px;font:14px sans-serif"><a class=" alleenonline" href="../index.html" style="margin-right:14px">← Startpagina</a><a href="index.html">← terug naar Schaken in Roeselare</a></p>
+<div class="wrap">
+<header>
+  <span class="eyebrow">Nationale interclub 2026-27 · KRST Roeselare (club 309)</span>
+  <h1>Interclub KRST 1</h1>
+  <p class="sub">Stand van afdeling 4B, waarin KRST 1 speelt. Bovenaan een overzicht per ploeg; klik op een ploeg om naar haar reeks te gaan. Elke balk is zo breed als het aantal matchpunten dat te verdienen valt (2 per match). Groen groeit van links per gewonnen matchpunt, rood van rechts per verloren matchpunt. Wat grijs blijft, ligt nog open; lichtgeel is de zone tussen ‘waarschijnlijk’ en ‘zeker’ niet bij de laatste 2.</p>
+</header>
+<div class="board"><table class="ov"><thead><tr><th class="nm">Ploeg</th><th class="nm">Reeks</th><th>Plaats</th><th>MP</th><th>BP</th><th>Kans 1e</th><th>Kans laatste 2</th><th class="nm">Laatste match</th></tr></thead><tbody id="ov"></tbody></table></div>
+<div id="all"></div>
+<div class="legend">
+  <span><i class="sw" style="background:var(--win)"></i>gewonnen matchpunt</span>
+  <span><i class="sw" style="background:var(--open)"></i>nog open</span>
+  <span><i class="sw" style="background:var(--zone)"></i>open, tussen ‘waarschijnlijk’ en ‘zeker’ niet bij de laatste 2</span>
+  <span><i class="sw" style="background:var(--loss)"></i>verloren matchpunt</span>
+</div>
+<div class="notes">
+  <p><b>Stand</b>: matchpunten (MP: winst 2, gelijk 1, verlies 0); bij gelijke stand tellen de bordpunten (BP). <b>Max</b> = huidige matchpunten plus 2 per nog te spelen match.</p>
+  <p><b>Zeker kampioen</b> en <b>zeker niet bij de laatste 2</b>: de laagste eindscore waarmee dat wiskundig vastligt, wat de andere uitslagen ook worden. Alle nog te spelen matchen zijn doorgerekend, ook die tussen de concurrenten onderling. Gelijke matchpunten tellen in het nadeel, omdat de bordpunten beide kanten op kunnen vallen.</p>
+  <p><b>Kansen</b> en <b>waarschijnlijk</b>: 24.000 gesimuleerde verlopen van de rest van de competitie, bord per bord. Vertrekpunt is per bord de gemiddelde <b>actuele FIDE-rating</b> (KBSB-spelersdatabank, 12 oktober) van de spelers die de ploeg tot nu toe opstelde, niet de interclubrating die clubs binnen een marge zelf kunnen bijstellen; alleen voor spelers zonder FIDE-rating is de interclubrating gebruikt. Het model is <b>getest op het volledige interclubseizoen 2025-26</b> (9.300 partijen in 33 reeksen), op basis daarvan bijgesteld en daarna gecontroleerd op seizoen 2024-25 (9.200 partijen), waar het eveneens beter voorspelde dan gewone Elo: (1) een <b>leeftijdscorrectie</b>, want jeugdspelers scoren beter dan hun rating doet verwachten en oudere spelers slechter: +75 Elo van 12 tot 17 jaar, daarna geleidelijk minder tot 0 op 30 jaar, en vanaf 50 jaar 2,75 Elo minder per jaar (65 jaar −41, 75 jaar −69); die lijn is met twee getallen op beide seizoenen samen geschat, zodat ze niet het toeval van één seizoen naleert; (2) ratingverschillen tussen ploegen tellen voor 80%, omdat opstellingen wisselen; (3) elke ploeg krijgt per simulatie een seizoensvorm (−50, 0 of +50 Elo) en per match een dagvorm; (4) de kans op een forfait, per bord of voor een hele match, volgt uit wat de ploeg tot nu toe deed. Zonder (2) en (3) bleek het model veel te zeker: waar het 90% gaf, gebeurde het in werkelijkheid maar in ongeveer 70% van de gevallen; met deze aanpassingen klopten de voorspelde en de werkelijke percentages goed. Het grote cijfer is de kans over alle simulaties; het kleine bereik eronder (en de lichte band in het balkje) is de kans als de ploeg de rest van het seizoen 50 Elo zwakker of sterker uitvalt. Kansen zijn afgerond op 5%, omdat nauwkeuriger cijfers meer zekerheid zouden suggereren dan er is. ‘Waarschijnlijk’ = in minstens 95% van alle simulaties.</p>
+  <p>Over het aantal stijgers en dalers beslist het KBSB-reglement; deze pagina toont alleen de kansen op plaats 1 en op de laatste twee plaatsen.</p>
+  <p><b>Elo ±</b> (spelers van KRST): voorlopige FIDE-winst of -verlies met de FIDE-rating van speler en tegenstander uit de KBSB-gegevens van de match; K 10 vanaf 2400, K 40 voor jeugdspelers, anders K 20. Een partij waarin speler of tegenstander geen FIDE-rating heeft, of die forfait werd gegeven, telt niet. </p>
+  
+  <p id="icbron">Bron: KBSB Interclub Manager (frbe-kbsb-ksb.be) en ratings.fide.com, uitslagen van ronde 1 (27 september) en ronde 2 (11 oktober), opgehaald op 12 oktober om 9.20 uur. Nog niet ingevoerde matchen van ronde 2 tellen als nog te spelen.</p>
+</div>
+</div>
+<script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
+<script src="data-interclub.js?v=29e00600fe"></script>
+<script src="data-partijen.js?v=6be454e08a"></script>
+<script src="verwerk.js?v=abfa9d75fc"></script>
+<script>
+/* ---- partijen uit de lichess-studie (data-partijen.js): ♟ achter de uitslag ---- */
+function anm(n){const w=String(n||'').split(',')[0].normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().split(/[^a-z]+/).filter(Boolean);const k=w.filter(x=>!/^(de|van|der|den|le|la|du|von|vande|ter|da|di|del|dos|el|al)$/.test(x));return k[0]||w.join('')}
+const STUDIE=(()=>{const B=window.BRON_PARTIJEN;if(!B||!B.hoofdstukken)return [];const id=(typeof B.studie==='string'&&B.studie)||(B.instellingen&&B.instellingen['lichess studie'])||'GF8fIfKW';const out=[];
+  for(const [k,v] of Object.entries(B.hoofdstukken)){let t;try{t=new TextDecoder().decode(Uint8Array.from(atob(v),c=>c.charCodeAt(0)))}catch(e){continue}
+    const g=n=>(t.match(new RegExp('\\['+n+' "([^"]*)"'))||[])[1]||'';out.push({w:anm(g('White')),b:anm(g('Black')),d:g('Date').replace(/\./g,'-'),e:g('Event'),u:'https://lichess.org/study/'+id+'/'+k})}
+  return out})();
+const SZ=(()=>{const n=new Date(),y=n.getFullYear();return (n.getMonth()>=6?y:y-1)+'-07-01'})();
+function stPartij(a,b){const x=anm(a),y=anm(b);if(!x||!y)return null;return STUDIE.find(g=>((g.w===x&&g.b===y)||(g.w===y&&g.b===x))&&(!/^\d{4}-\d\d-\d\d$/.test(g.d)||g.d>=SZ)&&(!g.e||/interclub/i.test(g.e)))||null}
+/* ---- staat de map Partijen-naspelen ernaast? dan opent ♟ de partij daar (met Stockfish), anders op lichess ---- */
+window.PN_OK=false;
+const pnLink=(u,w,b,d)=>window.PN_OK?'../Partijen-naspelen/partijen.html#partij='+encodeURIComponent(JSON.stringify({u,w,b,d})):u;
+const pnTitel=()=>window.PN_OK?'partij naspelen in Partijen naspelen (met Stockfish)':'partij naspelen op lichess';
+const stLk=(a,b)=>{const g=stPartij(a,b);if(!g)return '';const q=JSON.stringify({u:g.u});return ` <a class="stlk" href="${pnLink(g.u)}" data-pn='${q.replace(/'/g,'&#39;')}' target="_blank" rel="noopener" title="${pnTitel()}">♟</a>`};
+const SERIES=[{"key":"4B","label":"Afdeling 4B","me":[10],"sched":[[3,2,12],[3,3,1],[3,4,11],[3,5,10],[3,6,9],[3,7,8],[4,12,8],[4,9,7],[4,10,6],[4,11,5],[4,1,4],[4,2,3],[5,3,12],[5,4,2],[5,5,1],[5,6,11],[5,7,10],[5,8,9],[6,12,9],[6,10,8],[6,11,7],[6,1,6],[6,2,5],[6,3,4],[7,4,12],[7,5,3],[7,6,2],[7,7,1],[7,8,11],[7,9,10],[8,12,10],[8,11,9],[8,1,8],[8,2,7],[8,3,6],[8,4,5],[9,5,12],[9,6,4],[9,7,3],[9,8,2],[9,9,1],[9,10,11],[10,12,11],[10,1,10],[10,2,9],[10,3,8],[10,4,7],[10,5,6],[11,6,12],[11,7,5],[11,8,4],[11,9,3],[11,10,2],[11,11,1]],"dates":{"3":"2026-11-15","4":"2026-11-29","5":"2026-12-20","6":"2027-01-31","7":"2027-02-14","8":"2027-03-07","9":"2027-03-21","10":"2027-04-11","11":"2027-04-18"},"boards":4,"rounds":11,"teams":[[1,"Izegem 1"],[2,"de Mercatel 2"],[3,"Bredene 1"],[4,"KGSRL 5"],[5,"KSGK 1"],[6,"KBSK Brugge 3"],[7,"Oudenaarde 1"],[8,"Wetteren 3"],[9,"Tielt 1"],[10,"KRST 1"],[11,"KOSK 3"],[12,"Rapid Aalter 1"]],"matches":[[1,1,12,4,4,[1956,1810,1687,1681],[1842,1742,1701,1672],[0,75,75,75],[-6,12,63,0],0,0,0],[1,2,11,3,5,[1871,1863,1816,1755],[1851,1896,1900,1781],[0,0,0,0],[-47,-50,-30,0],1,0,0],[1,3,10,5,3,[1951,1781,1706,1869],[2054,1843,1860,1696],[0,75,-50,-47],[0,-14,63,0],0,0,0],[1,4,9,5,3,[2019,1753,1749,1749],[1877,1803,1680,1603],[-41,0,-52,-8],[23,35,35,-33],0,0,0],[1,5,8,8,0,[2009,1967,1811,1828],[1947,1924,1826,1692],[-41,0,63,-6],[-30,-22,0,75],0,0,0],[1,6,7,4,4,[1808,1779,1689,1558],[1917,1915,1859,1863],[0,75,69,75],[40,-22,-58,-30],0,0,0],[2,1,2,4,4,[1956,1810,1687,1681],[1871,1861,1853,1816],[0,75,75,75],[0,6,69,0],0,0,0],[2,8,6,4,4,[1952,1980,1930,1692],[1975,1779,1702,1498],[-47,0,12,75],[46,75,69,0],0,0,0],[2,9,5,3,5,[1879,1877,1714,1680],[1967,1957,1811,1786],[29,23,35,35],[0,0,63,29],0,0,0],[2,10,4,2,6,[2054,1843,1801,1696],[1884,1753,1749,1749],[0,-14,-55,0],[0,0,-52,-8],0,0,0],[2,11,3,4,4,[1857,1900,1779,1845],[1781,1706,1869,1641],[0,-30,-55,0],[75,-50,-47,-58],0,0,0],[2,12,7,0,8,[1842,1829,1795,1760],[1887,1917,1915,1863],[-6,0,63,58],[-33,40,-22,-30],0,0,0]],"ind":[["KRST 1",1,1,"Maddens, Martijn",2054,20,"Passchyn, Maarten",1951,0.5],["KRST 1",1,2,"Petralia, Fabio",1843,20,"Meijns, Alexander",1781,0],["KRST 1",1,3,"Keirse, Quinten",1860,20,"De Corte, Ronny",1706,1],["KRST 1",1,4,"Renckens, Yannick",1696,20,"Vandamme, Jos",1869,0],["KRST 1",2,1,"Maddens, Martijn",2054,20,"Devolder, Pieter",1884,0.5],["KRST 1",2,2,"Petralia, Fabio",1843,20,"Meignen, Gaetan",1753,0],["KRST 1",2,3,"Logie, Bernard",1801,20,"Hebbrecht, Hans",1749,0.5],["KRST 1",2,4,"Renckens, Yannick",1696,20,"Deloof, Koen",1749,0]],"status":"na ronde 2"}];
+if(window.VERWERKT&&VERWERKT.ic.ok){const N=VERWERKT.ic.series;const i=SERIES.findIndex(s=>s.key===N.key);
+  if(i>=0){const old=new Map(SERIES[i].matches.map(x=>[x[0]+'-'+x[1]+'-'+x[2],x]));for(const x of N.matches){const o=old.get(x[0]+'-'+x[1]+'-'+x[2]);if(!o)continue;for(const s of [7,8])x[s]=x[s].map((a,j)=>a||(o[s]||[])[j]||0)}N.dates=Object.assign({},SERIES[i].dates,N.dates);SERIES.splice(i,1,N)}else SERIES.push(N)}
+const fmt=v=>String(v).replace('.5','½').replace(/^0½$/,'½');
+function build(S){
+  const T=S.teams.map(([nr,n])=>({nr,n,mp:0,bp:0,w:0,l:0,games:0,lineup:null,slineup:null,nb:0,fb:0,nm:0,fm:0}));const by=nr=>T[nr-1];const met=new Set();const half=S.boards;
+  for(const [rd,h,v,bh,bv,rh,rv,oh,ov,fh,fv,mf] of S.matches){const H=by(h),V=by(v);met.add(h+'-'+v);met.add(v+'-'+h);
+    const mh=bh>bv?2:bh===bv?1:0;H.mp+=mh;V.mp+=2-mh;H.w+=mh;H.l+=2-mh;V.w+=2-mh;V.l+=mh;H.bp+=bh/2;V.bp+=bv/2;H.games++;V.games++;
+    (H.lus??=[]).push(rh);(V.lus??=[]).push(rv);
+    const adj=(r,o)=>r.map((x,i)=>x==null?null:x+((o||[])[i]||0));(H.lua??=[]).push(adj(rh,oh));(V.lua??=[]).push(adj(rv,ov));
+    if(oh){H.nm++;V.nm++;if(mf&1)H.fm++;if(mf&2)V.fm++;if(!mf){H.nb+=oh.length;V.nb+=ov.length;H.fb+=fh||0;V.fb+=fv||0}}}
+  const avgL=lus=>{const ls=(lus||[]).filter(x=>x.length);const v=ls.flat().filter(x=>x!=null);if(!v.length)return null;const ta=v.reduce((a,b)=>a+b,0)/v.length;return Array.from({length:half},(_,k)=>{const c=ls.map(x=>x[k]).filter(x=>x!=null);return Math.round(c.length?c.reduce((a,b)=>a+b,0)/c.length:ta)})};
+  T.forEach(t=>{t.lineup=avgL(t.lus);t.slineup=avgL(t.lua)});
+  const n=T.length,rem=[];for(let a=1;a<=n;a++)for(let b=a+1;b<=n;b++)if(!met.has(a+'-'+b))rem.push([a-1,b-1]);
+  T.forEach(t=>{t.open=S.rounds-t.games;t.max=t.mp+2*t.open});T.rem=rem;T.cells=2*S.rounds;T.boards=S.boards;return T}
+function maxflow(n,edges,s,t){const g=Array.from({length:n},()=>[]);const E=[];for(const [u,v,c] of edges){g[u].push(E.length);E.push([v,c]);g[v].push(E.length);E.push([u,0])}
+  let f=0;for(;;){const lv=new Array(n).fill(-1);lv[s]=0;const q=[s];for(let i=0;i<q.length;i++){const u=q[i];for(const id of g[u]){const [v,c]=E[id];if(c>0&&lv[v]<0){lv[v]=lv[u]+1;q.push(v)}}}if(lv[t]<0)return f;
+    const it=new Array(n).fill(0);const dfs=(u,fl)=>{if(u===t)return fl;for(;it[u]<g[u].length;it[u]++){const id=g[u][it[u]],[v,c]=E[id];if(c>0&&lv[v]===lv[u]+1){const d=dfs(v,Math.min(fl,c));if(d>0){E[id][1]-=d;E[id^1][1]+=d;return d}}}return 0};
+    let d;while((d=dfs(s,1e9))>0)f+=d}}
+function feasible(T,pi,S,set){const n0=T.length,src=n0,snk=n0+1;let id=n0+2;const ed=[];let need=0;
+  for(const q of set){const r=Math.max(0,S-T[q].mp);need+=r;ed.push([q,snk,r])}
+  const pg=T.rem.filter(([a,b])=>a===pi||b===pi);const give=2*pg.length-(S-T[pi].mp);if(give<0)return false;const hub=id++;ed.push([src,hub,give]);
+  for(const [a,b] of T.rem){const g=id++;if(a===pi||b===pi){ed.push([hub,g,2]);ed.push([g,a===pi?b:a,2])}else{ed.push([src,g,2]);ed.push([g,a,2]);ed.push([g,b,2])}}
+  return maxflow(id,ed,src,snk)>=need}
+function combos(arr,k){const out=[];const rec=(st,acc)=>{if(acc.length===k){out.push(acc.slice());return}for(let i=st;i<arr.length;i++){acc.push(arr[i]);rec(i+1,acc);acc.pop()}};rec(0,[]);return out}
+function safeTop(T,pi,k){const others=T.map((_,i)=>i).filter(i=>i!==pi);const sets=combos(others,k);let best=null;for(let S=T[pi].max;S>=T[pi].mp;S--){if(sets.some(s=>feasible(T,pi,S,s)))break;best=S}return best}
+// Model getest op het volledige interclubseizoen 2025-26 (zie uitleg onderaan):
+// leeftijdscorrectie per speler, ploegverschillen x0.8, ploegvorm per seizoen (-50/0/+50) en per match (sd 75), forfaitkans per ploeg.
+function simulate(T,N=24000){let seed=987654;const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+  const gau=()=>Math.sqrt(-2*Math.log(rnd()+1e-12))*Math.cos(6.283185307*rnd());
+  const H=T.boards,nT=T.length,LAM=0.8,SM=75,GB=0.009,GM=0.038;
+  const all=T.filter(t=>t.slineup).flatMap(t=>t.slineup);const fb=all.reduce((a,b)=>a+b,0)/all.length;
+  const L=T.map(t=>(t.slineup||new Array(H).fill(fb)).map(x=>fb+LAM*(x-fb)));
+  const pB=T.map(t=>(t.fb+20*GB)/(t.nb+20)),pM=T.map(t=>(t.fm+3*GM)/(t.nm+3));
+  // tabel: verwachte score en remisekans per ratingverschil (stap 1 Elo)
+  const W=1600,EW=new Float64Array(2*W+1),ED=new Float64Array(2*W+1);for(let d=-W;d<=W;d++){const E=1/(1+10**(d/400)),dr=0.30*(1-Math.abs(2*E-1))+0.05;EW[d+W]=Math.max(0,E-dr/2);ED[d+W]=Math.min(1,E+dr/2)}
+  const first=new Array(3*nT).fill(0),bottom=new Array(3*nT).fill(0),cnt=new Array(3*nT).fill(0),dl=new Array(nT),byS={first:{},safe:{}};const mp=new Array(nT),bp=new Array(nT),ord=T.map((_,i)=>i);
+  for(let s=0;s<N;s++){for(let i=0;i<nT;i++){mp[i]=T[i].mp;bp[i]=T[i].bp;dl[i]=Math.min(2,rnd()*3|0);cnt[3*i+dl[i]]++}
+    for(const [a,b] of T.rem){let ha=0;const fa=rnd()<pM[a],fv=rnd()<pM[b];
+      if(fa||fv){ha=fa&&fv?H:fa?0:2*H}else{const off=Math.round((dl[a]-dl[b])*50+SM*(gau()-gau()));const La=L[a],Lb=L[b];
+        for(let k=0;k<H;k++){const xa=rnd()<pB[a],xb=rnd()<pB[b];if(xa||xb){ha+=xa&&xb?1:xa?0:2;continue}
+          let d=Math.round(Lb[k]-La[k])-off;d=d<-W?-W:d>W?W:d;const r=rnd();ha+=r<EW[d+W]?2:r<ED[d+W]?1:0}}
+      bp[a]+=ha/2;bp[b]+=(2*H-ha)/2;if(ha>H)mp[a]+=2;else if(ha<H)mp[b]+=2;else{mp[a]++;mp[b]++}}
+    const tb=T.map(()=>rnd());ord.sort((x,y)=>mp[y]-mp[x]||bp[y]-bp[x]||tb[y]-tb[x]);
+    first[3*ord[0]+dl[ord[0]]]++;for(const j of [ord[nT-1],ord[nT-2]])bottom[3*j+dl[j]]++;
+    ord.forEach((i,r)=>{const f=byS.first[mp[i]]??=[0,0];f[0]++;if(r===0)f[1]++;const g=byS.safe[mp[i]]??=[0,0];g[0]++;if(r<nT-2)g[1]++})}
+  T.forEach((t,i)=>{const f=(A,c)=>A[3*i+c]/cnt[3*i+c],tot=A=>(A[3*i]+A[3*i+1]+A[3*i+2])/N;t.p1=tot(first);t.pb=tot(bottom);t.p1lo=f(first,0);t.p1hi=f(first,2);t.pblo=f(bottom,2);t.pbhi=f(bottom,0)});
+  const thr=o=>{const ks=Object.keys(o).map(Number).sort((a,b)=>a-b);for(const k of ks){if(o[k][0]>=50&&ks.filter(x=>x>=k).every(x=>o[x][1]/o[x][0]>=.95))return k}return null};
+  T.likelyFirst=thr(byS.first);T.likelySafe=thr(byS.safe)}
+const rg=(a,b)=>{const q=v=>pc(v).replace('%','');return q(a)===q(b)?'':`<span class="rg">${q(a)}–${q(b)}%</span>`};
+const pbar=(p,lo,hi,red)=>`<span class="pb${red?' red':''}"><b style="left:${Math.round(lo*100)}%;width:${Math.max(0,Math.round(hi*100)-Math.round(lo*100))}%"></b><i style="width:${Math.round(p*100)}%"></i></span>`;
+const pc=v=>v>=1?'100%':v<=0?'0%':v>.99?'>99%':v<.01?'<1%':v<.05?'<5%':v>.95?'>95%':Math.round(v*20)*5+'%';
+const minOf=a=>{const v=a.filter(x=>x!=null);return v.length?Math.min(...v):null},maxOf=a=>{const v=a.filter(x=>x!=null);return v.length?Math.max(...v):null};
+const rng=(a,b)=>a==null?'–':a===b?String(a):a+' tot '+b;
+const Ex=(a,b)=>1/(1+10**(Math.max(-400,Math.min(400,b-a))/400));
+function section(S){
+  const T=build(S);simulate(T);T.forEach((t,i)=>{t.sf1=safeTop(T,i,1);t.sfs=safeTop(T,i,T.length-2)});
+  const s1=T.map(t=>t.sf1),ss=T.map(t=>t.sfs),zlo=T.likelySafe,zhi=minOf(ss),mes=S.me.map(i=>T[i-1]);
+  const call=`<div class="callouts">
+<p class="need">Zeker kampioen met <b>${rng(minOf(s1),maxOf(s1))} MP</b> op ${T.cells}<span>wiskundig gegarandeerd</span></p>
+${T.likelyFirst!=null?`<p class="need likely">Waarschijnlijk kampioen met <b>${T.likelyFirst} MP</b><span>in minstens 95% van de simulaties</span></p>`:''}
+<p class="need">Zeker niet bij de laatste 2 met <b>${rng(minOf(ss),maxOf(ss))} MP</b><span>wiskundig gegarandeerd</span></p>
+${zlo!=null?`<p class="need likely">Waarschijnlijk niet bij de laatste 2 met <b>${zlo} MP</b><span>in minstens 95% van de simulaties</span></p>`:''}</div>`;
+  const L=T.slice().sort((x,y)=>y.mp-x.mp||y.bp-x.bp||x.n.localeCompare(y.n));let prev=null,rank=0;{let p2=null,r2=0;L.forEach((t,i)=>{const k=t.mp+'/'+t.bp;if(k!==p2){r2=i+1;p2=k}t.rank=r2})}
+  const rows=L.map((t,i)=>{const k=t.mp+'/'+t.bp;if(k!==prev){rank=i+1;prev=k}
+    const cells=[];for(let x=0;x<t.w;x++)cells.push('w');while(cells.length<T.cells-t.l)cells.push('o');for(let x=0;x<t.l;x++)cells.push('l');
+    cells.forEach((c,k)=>{if(c==='o'&&zlo!=null&&zhi!=null&&k+1>=zlo&&k+1<=zhi)cells[k]='y'});
+    const bar=`<div class="bar" style="--n:${T.cells}" role="img" aria-label="${t.mp} matchpunten, maximum ${t.max}">${cells.map(c=>`<i class="c ${c}"></i>`).join('')}</div>`;
+    const avg=t.lineup?Math.round(t.lineup.reduce((a,b)=>a+b,0)/t.lineup.length):null;
+    return `<tr class="${S.me.includes(t.nr)?'me':''}" id="t-${S.key}-${t.nr}"><td class="pl">${rank}</td><td class="nm">${t.n}<span class="elo">${avg?'gem. opstelling '+avg:''}</span></td><td class="pts">${t.mp}</td><td>${fmt(t.bp)}</td><td>${t.games}</td><td class="max">${t.max}</td><td class="ch"><span class="pc ${t.p1>=.4?'hi':'mid'}">${pc(t.p1)}</span>${rg(t.p1lo,t.p1hi)}${pbar(t.p1,t.p1lo,t.p1hi)}</td><td class="ch"><span class="pc ${t.pb>=.4?'lo2':'mid'}">${pc(t.pb)}</span>${rg(t.pblo,t.pbhi)}${pbar(t.pb,t.pblo,t.pbhi,1)}</td><td class="barc">${bar}</td></tr>`}).join('');
+  const ind=S.ind.map(([team,r,bd,n,ra,K,o,ro,s])=>{const ff=s==='ff',unk=ra==null,ou=ro===null&&o.startsWith('(');const rated=ro>0&&ra>0&&!ff;const d=rated?K*(s-Ex(ra,ro)):null;const t=d==null?'':Math.abs(d).toFixed(1).replace('.',',');
+    return `<tr><td class="nm">${team}</td><td>${r}</td><td>${bd}</td><td class="nm">${n}${K!==20?` <span class="na">(K ${K})</span>`:''}</td><td>${unk?'?':ra||'<span class="na">geen</span>'}</td><td class="nm">${o}</td><td>${ou?'<span class="na">–</span>':ro||'<span class="na">geen</span>'}</td><td>${ff?'<b class="up">1F</b>':s===1?'<b class="up">1</b>':s===0?'<b class="down">0</b>':'½'}${ff?'':stLk(n,o)}</td><td>${ou?'<span class="na">volgt</span>':unk?'<span class="na">onzeker</span>':d==null?(ff?'<span class="na">forfait</span>':'<span class="na">telt niet</span>'):`<span class="${d>0?'up':'down'}">${d>0?'▲':'▼'} ${t}</span>`}</td></tr>`}).join('');
+  S._T=T;S._mes=mes;return `<section class="ser" id="r${S.key}"><h2>${S.label.replace('afdeling','Afdeling')}<small>${S.me.map(i=>S.teams[i-1][1]).join(' en ')} · ${T.length} ploegen · ${S.boards} borden · ${S.status} · ${S.rounds} matchen per ploeg</small></h2>${call}
+${mes.map(me=>`<div class="meta"><span>${me.n}: <b>${me.mp} MP</b>, ${fmt(me.bp)} BP, plaats ${me.rank}</span><span>kans op plaats 1: <b>${pc(me.p1)}</b> (${rg(me.p1lo,me.p1hi).replace(/<[^>]+>/g,'')||pc(me.p1)})</span><span>kans op de laatste 2: <b>${pc(me.pb)}</b> (${rg(me.pblo,me.pbhi).replace(/<[^>]+>/g,'')||pc(me.pb)})</span></div>`).join('')}
+<div class="board"><table><thead><tr><th>#</th><th class="nm">Ploeg</th><th>MP</th><th>BP</th><th>Gesp.</th><th>Max</th><th>Kans 1e</th><th>Kans laatste 2</th><th class="nm">Verloop (groen = gewonnen, grijs = open, rood = verloren)</th></tr></thead><tbody>${rows}</tbody></table></div>
+<h3>KRST: individuele uitslagen</h3>
+<div class="board"><table class="ind"><thead><tr><th class="nm">Ploeg</th><th>Ronde</th><th>Bord</th><th class="nm">Speler</th><th>FIDE</th><th class="nm">Tegenstander</th><th>FIDE</th><th>Uitslag</th><th>Elo ±</th></tr></thead><tbody>${ind}</tbody></table></div></section>`}
+// Wat als: zelf uitslagen invullen voor nog te spelen matchen en de kansen herberekenen
+const WA={};const MND=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const dlab=d=>{if(!d)return '';const [y,m,dd]=d.split('-');return ' ('+(+dd)+' '+MND[+m-1]+')'};
+function waState(S){const rs=[...new Set(S.sched.map(x=>x[0]))];return WA[S.key]??={r:rs[0],res:{}}}
+function waHTML(S){if(!S.sched||!S.sched.length)return '';const st=waState(S);const rs=[...new Set(S.sched.map(x=>x[0]))];const nb=S.boards;const n=Object.keys(st.res).length;
+  const opts=v=>['<option value="">nog open</option>',...Array.from({length:2*nb+1},(_,i)=>2*nb-i).map(x=>`<option value="${x}"${String(v)===String(x)?' selected':''}>${fmt(x/2)} - ${fmt(nb-x/2)}</option>`)].join('');
+  const rows=S.sched.filter(x=>x[0]===st.r).map(([r,h,v])=>{const k=r+'-'+h+'-'+v;const me=S.me.includes(h)||S.me.includes(v);return `<div class="wa-m${me?' me':''}"><span class="wa-t">${S.teams[h-1][1]}</span><select data-k="${S.key}" data-m="${k}" aria-label="uitslag ${S.teams[h-1][1]} tegen ${S.teams[v-1][1]}">${opts(st.res[k]??'')}</select><span class="wa-t r">${S.teams[v-1][1]}</span></div>`}).join('');
+  return `<details class="wa"${st.open||n?' open':''}><summary>Wat als? <span>vul zelf uitslagen in en zie meteen hoe de kansen verschuiven</span></summary>
+<div class="wa-top"><label>Ronde <select data-k="${S.key}" data-round="1">${rs.map(r=>`<option value="${r}"${r===st.r?' selected':''}>${r}${dlab(S.dates&&S.dates[r])}</option>`).join('')}</select></label>${n?`<span class="wa-n">${n} uitslag${n>1?'en':''} ingevuld</span><button type="button" data-k="${S.key}" data-reset="1">alles wissen</button>`:''}</div>
+<div class="wa-list">${rows}</div><p class="na">Bordpunten van de thuisploeg eerst. Ingevulde uitslagen tellen als gespeeld; de wiskundige drempels en de kansen worden er opnieuw mee berekend. Niets wordt opgeslagen: herladen zet alles terug.</p></details>`}
+function waRender(S){const st=waState(S);const nb=S.boards;const fixed=Object.entries(st.res).map(([k,x])=>{const [r,h,v]=k.split('-').map(Number);return [r,h,v,+x,2*nb-x,[],[]]});
+  const S2={...S,matches:[...S.matches,...fixed],status:fixed.length?S.status+' · <b class="wa-on">wat-als: '+fixed.length+' uitslag'+(fixed.length>1?'en':'')+' ingevuld</b>':S.status};
+  const box=document.getElementById('w'+S.key);box.innerHTML=section(S2)+waHTML(S);}
+document.addEventListener('change',e=>{const el=e.target;if(!el.dataset||!el.dataset.k)return;const S=SERIES.find(x=>x.key===el.dataset.k);if(!S)return;const st=waState(S);st.open=true;
+  if(el.dataset.round){st.r=+el.value;waRender(S);return}
+  if(el.dataset.m){if(el.value==='')delete st.res[el.dataset.m];else st.res[el.dataset.m]=+el.value;el.disabled=true;setTimeout(()=>waRender(S),10)}});
+document.addEventListener('click',e=>{const el=e.target;if(!el.dataset||!el.dataset.reset)return;const S=SERIES.find(x=>x.key===el.dataset.k);if(!S)return;WA[S.key].res={};waRender(S)});
+const all=document.getElementById('all'),ov=document.getElementById('ov');
+SERIES.forEach(S=>{const d=document.createElement('div');d.id='w'+S.key;d.innerHTML=`<section class="ser"><h2>KRST · ${S.label}</h2><p class="na">Berekenen…</p></section>`;all.appendChild(d)});
+const ovRows=[];
+function ovRender(){ov.innerHTML=ovRows.sort((a,b)=>a.o-b.o).map(r=>r.h).join('')}
+SERIES.forEach(S=>S.me.forEach(nr=>{const name=S.teams[nr-1][1];ovRows.push({o:+name.replace(/\D/g,''),h:`<tr><td class="nm"><a href="#r${S.key}">${name}</a></td><td class="nm">${S.label}</td><td colspan="6" class="na">berekenen…</td></tr>`,key:S.key,nr})}));ovRender();
+let qi=0;function next(){if(qi>=SERIES.length)return;const S=SERIES[qi++];document.getElementById('w'+S.key).innerHTML=section(S)+waHTML(S);
+  S._mes.forEach(me=>{const row=ovRows.find(r=>r.key===S.key&&r.nr===me.nr);const ms=S.matches.filter(x=>x[1]===me.nr||x[2]===me.nr);const m=ms[ms.length-1];let r1='nog geen match';if(m){const home=m[1]===me.nr,my=home?m[3]:m[4],op=home?m[4]:m[3],opp=S.teams[(home?m[2]:m[1])-1][1];r1=`r${m[0]}: ${fmt(my/2)}-${fmt(op/2)} ${home?'tegen':'bij'} ${opp}`}
+    row.h=`<tr><td class="nm"><a href="#r${S.key}">${me.n}</a></td><td class="nm">${S.label}</td><td>${me.rank}/${S._T.length}</td><td class="pts">${me.mp}</td><td>${fmt(me.bp)}</td><td><span class="pc ${me.p1>=.4?'hi':'mid'}">${pc(me.p1)}</span>${rg(me.p1lo,me.p1hi)}</td><td><span class="pc ${me.pb>=.4?'lo2':'mid'}">${pc(me.pb)}</span>${rg(me.pblo,me.pbhi)}</td><td class="nm na">${r1}</td></tr>`});
+  ovRender();setTimeout(next,0)}
+setTimeout(next,0);
+</script>
+<script>const tijdTxt=t=>t?(+t.slice(8,10))+'/'+(+t.slice(5,7))+' om '+t.slice(11):'';if(window.VERWERKT&&VERWERKT.ic.ok){document.getElementById('icbron').textContent='Bron: KBSB Interclub Manager (frbe-kbsb-ksb.be), uitslagen tot en met ronde '+VERWERKT.ic.ronde+', opgehaald op '+tijdTxt(VERWERKT.tijden.ic)+'. Ratings: FIDE-rating uit de KBSB-ledenlijsten (of de interclubrating als er geen FIDE-rating is).'}</script>
+
+<button type="button" class="pdfbtn" id="pdfbtn" title="Opent het afdrukvenster; kies daar Opslaan als PDF">Opslaan als PDF</button>
+<script>
+(function(){var opened=[];
+ window.addEventListener('beforeprint',function(){opened=[].slice.call(document.querySelectorAll('details:not([open])')).filter(function(d){return d.id!=='cfg'});opened.forEach(function(d){d.open=true})});
+ window.addEventListener('afterprint',function(){opened.forEach(function(d){d.open=false});opened=[]});
+ document.getElementById('pdfbtn').addEventListener('click',function(){window.print()});})();
+</script>
+<script>(function(){if(window.ONLINE)return;var x=document.createElement('script');x.src='../Partijen-naspelen/data-partijen.js';
+x.onload=function(){window.PN_OK=true;document.querySelectorAll('a[data-pn]').forEach(function(a){a.href='../Partijen-naspelen/partijen.html#partij='+encodeURIComponent(a.getAttribute('data-pn'));a.title='partij naspelen in Partijen naspelen (met Stockfish)'})};
+document.head.appendChild(x)})();</script>
+</body>
+</html>

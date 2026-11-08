@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seizoensverslag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#f3f5f2;--surface:#fff;--fg:#1b221e;--muted:#67716b;--line:#dbe1dc;--accent:#2f5d4b;--accent-soft:#e3ece7;--gold:#b8860b;--up:#2e9b57;--down:#d0453a;
+  --display:"Saira Condensed","Arial Narrow",system-ui,sans-serif;--body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121715;--surface:#1a201d;--fg:#e6ece8;--muted:#97a29b;--line:#2b3430;--accent:#8fc5ad;--accent-soft:#22302a;--gold:#f0c45a;--up:#4cc27a;--down:#ef6d62;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121715;--surface:#1a201d;--fg:#e6ece8;--muted:#97a29b;--line:#2b3430;--accent:#8fc5ad;--accent-soft:#22302a;--gold:#f0c45a;--up:#4cc27a;--down:#ef6d62;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 var(--body)}
+.wrap{max-width:960px;margin:0 auto;padding-inline:16px;padding-block:24px 48px;display:flex;flex-direction:column;gap:20px}
+.terug{font-size:14px;color:var(--accent);text-decoration:none;font-weight:600}.terug:hover{text-decoration:underline}
+.titel{background:var(--accent);color:#fff;border-radius:12px;padding:22px 24px}
+.titel .eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.85;font-weight:600}
+.titel h1{font-family:var(--display);font-size:clamp(34px,6vw,52px);line-height:1;margin:4px 0 6px}
+.titel p{margin:0;opacity:.9}
+section{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;gap:12px;break-inside:avoid}
+h2{font-family:var(--display);font-size:28px;margin:0;color:var(--accent);line-height:1.1}
+h3{font-size:15px;margin:4px 0 0}
+.sub{color:var(--muted);margin:0;font-size:14px}
+.kampioenen{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.kamp{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}
+.kamp .r{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.kamp .n{font-family:var(--display);font-size:24px;line-height:1.1}
+.kamp .s{font-size:13px;color:var(--muted)}
+.beker{color:var(--gold)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+th,td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+td.l,th.l{text-align:left;white-space:normal}
+tr.wij td{background:var(--accent-soft);font-weight:700}
+tr.top td:first-child{color:var(--gold);font-weight:700}tr.zak td{color:var(--muted)}tr.zak td:first-child{color:#c8463d;font-weight:700}
+.cijfers{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.cijfer{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--bg)}
+.cijfer b{display:block;font-family:var(--display);font-size:28px;line-height:1.1}
+.cijfer span{font-size:13px;color:var(--muted)}
+.up{color:var(--up)}.down{color:var(--down)}.na{color:var(--muted)}
+.leeg{color:var(--muted);font-size:14px}
+.pdfbtn{position:fixed;right:16px;bottom:16px;z-index:10;font:inherit;font-size:14px;font-weight:600;padding:9px 16px;border:0;border-radius:999px;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.voet{font-size:12px;color:var(--muted)}
+[hidden]{display:none!important}
+@media print{body{background:#fff;font-size:12px}.pdfbtn,.terug{display:none!important}.wrap{padding:0;gap:12px;max-width:none}section{border:0;padding:0}.titel{-webkit-print-color-adjust:exact;print-color-adjust:exact}.grid2{grid-template-columns:1fr 1fr}
+  /* de inhoud begint meteen onder de titel; alleen kleinere blokken (een kampioen, een reeks, een tabel) blijven samen */
+  .wrap,section{display:block}section{break-inside:auto}section>*{margin:0 0 10px}.titel{margin-bottom:12px}
+  h2,h3{break-after:avoid}.kamp,.grid2>*,table,.cijfers,.cijfer{break-inside:avoid}tr{break-inside:avoid}}
+</style>
+<style>html:not(.online) .alleenonline{display:none!important}html.online .pdfbtn{background:transparent!important;color:inherit!important;border:1px solid rgba(128,128,128,.45)!important;box-shadow:none!important;font-size:12px!important;font-weight:500!important;padding:4px 10px!important;opacity:.5}html.online .pdfbtn:hover,html.online .pdfbtn[aria-expanded="true"]{opacity:1}</style>
+<script>if(/^https?:$/.test(location.protocol))document.documentElement.classList.add('online')</script>
+</head>
+<body>
+<div class="wrap">
+<a class="terug alleenonline" href="../index.html" style="margin-right:14px">← Startpagina</a><a class="terug" href="index.html">← Clubkampioenschap en interclub</a>
+<div class="titel"><span class="eyebrow">Koninklijke Roeselaarse Schaakclub De Torrewachters · club 309</span><h1 id="titel">Seizoensverslag</h1><p id="stand"></p></div>
+<section id="club"><h2>Clubkampioenschap</h2><div id="clubIn"></div></section>
+<section id="ic"><h2>Nationale interclub</h2><div id="icIn"></div></section>
+<section id="elo" hidden><h2>Elo</h2><div id="eloIn"></div></section>
+<p class="voet" id="voet"></p>
+</div>
+<button type="button" class="pdfbtn" id="pdfbtn" title="Opent het afdrukvenster; kies daar Opslaan als PDF">Opslaan als PDF</button>
+<script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
+<script src="data-club.js?v=173fcbeb81"></script>
+<script src="data-interclub.js?v=29e00600fe"></script>
+<script src="verwerk.js?v=abfa9d75fc"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nice=n=>{const [a,b]=String(n).split(', ');return b?b+' '+a:n};
+const half=x=>{const h=Math.floor(x),r=x-h;return r>=.25&&r<.75?(h?h:'')+'½':String(Math.round(x))};
+const pct=x=>Math.round(x*100)+'%';
+const MND=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+const dlang=d=>{if(!d)return '';const x=new Date(String(d).slice(0,10)+'T12:00:00');return x.getDate()+' '+MND[x.getMonth()]+' '+x.getFullYear()};
+const V=window.VERWERKT;
+const sz=V&&V.seizoen?+V.seizoen:new Date().getFullYear();const SZ=sz+'-'+String((sz+1)%100).padStart(2,'0');
+$('titel').textContent='Seizoensverslag '+SZ;
+$('voet').textContent='Gemaakt met de gegevens van '+(V&&V.tijd||'?')+' (SWAR, KBSB'+(window.BRON_ELO?', FIDE':'')+'). Opnieuw maken: eerst bijwerken, dan deze pagina vernieuwen (F5).';
+$('pdfbtn').onclick=()=>window.print();
+// ---------- clubkampioenschap: stand per reeks uit de SWAR-rijen ----------
+{const C=V&&V.club;const el=$('clubIn');
+ if(!C||!C.ok){el.innerHTML=(window.ONLINE?'<p class="leeg">Nog geen gegevens van het clubkampioenschap.</p>':'<p class="leeg">Geen gegevens van het clubkampioenschap (Bijwerken clubkampioenschap.bat).</p>')}
+ else{const NR=v=>v.n||C.rounds,PL=v=>v.played!=null?v.played:C.played;const af=Object.values(C.raw).every(v=>PL(v)>=NR(v));const kamp=[],tab=[];
+  /* doel per reeks (instellingen.txt: doel <reeks> = ...); een beker alleen bij een reeks met titel, of als geen enkele reeks een titel heeft */
+  const DL=v=>(v.doel&&v.doel.length)?v.doel:[{t:'top',n:5}],metTitel=Object.values(C.raw).some(v=>DL(v).some(z=>z.t==='titel'||z.t==='med'));
+  const ORDR=Object.entries(C.raw).map((e,i)=>[e,i]).sort((a,b)=>{const da=(a[0][1].rondes||{})[1]||'',db=(b[0][1].rondes||{})[1]||'';return da<db?-1:da>db?1:a[1]-b[1]}).map(x=>x[0]);
+  for(const [k,v] of ORDR){const S={};const sp=n=>S[n]??={n,pt:0,g:0,w:0,elo:0,tg:[]};const per=v.per||Math.max(1,Math.round(v.r.length/C.rounds));const pl=PL(v),afR=pl>=NR(v),D=DL(v);
+    v.r.forEach((row,i)=>{const [a,ea,res,b,eb]=row.split('|');if(!a||a==='Bye')return;const rd=Math.floor(i/per)+1;/* ook latere rondes: een vooraf ingevuld forfait (bv. van een speler die stopte) telt al mee, zoals in SWAR */const A=sp(a);A.elo=+ea||A.elo;
+      if(b==='Bye'){if(rd<=pl&&res!=='-')A.pt+=1;return}const B=sp(b);B.elo=+eb||B.elo;const r=String(res).replace(/\s+/g,'');
+      let sa=null,sb=null,gesp=true;if(/^1(ff)?-0/i.test(r)){sa=1;sb=0;gesp=!/ff/i.test(r)}else if(/^0(ff)?-1/i.test(r)){sa=0;sb=1;gesp=!/ff/i.test(r)}else if(/^(½|0[.,]5)-/.test(r)){sa=sb=.5}else if(/^0ff-0ff/.test(r)){sa=sb=0;gesp=false}else return;
+      A.pt+=sa;B.pt+=sb;if(gesp){A.g++;B.g++;if(sa===1)A.w++;if(sb===1)B.w++}A.tg.push([b,sa]);B.tg.push([a,sb])});
+    const L=Object.values(S).filter(p=>p.tg.some(([o,x])=>x>0)||p.g>0||p.pt>0||!v.r.every(row=>{const q=row.split('|');return (q[0]!==p.n&&q[3]!==p.n)||q[2]==='0ff-0ff'||q[2]==='-'}));/* wie alleen 0ff-0ff heeft (opgave of weggelaten), valt weg */for(const p of L)p.sb=p.tg.reduce((x,[o,s])=>x+(S[o]?S[o].pt*s:0),0);
+    L.sort((x,y)=>y.pt-x.pt||y.sb-x.sb||y.w-x.w||x.n.localeCompare(y.n,'nl'));
+    const lab=(C.labels&&C.labels[k])||('Reeks '+k);
+    const titel=D.some(z=>z.t==='titel'||z.t==='med')||!metTitel,med=D.some(z=>z.t==='med'),topZ=D.find(z=>z.t==='top'),stZ=D.find(z=>z.t==='stijgen'),zkZ=D.find(z=>z.t==='zakken');
+    const namen=a=>a.map(p=>esc(nice(p.n))).join(', ');const nZak=zkZ?Math.min(zkZ.n,L.length):0;
+    const extra=[topZ&&!titel?(afR?'door (top '+topZ.n+'): ':'nu in de top '+topZ.n+': ')+namen(L.slice(0,topZ.n)):'',stZ?(afR?'stijgen: ':'nu op promotieplaats: ')+namen(L.slice(0,stZ.n)):'',nZak?(afR?'zakken: ':'nu op degradatieplaats: ')+namen(L.slice(L.length-nZak)):''].filter(Boolean);
+    const plek=i=>med&&afR&&i<3?['🥇','🥈','🥉'][i]+' ':'';
+    if(L[0])kamp.push(`<div class="kamp"><div class="r">${esc(lab)}${titel?'':' · '+(afR?'winnaar':'leider')}</div><div class="n">${afR&&titel?'<span class="beker">🏆</span> ':''}${esc(nice(L[0].n))}</div><div class="s">${half(L[0].pt)} uit ${pl}${afR?'':' (na ronde '+pl+' van '+NR(v)+')'}${L[1]?' · '+(plek(1)||'2. ')+esc(nice(L[1].n))+' ('+half(L[1].pt)+')':''}${L[2]?' · '+(plek(2)||'3. ')+esc(nice(L[2].n))+' ('+half(L[2].pt)+')':''}</div>${extra.map(x=>`<div class="s">${x}</div>`).join('')}</div>`);
+    const hoog=topZ&&!titel?topZ.n:stZ?stZ.n:3;
+    tab.push(`<div><h3>${esc(lab)}</h3><table><thead><tr><th>#</th><th class="l">Speler</th><th>Elo</th><th>Ptn</th><th>SB</th><th>W</th></tr></thead><tbody>${L.map((p,i)=>`<tr class="${i<hoog?'top':''}${i>=L.length-nZak?' zak':''}"><td>${plek(i)||i+1}</td><td class="l">${esc(nice(p.n))}</td><td>${p.elo||'<span class="na">–</span>'}</td><td><b>${half(p.pt)}</b></td><td>${half(p.sb)}</td><td>${p.w}</td></tr>`).join('')}</tbody></table></div>`)}
+  const RN=Object.values(C.raw);const eenFase=RN.every(v=>NR(v)===C.rounds&&PL(v)===C.played);
+  el.innerHTML=`<p class="sub">${af?(eenFase?'Eindstand na '+C.rounds+' ronden.':'Eindstand.'):(eenFase?'Tussenstand na ronde '+C.played+' van '+C.rounds+' ('+dlang(C.rondes[C.played])+'); het verslag is af na de laatste ronde.':'Tussenstand; het verslag is af na de laatste ronde.')}</p>
+<div class="kampioenen">${kamp.join('')}</div><div class="grid2">${tab.join('')}</div>
+<p class="sub">Punten uit de SWAR-uitslagen; bij gelijke punten telt de Sonneborn-Berger (SB: de punten van de verslagen tegenstanders plus de helft van die van de remise-tegenstanders), dan het aantal winstpartijen. Forfaits tellen voor de punten (ook die al vooraf ingevuld zijn, bv. tegen een speler die stopte, zoals in SWAR), niet als gespeelde partij.</p>`}}
+// ---------- interclub ----------
+{const I=V&&V.ic;const el=$('icIn');
+ if(!I||!I.ok){el.innerHTML=(window.ONLINE?'<p class="leeg">Nog geen interclubgegevens.</p>':'<p class="leeg">Geen interclubgegevens (Bijwerken interclub.bat).</p>')}
+ else{const S=I.series;const af=I.ronde>=S.rounds&&S.status.startsWith('na ronde');
+  const st=[...I.ploegen].sort((a,b)=>b.mp-a.mp||b.bp-a.bp);const plaats=st.findIndex(t=>t.n===I.team)+1;
+  const ind={};for(const g of I.ind){const p=ind[g.speler]??={n:g.speler,g:0,pt:0,ff:0,borden:[],elo:g.elo};if(g.score==='ff'){p.ff++;p.pt+=1;continue}if(g.score==null)continue;p.g++;p.pt+=g.score;p.borden.push(g.bord)}
+  const IL=Object.values(ind).sort((a,b)=>b.pt-a.pt||(a.g+a.ff)-(b.g+b.ff));
+  const ms=I.gespeeld;const W=ms.filter(m=>m.voor>m.tegen).length,D=ms.filter(m=>m.voor===m.tegen).length,Lv=ms.filter(m=>m.voor<m.tegen).length;
+  el.innerHTML=`<p class="sub">${esc(I.team)} in ${esc(I.label)} · ${af?'eindstand':esc(S.status)}.</p>
+<div class="cijfers"><div class="cijfer"><b>${plaats}e</b><span>plaats van ${st.length}</span></div><div class="cijfer"><b>${W}-${D}-${Lv}</b><span>matchen gewonnen, gelijk, verloren</span></div><div class="cijfer"><b>${half(ms.reduce((a,m)=>a+m.voor,0))}</b><span>bordpunten (tegen ${half(ms.reduce((a,m)=>a+m.tegen,0))})</span></div></div>
+<div class="grid2"><div><h3>Stand</h3><table><thead><tr><th>#</th><th class="l">Ploeg</th><th>MP</th><th>BP</th></tr></thead><tbody>${st.map((t,i)=>`<tr class="${t.n===I.team?'wij':''}"><td>${i+1}</td><td class="l">${esc(t.n)}</td><td>${t.mp}</td><td>${half(t.bp)}</td></tr>`).join('')}</tbody></table></div>
+<div><h3>Matchen van ${esc(I.team)}</h3><table><thead><tr><th>R</th><th class="l">Tegen</th><th>Uitslag</th></tr></thead><tbody>${ms.map(m=>`<tr><td>${m.r}</td><td class="l">${m.thuis?'':'bij '}${esc(m.opp)}</td><td class="${m.voor>m.tegen?'up':m.voor<m.tegen?'down':''}">${half(m.voor)}-${half(m.tegen)}</td></tr>`).join('')}</tbody></table>
+<h3 style="margin-top:12px">Spelers</h3><table><thead><tr><th class="l">Speler</th><th>Partijen</th><th>Punten</th><th>Score</th></tr></thead><tbody>${IL.map(p=>`<tr><td class="l">${esc(nice(p.n))}${p.borden.length?' <span class="na">(bord '+[...new Set(p.borden)].sort().join(', ')+')</span>':''}</td><td>${p.g}${p.ff?' <span class="na">+'+p.ff+' ff</span>':''}</td><td><b>${half(p.pt)}</b></td><td>${p.g+p.ff?pct(p.pt/(p.g+p.ff)):''}</td></tr>`).join('')}</tbody></table></div></div>`}}
+$('stand').textContent='Stand op '+dlang((V&&V.tijd||'').slice(0,10));
+// ---------- Elo (uit de map Elo-Torrewachters ernaast) ----------
+function eloDeel(){const E=window.ELO;if(!E||!E.leden)return;
+  const van=sz+'-07',tot=(sz+1)+'-06';const M=E.maanden;const i0=Math.max(0,M.findIndex(m=>m>=van)-1),iL=(()=>{let i=-1;M.forEach((m,j)=>{if(m<=tot)i=j});return i})();
+  if(iL<0)return;
+  const G=[];for(const p of E.leden)for(const g of p.games[0]){const d=/^\d{4}-\d\d-\d\d$/.test(g.d1||'')?g.d1:g.ym+'-01';if(d>=sz+'-07-01'&&d<=(sz+1)+'-06-30')G.push({p,...g})}
+  const per=new Map();for(const g of G){let s=per.get(g.p);if(!s){s={p:g.p,n:0,pt:0,kc:0,os:0,on:0,ops:0,t:new Set()};per.set(g.p,s)}s.n++;s.pt+=g.r;s.kc+=g.kc||0;if(g.or){s.on++;s.os+=g.or;s.ops+=g.r}s.t.add(g.ev)}
+  const dp=p=>p>=1?800:p<=0?-800:Math.round(-400*Math.log10(1/p-1));
+  const R=[...per.values()].map(s=>({...s,pr:s.on>=5?Math.round(s.os/s.on)+dp(s.ops/s.on):null}));
+  const op=(s,i)=>{for(let j=i;j>=0;j--)if(s[j]!=null)return s[j];return null};const stijg=E.leden.map(p=>{const s=p.s[0];let a=op(s,i0);if(a==null)for(let j=i0;j<=iL;j++)if(s[j]!=null){a=s[j];break}const b=op(s,iL);return {p,a,b,d:a&&b?b-a:null}}).filter(x=>x.d!=null&&x.d>0).sort((x,y)=>y.d-x.d);
+  const top=(L,f)=>L.length?`<table><tbody>${L.slice(0,5).map((x,i)=>`<tr class="${i===0?'top':''}"><td>${i+1}</td><td class="l">${f(x)[0]}</td><td><b>${f(x)[1]}</b></td></tr>`).join('')}</tbody></table>`:'<p class="leeg">–</p>';
+  const ml=m=>MND[+m.slice(5)-1]+' '+m.slice(0,4);
+  $('voet').textContent=$('voet').textContent.replace('(SWAR, KBSB)','(SWAR, KBSB, FIDE)');
+  $('elo').hidden=false;$('eloIn').innerHTML=`<p class="sub">FIDE-standaardpartijen van de leden met een toernooi dat begon tussen 1 juli ${sz} en 30 juni ${sz+1}, en de FIDE-lijsten van ${ml(M[i0])} tot ${ml(M[iL])}.</p>
+<div class="cijfers"><div class="cijfer"><b>${G.length}</b><span>FIDE-partijen</span></div><div class="cijfer"><b>${R.length}</b><span>leden speelden</span></div><div class="cijfer"><b>${new Set(G.map(g=>g.ev)).size}</b><span>toernooien</span></div><div class="cijfer"><b class="${G.reduce((a,g)=>a+(g.kc||0),0)>=0?'up':'down'}">${(()=>{const v=Math.round(G.reduce((a,g)=>a+(g.kc||0),0));return (v>0?'+':'')+v})()}</b><span>Elo samen</span></div></div>
+<div class="grid2"><div><h3>Grootste stijging</h3>${top(stijg,x=>[esc(nice(x.p.n))+` <span class="na">${x.a} → ${x.b}</span>`,'+'+x.d])}</div>
+<div><h3>Meeste partijen</h3>${top([...R].sort((a,b)=>b.n-a.n),x=>[esc(nice(x.p.n))+` <span class="na">${x.t.size} toernooi${x.t.size>1?'en':''}</span>`,x.n])}</div>
+<div><h3>Beste prestatie (minstens 5 partijen)</h3>${top(R.filter(x=>x.pr).sort((a,b)=>b.pr-a.pr),x=>[esc(nice(x.p.n))+` <span class="na">${half(x.pt)}/${x.n}</span>`,x.pr])}</div>
+<div><h3>Meeste Elo gewonnen</h3>${top(R.filter(x=>x.kc>0).sort((a,b)=>b.kc-a.kc),x=>[esc(nice(x.p.n)),'+'+Math.round(x.kc)])}</div></div>`}
+(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=867b3e7799';
+a.onload=function(){var b=document.createElement('script');b.src='../elo/elo-verwerk.js?v=b6e87b0b86';b.onload=function(){try{eloDeel()}catch(e){}};document.head.appendChild(b)};document.head.appendChild(a)})();
+</script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elo Torrewachters</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f5f6f3;--surface:#fff;--fg:#1d2420;--muted:#66706a;--line:#dde2dc;
+  --accent:#2f5d4b;--accent-soft:#e3ece7;--up:#1f8a4c;--down:#c23b32;--me:#fff4cf;
+  --l0:#2f5d4b;--l1:#c47a12;--l2:#5a62c9;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;--body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#141917;--surface:#1b2220;--fg:#e7ece8;--muted:#97a39b;--line:#2c3531;--accent:#8fc5ad;--accent-soft:#22302a;--up:#5fcf8a;--down:#f07a70;--me:#3a3420;--l0:#8fc5ad;--l1:#f0b45a;--l2:#9aa2ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141917;--surface:#1b2220;--fg:#e7ece8;--muted:#97a39b;--line:#2c3531;--accent:#8fc5ad;--accent-soft:#22302a;--up:#5fcf8a;--down:#f07a70;--me:#3a3420;--l0:#8fc5ad;--l1:#f0b45a;--l2:#9aa2ff;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 var(--body)}
+.wrap{max-width:1500px;margin:0 auto;padding-inline:16px;padding-block:24px 40px;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-direction:column;gap:4px}
+
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--display);font-size:clamp(28px,5vw,40px);line-height:1.05;margin:0}
+.sub{color:var(--muted);max-width:80ch;margin:0}
+.bron{font-size:13px;color:var(--muted);margin:0}
+.bron.fout{color:var(--down)}
+.stats{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px}
+.stats b{font-variant-numeric:tabular-nums}
+.controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.controls input[type=search],.controls select{font:inherit;font-size:14px;padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+.controls input[type=search]{width:200px;max-width:100%}
+.controls label{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:14px}
+.btn{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn[aria-expanded="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* kolommenpaneel */
+.kolp{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.kolp[hidden]{display:none}
+.kolp .top{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;color:var(--muted)}
+.kolp ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 14px}
+.kolp li{display:flex;align-items:center;gap:6px;padding:3px 6px;border:1px solid transparent;border-radius:6px;font-size:14px;background:var(--bg)}
+.kolp li.drag{opacity:.4}
+.kolp li.over{border-color:var(--accent)}
+.kolp li .grip{cursor:grab;color:var(--muted);user-select:none;padding:0 2px}
+.kolp li label{flex:1;display:flex;gap:6px;align-items:center;cursor:pointer}
+.kolp li .pos{font-size:11px;color:var(--muted);width:1.6em;text-align:right;font-variant-numeric:tabular-nums}
+.kolp li button{all:unset;cursor:pointer;color:var(--accent);padding:0 4px;font-size:13px}
+.kolp li button:disabled{color:var(--line);cursor:default}
+.kolp li.uit{opacity:.6}
+/* tabel */
+.tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums;font-size:14px;width:max-content;min-width:100%}
+th,td{padding:6px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+thead th{position:sticky;top:0;background:var(--surface);z-index:2;font-weight:600;font-size:12px;color:var(--muted);vertical-align:bottom}
+th button{all:unset;cursor:pointer;display:inline-flex;gap:3px;align-items:center}
+th button:hover,th[aria-sort] button{color:var(--fg)}
+th.drop{box-shadow:inset 3px 0 0 var(--accent)}
+th[draggable="true"]{cursor:grab}
+.name{text-align:left;position:sticky;left:0;background:var(--surface);z-index:1;font-weight:500;border-right:1px solid var(--line)}
+thead .name{z-index:3}
+td.l,th.l{text-align:left}
+.now{font-weight:600}
+.up{color:var(--up)}.down{color:var(--down)}.flat,.na{color:var(--muted)}
+.ishi{color:var(--up)}.islo{color:var(--down)}
+.tg{all:unset;cursor:pointer;display:inline-block;width:1.1em;color:var(--accent)}
+.tg0{display:inline-block;width:1.1em}
+tbody tr:hover td{background:var(--accent-soft)}
+.when{display:block;font-size:11px;color:var(--muted);font-weight:400;line-height:1.2}
+.gd{font-weight:600}
+.plk{color:var(--accent);text-decoration:none;font-weight:600}.plk:hover{text-decoration:underline}
+.star{color:var(--accent);font-weight:600}
+td.mnd{font-size:13px}
+td.mnd.chg{font-weight:600}
+svg.spark{display:block}
+tr.det>td{background:var(--bg);padding:8px 10px 14px 28px;text-align:left}
+tr.det:hover td{background:var(--bg)}
+.detbox{position:sticky;left:28px;max-width:min(760px,calc(100vw - 80px));display:flex;flex-direction:column;gap:10px}
+.grafiek{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px}
+.grafiek .lg{display:flex;gap:14px;font-size:12px;color:var(--muted);padding:0 4px 4px}
+.grafiek .lg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:4px}
+table.res{width:100%;min-width:0;font-size:13px;border-collapse:collapse}
+table.res th,table.res td{border-bottom:1px solid var(--line);padding:3px 8px;text-align:right;position:static;background:transparent;white-space:normal}
+table.res th:first-child,table.res td:first-child{text-align:left}
+table.res tr.tour td{text-align:left;font-weight:600;padding-top:10px;border-bottom:1px solid var(--muted)}
+table.res tr.kind td{text-align:left;font-family:var(--display);font-size:16px;padding-top:14px;color:var(--accent);border-bottom:none}
+[hidden]{display:none!important}
+.legend{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px;max-width:90ch}
+.legend p{margin:0}
+.leeg{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px}
+.pdfbtn{position:fixed;right:16px;bottom:16px;z-index:10;font:inherit;font-size:14px;font-weight:600;padding:9px 16px;border:0;border-radius:999px;background:var(--accent);color:var(--surface);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+@media print{
+  body{background:#fff;color:#000;font-size:11px}
+  .controls,.kolp,.pdfbtn,.tg,.tg0{display:none!important}
+  .tablebox{overflow:visible;border:0}
+  table{font-size:10px;width:100%}
+  th,td{padding:3px 4px}
+  thead th,.name{position:static}
+  tr:hover td{background:none}
+}
+.pnt{all:unset;cursor:pointer;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);margin-left:8px;font-family:var(--body)}
+.pnt.uit{border-color:var(--line);color:var(--muted);text-decoration:line-through}
+.pnt:hover{background:var(--accent-soft)}
+#pnuitlijn button{all:unset;cursor:pointer;color:var(--accent);font-weight:600;text-decoration:underline}
+@media print{.pnt,.pnsp{display:none}}
+.pdfmenu{position:fixed;right:16px;bottom:62px;z-index:11;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.18);padding:10px;display:flex;flex-direction:column;gap:2px;min-width:240px;font-size:14px}
+.pdfmenu[hidden]{display:none}
+.pdfmenu button{all:unset;cursor:pointer;padding:6px 8px;border-radius:6px}
+.pdfmenu button:hover,.pdfmenu button:focus-visible{background:var(--accent-soft)}
+.pdfmenu small{color:var(--muted);padding:4px 8px 0;max-width:230px}
+@media print{
+  .pdfmenu,#pnuitlijn,.bron.stl{display:none!important}
+  body.pdf-gegevens .sub,body.pdf-gegevens #legend,body.pdf-gegevens #tnv{display:none!important}
+  body.pdf-uitleg #stats,body.pdf-uitleg #inhoud,body.pdf-uitleg #bron{display:none!important}
+  #legend p{break-inside:avoid}
+}
+.pnsp{font-size:13px;color:var(--muted)}
+.tnv{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:14px}
+.tnv summary{cursor:pointer;font-weight:600;color:var(--accent)}
+.tnv table{margin-top:8px;font-size:13px}
+.tnv td,.tnv th{padding:4px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.tnv .opm{color:var(--down)}
+.tnv p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:100ch}
+.tnv .sp{color:var(--muted)}
+</style>
+<style>html:not(.online) .alleenonline{display:none!important}html.online .pdfbtn{background:transparent!important;color:inherit!important;border:1px solid rgba(128,128,128,.45)!important;box-shadow:none!important;font-size:12px!important;font-weight:500!important;padding:4px 10px!important;opacity:.5}html.online .pdfbtn:hover,html.online .pdfbtn[aria-expanded="true"]{opacity:1}</style>
+<script>if(/^https?:$/.test(location.protocol))document.documentElement.classList.add('online')</script>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="eyebrow">Club 309 · Koninklijke Roeselaarse Schaakclub De Torrewachters</span>
+  <h1>Elo Torrewachters</h1>
+  <p class="sub" id="sub">FIDE-ratings van alle leden per maandlijst, hun FIDE-partijen en de nog te verwerken partijen van het clubkampioenschap en de interclub. Klik op een kolomkop om te sorteren, sleep een kolomkop om de volgorde te wijzigen, of kies <b>Kolommen</b>.</p>
+  <p class="bron" id="bron"></p>
+  <p class="bron stl"><a href="statistieken.html" style="color:var(--accent);font-weight:600;text-decoration:none">📊 Clubstatistieken</a> · ranglijsten, mooiste overwinningen en toernooien per seizoen · <a href="../club/index.html" style="color:var(--accent);font-weight:600;text-decoration:none">♜ Clubkampioenschap en interclub</a><span class="alleenonline"> · <a href="../index.html" style="color:var(--accent);font-weight:600;text-decoration:none">← Startpagina</a></span></p>
+</header>
+<details class="tnv" id="tnv" hidden><summary id="tnvk">Gekoppelde toernooien</summary><div id="tnvi"></div></details>
+<div class="stats" id="stats"></div>
+<div class="controls">
+  <input type="search" id="q" placeholder="Zoek speler…" aria-label="Zoek speler">
+  <label>Tempo <select id="tempo"><option value="0">standaard</option><option value="1">rapid</option><option value="2">blitz</option></select></label>
+  <label>Van <select id="van"></select></label>
+  <label>tot <select id="tot"></select></label>
+  <label class="vt"><input type="checkbox" id="rated" checked> Alleen spelers met rating</label>
+  <label class="vt" title="Alleen spelers van wie de rating op de lijst van tot verschilt van die op de lijst van Van (of, zonder rating op die lijst, van de eerste lijst in de periode waarop ze staan; een nieuwe rating na partijen telt ook), en alle spelers met nog te verwerken partijen"><input type="checkbox" id="wijz"> Alleen met wijziging in de periode</label>
+  <label class="vt" title="Links (♟) naar de gevonden partijen met zetten tonen; per toernooi aan of uit te zetten in de details"><input type="checkbox" id="pnaan" checked> ♟ links naar partijen</label>
+  <button id="kolk" type="button" class="btn vt" aria-expanded="false" aria-controls="kolp">Kolommen</button>
+  <button id="all" type="button" class="btn">Alles openklappen</button>
+</div>
+<div class="kolp" id="kolp" hidden>
+  <div class="top"><span>Vink aan wat je wilt zien. Sleep met ⠿ of gebruik ▲ ▼ om de volgorde te wijzigen (je kunt ook een kolomkop in de tabel verslepen).</span>
+    <button class="btn" id="kAlle" type="button">Alles aan</button><button class="btn" id="kGeen" type="button">Alles uit</button><button class="btn" id="kStd" type="button">Standaard herstellen</button></div>
+  <ol id="kollijst"></ol>
+</div>
+<p class="bron" id="pnuitlijn" hidden></p>
+<div id="inhoud"></div>
+<div class="legend" id="legend">
+  <p><b>Huidig</b>: rating op de laatste FIDE-lijst. <span class="ishi">Groen</span> als dat de hoogste is in de gekozen periode, <span class="islo">rood</span> als het de laagste is. <b>Begin</b>: rating op de lijst van <i>Van</i>; <b>± periode</b> = huidig min begin. Met Van okt 2025 en tot okt 2026 is dat dus hetzelfde als <b>± 12 maanden</b>. De verhoging van maart 2024 zit al in de lijst van maart 2024 en dus niet in ± periode; die staat apart in <b>Correctie mrt 2024</b>.</p>
+  <p><b>Correctie maart 2024</b>: op 1 maart 2024 verhoogde FIDE alle ratings onder 2000 met 0,4 × (2000 − rating). Getoond wordt de stijging van de lijst februari naar maart 2024, zonder de partijen die op de lijst van maart verwerkt werden.</p>
+  <p><b>Te verwerken</b>: Elo-winst of -verlies uit gespeelde partijen van het clubkampioenschap, de interclub en de gekoppelde toernooien die nog niet op een FIDE-lijst staan (per partij nagekeken: staat ze in de FIDE-berekening van een latere maandlijst, tegen dezelfde tegenstander met dezelfde uitslag, dan is ze verwerkt), berekend met de FIDE-formule en met de ratings van de laatste FIDE-lijst, want daarmee worden ze verwerkt (SWAR en de andere uitslagensites tonen de rating van bij de start van het toernooi) (K uit de laatste FIDE-berekening van de speler, anders 40 voor wie dit jaar 18 of jonger wordt, 20, of 10 vanaf 2400). Forfaits en partijen tegen spelers zonder rating tellen niet. <b>Geschat</b> = huidig plus dat verschil; <span class="ishi">groen</span> als dat hoger of gelijk is aan de hoogste rating van de periode, <span class="islo">rood</span> als het lager of gelijk is aan de laagste. Andere toernooien zitten er niet in.</p>
+  <p><b>Prognose</b>: de rating na de nog te spelen partijen van het clubkampioenschap, van alles verloren tot alles gewonnen: huidige rating + te verwerken + het bereik van die partijen (FIDE-formule, ratings uit SWAR). Klap een speler open voor het bereik per partij (ga met de muis erop voor de waarde bij remise). Interclubpartijen tellen niet mee, want de tegenstander is nog niet bekend.</p>
+  <p><b>Partijen, W-R-V, score, gemiddelde tegenstander, prestatie, Elo uit partijen</b>: FIDE-partijen van het gekozen tempo, verwerkt op de lijsten ná <i>Van</i> tot en met <i>tot</i> (dezelfde periode als ± periode). <b>Prestatie</b> = gemiddelde tegenstander + het FIDE-verschil dat bij de score hoort (vanaf 3 partijen). <b>Elo-verschil</b> bij winst, verlies en remise = rating van de tegenstander min je eigen rating op dat moment.</p>
+  <p><b>*</b> achter de naam: speelde in de periode minstens één FIDE-toernooi in het buitenland. <b>Maandlijsten</b>: één kolom per FIDE-lijst; vet = er werden partijen verwerkt. <b class="plk">♟</b> in de details: de partij met zetten werd gevonden; klik om ze na te spelen op lichess. Is de periode precies 12 maanden, dan wordt <b>± periode</b> niet getoond, want dan is dat hetzelfde als <b>± 12 maanden</b>. Klopt een link niet, of wil je de partijen van een toernooi niet tonen? Klik in de details naast de naam van het toernooi op <b>♟ aan</b>: dan wordt het <b>♟ uit</b> en verdwijnen de links van dat toernooi, voor alle spelers. Bovenaan de details van een speler zet <b>♟ aan / uit</b> alle links van die speler aan of uit. Nog eens klikken zet ze terug; bovenaan de tabel staat welke toernooien uit staan. <b>♟ links naar partijen</b> bovenaan zet alle links in een keer uit.</p>
+</div>
+</div>
+<button type="button" class="pdfbtn" id="pdfbtn" aria-haspopup="true" aria-expanded="false" title="Kies wat in de PDF komt; daarna opent het afdrukvenster: kies daar Opslaan als PDF">Opslaan als PDF ▾</button>
+<div class="pdfmenu" id="pdfmenu" hidden role="menu">
+  <button type="button" data-pdf="gegevens">Alleen de gegevens (de Elo-lijst)</button>
+  <button type="button" data-pdf="uitleg">Alleen de uitleg</button>
+  <button type="button" data-pdf="alles">Gegevens en uitleg samen</button>
+  <small>De lijst komt in de PDF zoals ze nu op het scherm staat (periode, tempo, filters, opengeklapte spelers). Kies in het afdrukvenster <i>Opslaan als PDF</i>.</small>
+</div>
+<script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
+<script src="data-elo.js?v=867b3e7799"></script>
+<script src="partijen-elo.js?v=e2087a950e"></script>
+<script src="elo-verwerk.js?v=b6e87b0b86"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const LS={get(k,d){try{const v=localStorage.getItem('elo-'+k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('elo-'+k,JSON.stringify(v))}catch(e){}}};
+const E=window.ELO;
+if(!E||!E.leden.length){$('inhoud').innerHTML='<div class="leeg">'+(window.ONLINE?'Er zijn nog geen gegevens opgeladen. Probeer het later opnieuw.':'Er zijn nog geen gegevens. Dubbelklik op <b>Elo bijwerken.bat</b> in deze map en open daarna deze pagina opnieuw.')+'</div>';$('stats').hidden=true;return}
+const MN=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const mlab=ym=>MN[+ym.slice(5,7)-1]+' '+ym.slice(0,4);const mkort=ym=>MN[+ym.slice(5,7)-1]+" '"+ym.slice(2,4);
+const M=E.maanden;const TN=['standaard','rapid','blitz'];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const short=n=>{const [a,b]=String(n).split(', ');return b?`${a} ${b[0]}.`:n};
+const Ex=(a,b)=>1/(1+10**((b-a)/400));
+// FIDE-tabel: score -> ratingverschil (dp)
+const dp=p=>{p=Math.max(0,Math.min(1,p));if(p>=1)return 800;if(p<=0)return -800;return Math.round(-400*Math.log10(1/p-1))};
+
+/* ---------- bron ---------- */
+{const t=E.tijd;const f=E.fouten.length;$('bron').textContent=(window.ONLINE?'Bijgewerkt op ':'Gegevens opgehaald op ')+(t?(+t.slice(8,10))+'/'+(+t.slice(5,7))+'/'+t.slice(0,4)+' om '+t.slice(11):'?')+' · laatste FIDE-lijst: '+mlab(E.laatste)+(E.clubInfo.length?' · clubkampioenschap reeks '+E.clubInfo.join(', '):'')+(E.icInfo.length?' · interclub afd. '+E.icInfo.join(', '):'')+(E.tot?' · partijen tot '+E.tot.split('-').reverse().join('/')+' al verwerkt':'')+(()=>{const v=Object.entries(E.verwerktPer||{});return v.length?' · al op een FIDE-lijst (niet meer bij Te verwerken): '+v.map(([t,n])=>t+' '+n+' partij'+(n>1?'en':'')).join(', '):' · nog geen enkele van deze partijen staat op een FIDE-lijst'})()+'.'+(f?' Opmerkingen bij het ophalen: '+E.fouten.join('; ')+'.':'');if(f)$('bron').classList.add('fout')}
+/* gekoppelde toernooien (instellingen.txt: toernooi <naam> = <adres>) */
+{const T=E.toernooien||[];const ex=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const dm=d=>d?(+d.slice(8,10))+'/'+(+d.slice(5,7))+'/'+d.slice(0,4):'';
+  $('tnv').hidden=false;$('tnvk').textContent=T.length?'Gekoppelde toernooien ('+T.length+'): '+T.map(t=>t.naam).join(', '):'Gekoppelde toernooien: nog geen';
+  $('tnvi').innerHTML=(T.length?`<div style="overflow-x:auto"><table><thead><tr><th>Toernooi</th><th>Site</th><th>Rondes</th><th>Partijen clubleden</th><th>Al verwerkt</th><th>Laatste ronde</th><th>Opmerking</th></tr></thead><tbody>${T.map(t=>`<tr><td>${t.url?`<a href="${ex(t.url)}" target="_blank" rel="noopener" style="color:var(--accent)">${ex(t.naam)}</a>`:ex(t.naam)}</td><td>${ex(t.soort)}</td><td>${t.rondes||'–'}</td><td>${t.partijen}${t.spelers.length?` <span class="sp">(${ex(t.spelers.map(n=>{const [a,b]=n.split(', ');return b?b+' '+a:n}).join(', '))})</span>`:''}</td><td>${t.verwerkt||'–'}</td><td>${dm(t.laatste)}</td><td class="opm">${ex(t.opm.join('; '))}</td></tr>`).join('')}</tbody></table></div>`:'')
+   +(window.ONLINE?`<p>Partijen van clubleden in deze toernooien tellen ook mee bij <i>Te verwerken</i>, tot ze op een FIDE-lijst staan (kolom <i>Al verwerkt</i>). Rapid, blitz en niet-FIDE-gerateerde toernooien tellen niet mee. Speel je zelf een toernooi dat hier ontbreekt? Geef de link door aan de verantwoordelijke van de website.</p>`:`<p><b>Zelf gezocht</b>: Elo bijwerken zoekt elke dag (één keer) op chess-results, OpenResults en bij de Franse bond FFE (in heel Frankrijk, of in de departementen van <i>ffe departementen</i> in instellingen.txt) naar toernooien van clubleden die nog bezig zijn of nog moeten beginnen, en zet nieuwe hier vanzelf bij. <b>Toernooien zoeken.bat</b> doet dat meteen. Rapid, blitz en niet-FIDE-gerateerde toernooien worden niet meegeteld (ze staan als commentaar in instellingen.txt). Een toernooi dat je weghaalt, komt niet terug. SWAR-pagina's kunnen niet doorzocht worden: die voeg je zelf toe.</p><p><b>Toernooi toevoegen of weghalen</b>: dubbelklik in deze map op <b>Toernooi toevoegen.bat</b> en plak de link van het toernooi op <b>chess-results</b>, bij de Franse bond <b>FFE</b> (echecs.asso.fr), op <b>OpenResults</b> of van een <b>SWAR</b>-pagina. Daarna wordt alles bijgewerkt; druk dan F5. De gespeelde partijen van clubleden tellen mee bij <i>Te verwerken</i>, tot ze op een FIDE-lijst staan: dat wordt per partij nagekeken in de FIDE-berekeningen (kolom <i>Al verwerkt</i>). Staat het hele toernooi op een FIDE-lijst, dan kun je het weghalen met dezelfde bat.</p>`)}
+
+/* ---------- periode en tempo ---------- */
+const opts=M.slice(1).map(ym=>`<option value="${ym}">${mlab(ym)}</option>`).join('');
+$('van').innerHTML=opts;$('tot').innerHTML=opts;
+$('van').value=LS.get('van3',M[1]);if(!$('van').value)$('van').value=M[1];
+$('tot').value=LS.get('tot',M[M.length-1]);if(!$('tot').value)$('tot').value=M[M.length-1];
+$('tempo').value=LS.get('tempo','0');$('rated').checked=LS.get('rated',true);$('wijz').checked=LS.get('wijz',false);
+
+/* ---------- berekening per speler ---------- */
+let rows=[];
+function bereken(){const t=+$('tempo').value;let van=$('van').value,tot=$('tot').value;if(van>tot){[van,tot]=[tot,van]}
+  const i0=M.indexOf(van),i1=M.indexOf(tot);const yr=M.indexOf(M[i1].replace(/^\d{4}/,y=>+y-1));
+  rows=E.leden.map(p=>{const s=p.s[t],g=p.g[t];const cur=s[i1];const beg=s[i0];const begM=M[i0];/* geen rating op de lijst van Van: geen ± periode (zoals ± 12 maanden) */
+    let hi=null,hiM='',lo=null,loM='';for(let i=i0;i<=i1;i++){const v=s[i];if(v==null)continue;if(hi==null||v>hi){hi=v;hiM=M[i]}if(lo==null||v<lo){lo=v;loM=M[i]}}
+    const G=p.games[t].filter(x=>x.ym>van&&x.ym<=tot);/* partijen van de lijsten na Van: zelfde periode als ± periode */let W=0,D=0,L=0,so=0,no=0,kc=0;let w=null,l=null,d=null;const land=new Set();
+    for(const x of G){if(x.r===1)W++;else if(x.r===0)L++;else D++;if(x.or){so+=x.or;no++}kc+=x.kc||0;if(x.land&&x.land!=='BEL')land.add(x.land);
+      const df=(x.or&&x.ro)?x.or-x.ro:null;if(df==null)continue;const o={d:df,o:x.o,or:x.or,m:mkort(x.ym),tour:x.tour};
+      if(x.r===1&&(!w||df>w.d))w=o;if(x.r===0&&(!l||df<l.d))l=o;if(x.r===.5&&(!d||df>d.d))d=o}
+    const n=G.length,sc=n?(W+D/2)/n:null,avg=no?Math.round(so/no):null;
+    /* gewijzigd in de periode? Zonder rating op de lijst van Van: vergelijk met de eerste lijst in de periode waarop hij staat.
+       Alleen als hij op die lijst ook partijen verwerkt kreeg, is het een nieuwe rating (anders ontbreken gewoon de oudere FIDE-gegevens). */
+    let wijz=false;if(cur!=null){if(beg!=null)wijz=cur!==beg;else{let f=-1;for(let i=i0;i<=i1;i++)if(s[i]!=null){f=i;break}if(f>=0)wijz=g[f]>0||cur!==s[f]}}
+    const tpr=n>=3&&avg?avg+dp(sc):null;
+    const P=t===0?p.pend:[];const pd=P.length?Math.round(P.reduce((a,x)=>a+(x.chg||0),0)*10)/10:null;
+    const cur0=p.s[0][M.length-1];const est=t===0&&P.length&&cur0!=null?Math.round(cur0+pd):null;
+    /* prognose: huidig + te verwerken + bereik van de nog te spelen clubpartijen (alles verliezen .. alles winnen) */
+    const RS=t===0?(p.rest||[]).map(x=>{if(!x.or||!x.ro)return {...x,telt:false};const e=1/(1+10**(Math.max(-400,Math.min(400,x.or-x.ro))/400));return {...x,telt:true,w:x.K*(1-e),l:-x.K*e,dr:x.K*(.5-e)}}):[];
+    const RT=RS.filter(x=>x.telt);const basis=est??cur0;const pmin=t===0&&RT.length&&basis!=null?Math.round(basis+RT.reduce((a,x)=>a+x.l,0)):null,pmax=t===0&&RT.length&&basis!=null?Math.round(basis+RT.reduce((a,x)=>a+x.w,0)):null;
+    // correctie maart 2024 (alleen standaard)
+    let cor=null;const iF=M.indexOf('2024-02'),iM=M.indexOf('2024-03');
+    if(t===0&&iF>=0&&iM>=0&&p.s[0][iF]!=null&&p.s[0][iM]!=null){const kM=p.games[0].filter(x=>x.ym==='2024-03').reduce((a,x)=>a+(x.kc||0),0);cor=Math.round(p.s[0][iM]-p.s[0][iF]-kM)}
+    const Ks=p.games[t].length?p.games[t][p.games[t].length-1].K:null;
+    const toer=new Set(G.map(x=>x.ym+'|'+x.tour)).size;
+    const r={...p,t,i0,i1,cur,beg,begM,dlt:(cur!=null&&beg!=null)?cur-beg:null,d12:(cur!=null&&yr>=0&&s[yr]!=null)?cur-s[yr]:null,hi,hiM,lo,loM,G,W,D,L,sc,avg,tpr,kc:n?Math.round(kc*10)/10:null,w,l,d,
+      wd:w?w.d:null,ld:l?l.d:null,dd:d?d.d:null,fx:[...land].join(', '),P,pd,est,RS,pmin,pmax,cor,K:Ks,toer:n?toer:null,age:p.by?E.seizoen-p.by:null,
+      rap:p.s[1][i1],bli:p.s[2][i1],std:p.s[0][i1],
+      ng:G.length,heeft:s.some(v=>v!=null),wijz};
+    for(let i=i0;i<=i1;i++){r['m'+M[i]]=s[i]}
+    return r})}
+
+/* ---------- kolommen ---------- */
+const fmtD=v=>v==null?'<span class="na">–</span>':v===0?'<span class="flat">=</span>':v>0?`<span class="up">▲ ${v}</span>`:`<span class="down">▼ ${-v}</span>`;
+const fmtP=v=>{if(v==null)return '<span class="na">–</span>';if(v===0)return '<span class="flat">0</span>';const t=Math.abs(v).toFixed(1).replace('.',',');return v>0?`<span class="up">▲ ${t}</span>`:`<span class="down">▼ ${t}</span>`};
+const na='<span class="na">–</span>';
+const game=x=>{if(!x)return na;const cls=x.d>=0?'up':'down';const sg=x.d>0?'+':x.d<0?'−':'±';return `<span class="${cls} gd">${sg}${Math.abs(x.d)}</span><span class="when">${esc(short(x.o))} (${x.or}) · ${x.m}</span>`};
+const spark=r=>{const s=r.s[r.t].slice(r.i0,r.i1+1);const v=s.filter(x=>x!=null);if(v.length<2)return na;const mn=Math.min(...v),mx=Math.max(...v),W=110,H=26;const sx=i=>2+i*(W-4)/Math.max(1,s.length-1),sy=x=>mx===mn?H/2:H-3-(x-mn)*(H-6)/(mx-mn);
+  let d='';s.forEach((x,i)=>{if(x==null)return;d+=(d?'L':'M')+sx(i).toFixed(1)+' '+sy(x).toFixed(1)});const last=s.length-1;
+  return `<svg class="spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-label="verloop van ${mn} tot ${mx}"><path d="${d}" fill="none" stroke="var(--l${r.t})" stroke-width="1.6"/>${s[last]!=null?`<circle cx="${sx(last)}" cy="${sy(s[last])}" r="2.4" fill="var(--l${r.t})"/>`:''}</svg>`};
+const COLS=[
+ {k:'n',lab:'Speler',cls:'name',txt:true,vast:true,f:r=>`${(r.G.length||r.P.length||r.heeft||FP[r.fide])?`<button class="tg" data-n="${esc(r.n)}" aria-expanded="${open.has(r.n)}" aria-label="details">${open.has(r.n)?'▾':'▸'}</button>`:'<span class="tg0"></span>'}${esc(r.n)}${r.fx?`<span class="star" title="Buitenland: ${esc(r.fx)}"> *</span>`:''}`},
+ {k:'age',lab:'Lft.',f:r=>r.age??na},
+ {k:'by',lab:'Geboortejaar',uit:true,f:r=>r.by||na},
+ {k:'fide',lab:'FIDE-id',uit:true,f:r=>r.fide?`<a class="lk" href="https://ratings.fide.com/profile/${r.fide}" target="_blank" rel="noopener">${r.fide}</a>`:na},
+ {k:'tit',lab:'Titel',uit:true,txt:true,f:r=>r.tit||na},
+ {k:'cur',lab:'Huidig',cls:'now',f:r=>{if(r.cur==null)return na;let k='';if(r.hi!=null&&r.hi!==r.lo){if(r.cur===r.hi)k='ishi';else if(r.cur===r.lo)k='islo'}return `<span class="${k}">${r.cur}</span><span class="when">${mkort(M[r.i1])}</span>`}},
+ {k:'pd',lab:'Te verwerken',f:r=>{if(!r.P.length)return na;const W=r.P.filter(x=>x.r===1).length,D=r.P.filter(x=>x.r===.5).length,L=r.P.filter(x=>x.r===0).length;return `${fmtP(r.pd)}<span class="when">${r.P.length} p. · ${W}-${D}-${L}</span>`}},
+ {k:'est',lab:'Geschat',cls:'now',f:r=>{if(r.est==null)return na;let k='';if(r.hi!=null){const v=r.hi!==r.lo;if(r.est>r.hi||(v&&r.est===r.hi))k='ishi';else if(r.est<r.lo||(v&&r.est===r.lo))k='islo'}return `<span class="${k}">${r.est}</span>`}},
+ {k:'prog',lab:'Prognose',sk:'pmax',tip:'rating na de nog te spelen clubpartijen: alles verloren – alles gewonnen',f:r=>r.pmin==null?na:`${r.pmin} – ${r.pmax}<span class="when">nog ${r.RS.filter(x=>x.telt).length} clubpartij${r.RS.filter(x=>x.telt).length>1?'en':''}</span>`},
+ {k:'beg',lab:'Begin',f:r=>r.beg==null?na:`${r.beg}<span class="when">${mkort(r.begM)}</span>`},
+ {k:'dlt',lab:'± periode',f:r=>fmtD(r.dlt)},
+ {k:'d12',lab:'± 12 maanden',uit:true,f:r=>fmtD(r.d12)},
+ {k:'cor',lab:'Correctie mrt 2024',f:r=>r.cor==null?na:(r.cor>0?`<span class="up">+${r.cor}</span>`:r.cor)},
+ {k:'hi',lab:'Hoogste',f:r=>r.hi==null?na:`${r.hi}<span class="when">${mkort(r.hiM)}</span>`},
+ {k:'lo',lab:'Laagste',f:r=>r.lo==null?na:`${r.lo}<span class="when">${mkort(r.loM)}</span>`},
+ {k:'spark',lab:'Verloop',nosort:true,f:spark},
+ {k:'n_g',lab:'Partijen',sk:'ng',f:r=>r.ng||na},
+ {k:'toer',lab:'Toernooien',uit:true,f:r=>r.toer??na},
+ {k:'sc',lab:'W-R-V',f:r=>r.ng?`${r.W}-${r.D}-${r.L}<span class="when">${Math.round(r.sc*100)}%</span>`:na},
+ {k:'avg',lab:'Gem. tegenstander',f:r=>r.avg??na},
+ {k:'tpr',lab:'Prestatie',f:r=>r.tpr==null?na:`<span class="${r.cur!=null&&r.tpr>r.cur?'up':r.cur!=null&&r.tpr<r.cur?'down':''}">${r.tpr}</span>`},
+ {k:'kc',lab:'Elo uit partijen',uit:true,f:r=>fmtP(r.kc)},
+ {k:'K',lab:'K',uit:true,f:r=>r.K??na},
+ {k:'std',lab:'Standaard',tip:'verborgen bij Tempo standaard: dan is dit Huidig',uit:true,f:r=>r.std??na},
+ {k:'rap',lab:'Rapid',tip:'verborgen bij Tempo rapid: dan is dit Huidig',f:r=>r.rap??na},
+ {k:'bli',lab:'Blitz',tip:'verborgen bij Tempo blitz: dan is dit Huidig',f:r=>r.bli??na},
+ {k:'wd',lab:'Grootste winst',cls:'l',f:r=>game(r.w)},
+ {k:'ld',lab:'Zwaarste verlies',cls:'l',asc:true,f:r=>game(r.l)},
+ {k:'dd',lab:'Beste remise',cls:'l',f:r=>game(r.d)},
+ {k:'maanden',lab:'Maandlijsten (één kolom per maand)',groep:true,uit:true}
+];
+// standaard: deze kolommen aan, in deze volgorde; de rest uit
+const STDAAN=['n','fide','cur','pd','est','prog','dlt','d12','hi','lo','n_g','kc','rap','bli'];
+const STD=[...STDAAN.map(k=>({k,on:true})),...COLS.filter(c=>!STDAAN.includes(c.k)).map(c=>({k:c.k,on:false}))];
+let KOL=LS.get('kol2',null);
+function kolNorm(){if(!Array.isArray(KOL))KOL=STD.map(x=>({...x}));KOL=KOL.filter(x=>COLS.some(c=>c.k===x.k));for(const x of STD)if(!KOL.some(y=>y.k===x.k))KOL.push({...x});const n=KOL.find(x=>x.k==='n');n.on=true}
+kolNorm();
+const DUBBEL=['std','rap','bli'];// de kolom van het gekozen tempo is dezelfde als Huidig
+const zichtbaar=()=>{const out=[];const tk=DUBBEL[+$('tempo').value];for(const x of KOL){if(!x.on)continue;const c=COLS.find(c=>c.k===x.k);if(c.k===tk&&KOL.some(y=>y.k==='cur'&&y.on))continue;if(c.k==='dlt'&&KOL.some(y=>y.k==='d12'&&y.on)&&rows[0]&&rows[0].i1-rows[0].i0===12)continue;if(c.groep){for(let i=rows[0]?rows[0].i0:0;i<=(rows[0]?rows[0].i1:M.length-1);i++){const ym=M[i];out.push({k:'m'+ym,lab:mkort(ym),mnd:ym,cls:'mnd',grp:'maanden',f:r=>{const v=r['m'+ym];const g=r.g[r.t][i];return v==null?na:g?`<b>${v}</b>`:String(v)}})}}else out.push(c)}return out};
+
+/* ---------- kolommenpaneel ---------- */
+function paneel(){const L=$('kollijst');L.innerHTML=KOL.map((x,i)=>{const c=COLS.find(c=>c.k===x.k);return `<li draggable="${c.vast?'false':'true'}" data-k="${x.k}" class="${x.on?'':'uit'}"><span class="grip" title="slepen">⠿</span><span class="pos">${i+1}</span><label><input type="checkbox" ${x.on?'checked':''} ${c.vast?'disabled':''}> ${esc(c.lab)}${c.tip?` <span class="pos" style="width:auto" title="${esc(c.tip)}">ⓘ</span>`:''}</label><button type="button" data-d="-1" ${i===0?'disabled':''} aria-label="hoger">▲</button><button type="button" data-d="1" ${i===KOL.length-1?'disabled':''} aria-label="lager">▼</button></li>`}).join('');
+  L.querySelectorAll('li').forEach(li=>{const k=li.dataset.k;
+    li.querySelector('input').onchange=e=>{KOL.find(x=>x.k===k).on=e.target.checked;bewaar()};
+    li.querySelectorAll('button').forEach(b=>b.onclick=()=>{const i=KOL.findIndex(x=>x.k===k),d=+b.dataset.d;let j=i+d;if(KOL[i].on)while(j>=0&&j<KOL.length&&!KOL[j].on)j+=d;if(j<0||j>=KOL.length)return;const [x]=KOL.splice(i,1);KOL.splice(j,0,x);bewaar()});
+    li.ondragstart=e=>{e.dataTransfer.setData('text/plain',k);li.classList.add('drag')};li.ondragend=()=>li.classList.remove('drag');
+    li.ondragover=e=>{e.preventDefault();li.classList.add('over')};li.ondragleave=()=>li.classList.remove('over');
+    li.ondrop=e=>{e.preventDefault();li.classList.remove('over');verplaats(e.dataTransfer.getData('text/plain'),k)}})}
+function verplaats(van,naar){if(!van||van===naar)return;const i=KOL.findIndex(x=>x.k===van),j=KOL.findIndex(x=>x.k===naar);if(i<0||j<0)return;const [x]=KOL.splice(i,1);KOL.splice(j,0,x);bewaar()}
+function bewaar(){LS.set('kol2',KOL);paneel();render()}
+$('kolk').onclick=()=>{const p=$('kolp');p.hidden=!p.hidden;$('kolk').setAttribute('aria-expanded',String(!p.hidden));if(!p.hidden)paneel()};
+$('kAlle').onclick=()=>{KOL.forEach(x=>x.on=true);bewaar()};
+$('kGeen').onclick=()=>{KOL.forEach(x=>x.on=x.k==='n');bewaar()};
+$('kStd').onclick=()=>{KOL=STD.map(x=>({...x}));kolNorm();bewaar()};
+
+/* ---------- tabel ---------- */
+const open=new Set();let sort=LS.get('sort',{k:'cur',dir:-1});
+function render(){bereken();const cols=zichtbaar();const q=$('q').value.trim().toLowerCase(),only=$('rated').checked;
+  const sc=cols.find(c=>c.k===sort.k)||cols.find(c=>c.k==='cur')||cols[0];const sk=sc.sk||sc.k;
+  const list=rows.filter(r=>(!q||r.n.toLowerCase().includes(q))&&(!only||r.heeft)&&(!$('wijz').checked||r.wijz||r.P.length>0)).sort((a,b)=>{let x=a[sk],y=b[sk];if(sc.txt){x=x||'';y=y||'';return x.localeCompare(y,'nl')*sort.dir||a.n.localeCompare(b.n,'nl')}
+    if(x==null&&y==null)return a.n.localeCompare(b.n,'nl');if(x==null)return 1;if(y==null)return -1;return (x-y)*sort.dir||a.n.localeCompare(b.n,'nl')});
+  const h='<table id="t"><thead><tr>'+cols.map(c=>{const s=sk===(c.sk||c.k)?` aria-sort="${sort.dir>0?'ascending':'descending'}"`:'';const ar=sk===(c.sk||c.k)?(sort.dir>0?'↑':'↓'):'';const kk=c.grp||c.k;
+      return `<th class="${c.cls||''}" data-k="${kk}" draggable="${c.vast?'false':'true'}"${s}>${c.nosort?esc(c.lab):`<button data-s="${c.k}">${esc(c.lab)}${ar}</button>`}</th>`}).join('')+'</tr></thead><tbody>'+
+    list.map(r=>'<tr>'+cols.map(c=>`<td class="${c.cls||''}">${c.f(r)}</td>`).join('')+'</tr>'+(open.has(r.n)?detail(r,cols.length):'')).join('')+'</tbody></table>';
+  $('inhoud').innerHTML='<div class="tablebox">'+h+'</div>';
+  const T=$('t');
+  T.querySelectorAll('th button').forEach(b=>b.onclick=()=>{const k=b.dataset.s;const c=cols.find(x=>x.k===k);sort=sort.k===k?{k,dir:-sort.dir}:{k,dir:(c.txt||c.asc)?1:-1};LS.set('sort',sort);render()});
+  T.querySelectorAll('th[draggable="true"]').forEach(th=>{th.ondragstart=e=>e.dataTransfer.setData('text/plain',th.dataset.k);th.ondragover=e=>{e.preventDefault();th.classList.add('drop')};th.ondragleave=()=>th.classList.remove('drop');th.ondrop=e=>{e.preventDefault();th.classList.remove('drop');verplaats(e.dataTransfer.getData('text/plain'),th.dataset.k)}});
+  T.querySelectorAll('.tg').forEach(t=>t.onclick=()=>{const n=t.dataset.n;open.has(n)?open.delete(n):open.add(n);render()});
+  T.querySelectorAll('.pnp').forEach(b=>b.onclick=e=>{e.stopPropagation();const n=b.dataset.n;PNSP.has(n)?PNSP.delete(n):PNSP.add(n);LS.set('pnsp',[...PNSP]);render()});
+  T.querySelectorAll('.pnt:not(.pnp)').forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.t;PNUIT.has(k)?PNUIT.delete(k):PNUIT.add(k);LS.set('pnuit',[...PNUIT]);render()});
+  {const el=$('pnuitlijn');el.hidden=!(PNUIT.size||PNSP.size)||!$('pnaan').checked;if(PNUIT.size||PNSP.size){el.innerHTML='♟ Links verborgen voor '+[PNUIT.size?`${PNUIT.size} toernooi${PNUIT.size>1?'en':''}: ${[...PNUIT].map(esc).join(', ')}`:'',PNSP.size?`${PNSP.size} speler${PNSP.size>1?'s':''}: ${[...PNSP].map(esc).join(', ')}`:''].filter(Boolean).join(' en voor ')+' · <button type="button" id="pnalle">alles weer aan</button>';$('pnalle').onclick=()=>{PNUIT=new Set();PNSP=new Set();LS.set('pnuit',[]);LS.set('pnsp',[]);render()}}}
+  stats(list)}
+
+/* ---------- details ---------- */
+function grafiek(r){const i0=r.i0,i1=r.i1;const W=720,H=180,pl=40,pr=10,pt=10,pb=22;const S=[0,1,2].map(t=>r.s[t].slice(i0,i1+1));const v=S.flat().filter(x=>x!=null);if(v.length<2)return '';
+  let mn=Math.min(...v),mx=Math.max(...v);if(mx-mn<40){mn-=20;mx+=20}const n=i1-i0+1;const sx=i=>pl+i*(W-pl-pr)/Math.max(1,n-1),sy=x=>pt+(mx-x)*(H-pt-pb)/(mx-mn);
+  let g='';const st=Math.max(10,Math.round((mx-mn)/4/10)*10);for(let y=Math.ceil(mn/st)*st;y<=mx;y+=st)g+=`<line x1="${pl}" x2="${W-pr}" y1="${sy(y)}" y2="${sy(y)}" stroke="var(--line)"/><text x="${pl-6}" y="${sy(y)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${y}</text>`;
+  const stap=Math.max(1,Math.ceil(n/12));for(let i=0;i<n;i+=stap)g+=`<text x="${sx(i)}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)">${mkort(M[i0+i])}</text>`;
+  const iM=M.indexOf('2024-03')-i0;if(iM>=0&&iM<n)g+=`<line x1="${sx(iM)}" x2="${sx(iM)}" y1="${pt}" y2="${H-pb}" stroke="var(--muted)" stroke-dasharray="3 3"/><text x="${sx(iM)+4}" y="${H-pb-4}" font-size="10" fill="var(--muted)">correctie FIDE</text>`;
+  let lines='';S.forEach((s,t)=>{let d='';s.forEach((x,i)=>{if(x==null)return;d+=(d?'L':'M')+sx(i).toFixed(1)+' '+sy(x).toFixed(1)});if(d)lines+=`<path d="${d}" fill="none" stroke="var(--l${t})" stroke-width="${t===r.t?2.4:1.4}" opacity="${t===r.t?1:.7}"/>`;
+    s.forEach((x,i)=>{if(x!=null&&r.g[t][i0+i])lines+=`<circle cx="${sx(i)}" cy="${sy(x)}" r="${t===r.t?3:2}" fill="var(--l${t})"><title>${TN[t]} ${mlab(M[i0+i])}: ${x} (${r.g[t][i0+i]} partijen)</title></circle>`})});
+  return `<div class="grafiek"><div class="lg">${[0,1,2].map(t=>S[t].some(x=>x!=null)?`<span><i style="background:var(--l${t})"></i>${TN[t]}</span>`:'').join('')}<span>· bolletje = maand met verwerkte partijen</span></div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="ratingverloop">${g}${lines}</svg></div>`}
+const rs=v=>v===1?'<b class="up">1</b>':v===0?'<b class="down">0</b>':'<b>½</b>';
+/* gevonden partijen met zetten (partijen-elo.js): koppelen aan FIDE- en nog te verwerken partijen */
+const FP=E.partijen||{};
+const anm=n=>{const w=String(n||'').split(',')[0].normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().split(/[^a-z]+/).filter(Boolean);const k=w.filter(x=>!/^(de|van|der|den|le|la|du|von|vande|ter|da|di|del|dos|el|al)$/.test(x));return (k[0]||w.join(''))};/* belangrijkste woord van de familienaam: 'Chacon Jaime' en 'Chacon' komen overeen */
+const dag=(d,k)=>{const t=new Date(d+'T12:00:00Z');t.setUTCDate(t.getUTCDate()+k);return t.toISOString().slice(0,10)};
+function zoek(r,o,van,tot){const L=FP[r.fide]||[];const a=anm(o);return L.find(g=>anm(g.o)===a&&g.d>=van&&g.d<=tot)||null}
+/* ---- staat de map Partijen-naspelen ernaast? dan opent ♟ de partij daar (met Stockfish), anders op lichess ---- */
+window.PN_OK=false;
+const pnLink=(u,w,b,d)=>window.PN_OK?'../Partijen-naspelen/partijen.html#partij='+encodeURIComponent(JSON.stringify({u,w,b,d})):u;
+const pnTitel=()=>window.PN_OK?'partij naspelen in Partijen naspelen (met Stockfish)':'partij naspelen op lichess';
+const pnQ=(g,r)=>{const w=g.c==='w'?r.n:g.o,b=g.c==='w'?g.o:r.n;return {u:g.u,w,b,d:g.d}};
+const pnA=(g,r)=>{const q=pnQ(g,r);return `href="${esc(pnLink(q.u,q.w,q.b,q.d))}" data-pn="${esc(JSON.stringify(q))}"`};
+let PNUIT=new Set(LS.get('pnuit',[])),PNSP=new Set(LS.get('pnsp',[]));
+const pnAan=(r,k)=>$('pnaan').checked&&!PNSP.has(r.n)&&!PNUIT.has(k);
+const pnKnop=(r,k,heeft)=>(heeft||PNUIT.has(k))&&$('pnaan').checked&&!PNSP.has(r.n)?`<button type="button" class="pnt${PNUIT.has(k)?' uit':''}" data-t="${esc(k)}" title="${PNUIT.has(k)?'links naar de partijen van dit toernooi weer tonen':'links naar de partijen van dit toernooi verbergen (voor alle spelers)'}">♟ ${PNUIT.has(k)?'uit':'aan'}</button>`:'';
+const plk=(g,r)=>g?` <a class="plk" ${pnA(g,r)} target="_blank" rel="noopener" title="${pnTitel()} (${g.n} zetten)">♟</a>`:'';
+function vindFIDE(r,x){if(x.d1)return zoek(r,x.o,dag(x.d1,-3),dag(x.d2||x.d1,3));const y=+x.ym.slice(0,4),m=+x.ym.slice(5,7);const v=new Date(Date.UTC(y,m-3,1)).toISOString().slice(0,10);return zoek(r,x.o,v,x.ym+'-01')}
+function andereT(r,gebruikt){if(!$('pnaan').checked||PNSP.has(r.n))return '';const L=(FP[r.fide]||[]).filter(g=>!gebruikt.has(g)&&g.d>=dag(M[r.i0]+'-01',-31));if(!L.length)return '';
+  let h=`<tr class="kind"><td colspan="6">Andere gevonden partijen · ${L.length}</td></tr>`;let le=null;
+  for(const g of L.slice().reverse()){const e=g.e||'?';if(e!==le){h+=`<tr class="tour"><td colspan="6">${esc(e)}${pnKnop(r,e,true)}</td></tr>`;le=e}
+    h+=`<tr><td>${g.c==='w'?'⚪':'⚫'} ${pnAan(r,e)?`<a class="plk" ${pnA(g,r)} target="_blank" rel="noopener" title="${pnTitel()}">♟ ${esc(short(g.o))}</a>`:esc(short(g.o))} <span class="na">· ${g.d.split('-').reverse().join('/')}</span></td><td></td><td></td><td>${rs(g.r)}</td><td class="na">${g.n} zetten</td><td></td></tr>`}return h}
+function restT(r){if(!r.RS||!r.RS.length)return '';const T=r.RS.filter(x=>x.telt);const mn=T.reduce((a,x)=>a+x.l,0),mx=T.reduce((a,x)=>a+x.w,0);
+  let h=`<tr class="kind"><td colspan="6">Nog te spelen · ${r.RS.length} clubpartij${r.RS.length>1?'en':''}${T.length?` · ${fmtP(Math.round(mn*10)/10)} … ${fmtP(Math.round(mx*10)/10)} → prognose ${r.pmin} – ${r.pmax}`:''}</td></tr>`;let lt='';
+  for(const x of r.RS){const tt=x.tour.replace(/ r\d+$/,'');if(tt!==lt){h+=`<tr class="tour"><td colspan="6">${esc(tt)} <span class="na">· K ${x.K}</span></td></tr>`;lt=tt}const df=(x.or&&x.ro)?x.or-x.ro:null;
+    h+=`<tr><td>${esc(short(x.o))} <span class="na">· ${x.dt.slice(8,10)}/${x.dt.slice(5,7)}</span></td><td>${x.or??'<span class="na">geen</span>'}</td><td class="${df>0?'up':df<0?'down':''}">${df==null?na:(df>0?'+':'')+df}</td><td class="na">te spelen</td><td>${x.telt?`<span title="remise ${String(Math.round(x.dr*10)/10).replace('.',',')}">${fmtP(Math.round(x.l*10)/10)} … ${fmtP(Math.round(x.w*10)/10)}</span>`:'<span class="na">telt niet</span>'}</td><td class="na">${x.ro??''}</td></tr>`}return h}
+function pendT(r){if(!r.P.length)return '';let h=`<tr class="kind"><td colspan="6">Nog te verwerken · ${r.P.length} partijen · ${fmtP(r.pd)} → geschat ${r.est??'–'}</td></tr>`;let lt='';
+  const tk=t=>t.replace(/ r\d+( ·.*)?$/,'').replace(/ \(afd\..*$/,'');
+  const heeft={};for(const x of r.P){const gp=zoek(r,x.o,dag(x.dt,-1),dag(x.dt,1));x._gp=gp;if(gp)heeft[tk(x.tour)]=1}
+  for(const x of r.P){if(x.tour!==lt){h+=`<tr class="tour"><td colspan="6">${esc(x.tour)} <span class="na">· K ${x.K}</span>${pnKnop(r,tk(x.tour),heeft[tk(x.tour)])}</td></tr>`;lt=x.tour}const df=(x.or&&x.ro)?x.or-x.ro:null;
+    const gp=x._gp;if(gp)r._gebruikt.add(gp);h+=`<tr><td>${esc(short(x.o))}${pnAan(r,tk(x.tour))?plk(gp,r):''} <span class="na">· ${x.d}</span></td><td>${x.or??'<span class="na">geen</span>'}</td><td class="${df>0?'up':df<0?'down':''}">${df==null?na:(df>0?'+':'')+df}</td><td>${rs(x.r)}</td><td>${x.chg==null?'<span class="na">telt niet</span>':fmtP(x.chg)}</td><td class="na">${x.ro??''}</td></tr>`}return h}
+function partT(r){const G=r.G;if(!G.length)return '';let h=`<tr class="kind"><td colspan="6">${TN[r.t][0].toUpperCase()+TN[r.t].slice(1)} · ${G.length} partijen (${mlab(M[r.i0])} – ${mlab(M[r.i1])})</td></tr>`;let last='';
+  const heeft={};for(const x of G){x._gp=vindFIDE(r,x);if(x._gp)heeft[x.tour]=1}
+  for(const x of G.slice().reverse()){const k=x.ym+x.tour;if(k!==last){h+=`<tr class="tour"><td colspan="6">${esc(x.tour)} <span class="na">· ${esc(x.pl)}${x.d1?' · '+x.d1.split('-').reverse().join('/'):''} · lijst ${mlab(x.ym)} · K ${x.K??'?'}</span>${pnKnop(r,x.tour,heeft[x.tour])}</td></tr>`;last=k}
+    const gp=x._gp;if(gp)r._gebruikt.add(gp);const df=(x.or&&x.ro)?x.or-x.ro:null;h+=`<tr><td>${x.c==='w'?'⚪':x.c==='b'?'⚫':''} ${esc(short(x.o))}${pnAan(r,x.tour)?plk(gp,r):''}${x.ot?' <span class="na">'+esc(x.ot)+'</span>':''} <span class="na">${esc(x.f)}</span></td><td>${x.or??na}</td><td class="${df>0?'up':df<0?'down':''}">${df==null?na:(df>0?'+':'')+df}</td><td>${rs(x.r)}</td><td>${x.kc==null?'':fmtP(Math.round(x.kc*10)/10)}</td><td class="na">${x.ro??''}</td></tr>`}return h}
+function detail(r,n){r._gebruikt=new Set();const pt=r.t===0?pendT(r)+restT(r):'',ft=partT(r);return `<tr class="det"><td colspan="${n}"><div class="detbox">${grafiek(r)}${(FP[r.fide]||[]).length&&$('pnaan').checked?`<div class="pnsp">♟ Links naar de partijen van ${esc(r.n)} <button type="button" class="pnt pnp${PNSP.has(r.n)?' uit':''}" data-n="${esc(r.n)}" title="${PNSP.has(r.n)?'links voor deze speler weer tonen':'alle links voor deze speler verbergen'}">♟ ${PNSP.has(r.n)?'uit':'aan'}</button></div>`:''}<table class="res"><thead><tr><th>Tegenstander</th><th>Rating</th><th>Verschil</th><th>Uitslag</th><th>± Elo</th><th>Eigen Elo</th></tr></thead><tbody>${pt}${ft}${andereT(r,r._gebruikt)}</tbody></table></div></td></tr>`}
+
+/* ---------- samenvatting ---------- */
+function stats(list){const R=rows.filter(r=>r.cur!=null);const up=R.filter(r=>r.dlt>0).length,down=R.filter(r=>r.dlt<0).length;const avg=R.length?Math.round(R.reduce((a,r)=>a+r.cur,0)/R.length):'–';
+  const g=rows.reduce((a,r)=>a+r.ng,0),act=rows.filter(r=>r.ng>0).length,pend=rows.reduce((a,r)=>a+r.P.length,0);
+  $('stats').innerHTML=`<span><b>${rows.length}</b> leden</span><span><b>${R.length}</b> met ${TN[rows[0].t]}rating</span><span>gemiddeld <b>${avg}</b></span><span>${mlab(M[rows[0].i0])} – ${mlab(M[rows[0].i1])}: <b class="up">${up}</b> gestegen, <b class="down">${down}</b> gedaald</span><span><b>${g}</b> FIDE-partijen door <b>${act}</b> spelers</span>${rows[0].t===0&&pend?`<span><b>${pend}</b> uitslagen van leden nog te verwerken</span>`:''}`}
+
+for(const id of ['tempo','van','tot'])$(id).onchange=()=>{LS.set(id==='van'?'van3':id,$(id).value);render()};
+$('rated').onchange=()=>{LS.set('rated',$('rated').checked);render()};
+$('pnaan').checked=LS.get('pnaan',true);$('pnaan').onchange=()=>{LS.set('pnaan',$('pnaan').checked);render()};
+$('wijz').onchange=()=>{LS.set('wijz',$('wijz').checked);render()};
+$('q').oninput=render;
+$('all').onclick=e=>{const any=open.size>0;open.clear();if(!any)rows.forEach(r=>(r.G.length||r.P.length)&&open.add(r.n));e.target.textContent=any?'Alles openklappen':'Alles dichtklappen';render()};
+render();
+/* elo.html#Naam_Voornaam opent die speler */
+{const tk=n=>String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'');
+ const h=decodeURIComponent(location.hash.slice(1));const r=h&&E.leden.find(p=>tk(p.n)===h||p.n===h);
+ if(r){open.add(r.n);render();const b=[...document.querySelectorAll('.tg')].find(t=>t.dataset.n===r.n);if(b){const tr=b.closest('tr');tr.scrollIntoView({block:'center'});tr.querySelectorAll('td').forEach(td=>td.style.background='var(--accent-soft)')}}}
+{const btn=$('pdfbtn'),menu=$('pdfmenu'),t0=document.title,K=['pdf-gegevens','pdf-uitleg','pdf-alles'];let tnvOpen=null;
+ const toon=o=>{menu.hidden=!o;btn.setAttribute('aria-expanded',o?'true':'false');if(o)menu.querySelector('button').focus()};
+ btn.onclick=e=>{e.stopPropagation();toon(menu.hidden)};
+ document.addEventListener('click',e=>{if(!menu.hidden&&!menu.contains(e.target))toon(false)});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){toon(false);btn.focus()}});
+ const herstel=()=>{K.forEach(c=>document.body.classList.remove(c));document.title=t0;if(tnvOpen!==null){$('tnv').open=tnvOpen;tnvOpen=null}};
+ menu.addEventListener('click',e=>{const x=e.target.closest('button[data-pdf]');if(!x)return;toon(false);herstel();const k=x.dataset.pdf;
+   document.body.classList.add('pdf-'+k);document.title=t0+(k==='gegevens'?' - lijst':k==='uitleg'?' - uitleg':'');
+   if(k!=='gegevens'){tnvOpen=$('tnv').open;$('tnv').open=true}
+   setTimeout(()=>window.print(),60)});
+ window.addEventListener('afterprint',()=>setTimeout(herstel,50));}
+})();
+</script>
+<script>(function(){if(window.ONLINE)return;var x=document.createElement('script');x.src='../Partijen-naspelen/data-partijen.js';
+x.onload=function(){window.PN_OK=true;document.querySelectorAll('a[data-pn]').forEach(function(a){a.href='../Partijen-naspelen/partijen.html#partij='+encodeURIComponent(a.getAttribute('data-pn'));a.title='partij naspelen in Partijen naspelen (met Stockfish)'})};
+document.head.appendChild(x)})();</script>
+</body>
+</html>

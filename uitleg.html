@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uitleg · KRST Torrewachters</title>
+<style>
+:root{--bg:#f6f7f5;--fg:#1d2420;--sub:#5d6862;--kaart:#fff;--lijn:#dfe4e0;--accent:#2f5d4b;--groen:#2e9e5b;--rood:#c8463d}
+@media (prefers-color-scheme:dark){:root{--bg:#141816;--fg:#e8ece9;--sub:#a3ada7;--kaart:#1d2320;--lijn:#2f3833;--accent:#7fc4a6;--groen:#4cc07c;--rood:#e0675e}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:760px;margin:0 auto;padding:24px 16px 48px}
+a{color:var(--accent)}.terug{font-size:14px;font-weight:600;text-decoration:none}
+h1{margin:8px 0 4px;font-size:28px}.sub{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:28px 0 8px;color:var(--accent)}
+section{background:var(--kaart);border:1px solid var(--lijn);border-radius:12px;padding:4px 18px 10px;margin:14px 0}
+dl{margin:8px 0}dt{font-weight:600;margin-top:10px}dd{margin:2px 0 0;color:var(--sub)}
+.kleur{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+.inhoud{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 6px}
+p{margin:8px 0}
+</style></head><body><div class="w">
+<a class="terug" href="index.html">&larr; Startpagina</a>
+<h1>Uitleg</h1>
+<p class="sub">Wat staat er op deze site, en hoe lees je het? Op de meeste pagina's staat onderaan nog meer uitleg.</p>
+<div class="inhoud"><a href="#algemeen">Algemeen</a><a href="#speler">Per speler</a><a href="#stand">Stand en wat-als</a><a href="#interclub">Interclub</a><a href="#elo">Elo-ratings</a><a href="#verslag">Seizoensverslag</a></div>
+
+<section id="algemeen"><h2>Algemeen</h2>
+<p>De gegevens komen van de KBSB (SWAR-uitslagen van het clubkampioenschap en de interclub), van FIDE (ratings) en van toernooisites zoals chess-results. Ze worden bijgewerkt door de verantwoordelijken van de club, meestal na een clubavond, na de interclub en begin van de maand als FIDE een nieuwe lijst publiceert. Bovenaan elke pagina staat wanneer de gegevens het laatst opgehaald werden.</p>
+<p>Je kunt hier niets veranderen. Wat je instelt (kolommen, filters, een gekozen speler), wordt alleen in je eigen browser onthouden. Klopt er iets niet? Laat het weten aan de verantwoordelijke van de website.</p>
+<p>Een partij met een <b>&#9823;</b> kun je naspelen op lichess.</p>
+</section>
+
+<section id="speler"><h2>Clubkampioenschap en interclub: per speler</h2>
+<p>Kies bovenaan een speler, of klik op een naam in een tabel. Je ziet zijn punten en plaats in het clubkampioenschap, zijn kans op de top 5, zijn volgende partijen (clubkampioenschap, interclub en andere toernooien) en zijn interclubpartijen.</p>
+<dl>
+<dt>Kans (top 5, titel ...)</dt><dd>Geschat door de rest van het kampioenschap 20.000 keer na te spelen met de ratings van de spelers. Het is een kans, geen voorspelling: 70% betekent dat het in 7 van de 10 verlopen lukt. Welke kans er staat, hangt af van wat in de reeks telt (zie hieronder).</dd>
+<dt>Elo (start ...)</dt><dd>De meest recente FIDE-rating, met tussen haakjes de rating bij de start van het toernooi.</dd>
+<dt>Instellingen</dt><dd>Hiermee kies je welke kolommen je ziet. Je verandert er niets mee aan de gegevens.</dd>
+</dl>
+</section>
+
+<section id="stand"><h2>Stand clubkampioenschap en wat-als</h2>
+<p>Per reeks de volledige stand, met de balk van elke speler: <span class="kleur" style="background:var(--groen)"></span>groen groeit van links bij elk gewonnen halfje, <span class="kleur" style="background:var(--rood)"></span>rood groeit van rechts bij elk verloren halfje, wat grijs blijft kan nog gewonnen worden.</p>
+<dl>
+<dt>Wat er telt</dt><dd>Per reeks kan iets anders tellen. In de voorronde is dat de <b>top 5</b> (wie naar de finale gaat). In een finale kan dat de <b>titel</b> zijn, de <b>medailles</b> (goud, zilver, brons), <b>promotie</b> (de eersten stijgen) of <b>degradatie</b> (de laatsten zakken). De kolommen en de stippellijnen volgen wat in die reeks telt.</dd>
+<dt>Max</dt><dd>Punten nu plus alle nog te spelen partijen (en een nog komende bye).</dd>
+<dt>Zeker top 5, zeker kampioen, zeker gered ...</dt><dd>Vanaf die eindscore ben je er wiskundig zeker van (top 5, titel, medaille, promotie, of niet degraderen), wat de andere uitslagen ook worden. Voor wie nog tegen rechtstreekse concurrenten speelt, kan minder volstaan; dat staat dan bij hem.</dd>
+<dt>Waarschijnlijk voldoende</dt><dd>De laagste eindscore waarmee je dat in minstens 95% van de nagespeelde verlopen haalt.</dd>
+<dt>Kleur van de kans</dt><dd>Groen: 75% of meer; zwart: 40 tot 74%; grijs: minder dan 40%; een kans op degradatie staat in het rood. 100% of 0% betekent: in alle of in geen enkele van de nagespeelde verlopen. Of het ook <i>wiskundig</i> zeker is, zie je in de stand aan de kolom ‘Zeker’ (bereikt, of nog … uit …) en aan het label ‘zeker top 5’.</dd>
+<dt>Lichtgroene rij</dt><dd>De speler die je gekozen hebt (alleen op het scherm, niet in de PDF).</dd>
+<dt>Wat als?</dt><dd>Vul zelf uitslagen in van partijen die nog gespeeld moeten worden; stand en kansen rekenen meteen mee. Met <i>alles wissen</i> ben je terug bij de echte stand. Dit blijft in je eigen browser.</dd>
+<dt>Elo &plusmn;</dt><dd>Voorlopige winst of verlies aan FIDE-rating uit de partijen die nog niet op een FIDE-lijst staan, met de laatste FIDE-rating van beide spelers.</dd>
+</dl>
+</section>
+
+<section id="interclub"><h2>Interclub</h2>
+<p>De stand van de reeks van KRST 1 in de nationale interclub, de uitslagen per ronde en de individuele uitslagen van onze spelers, met hun voorlopige Elo-winst of -verlies (K 40 voor jeugdspelers, K 20, of K 10 vanaf 2400). Ook hier kun je met <i>Wat als?</i> zelf uitslagen invullen.</p>
+</section>
+
+<section id="elo"><h2>Elo-ratings en statistieken</h2>
+<dl>
+<dt>Huidig</dt><dd>De rating op de laatste FIDE-lijst (standaard, rapid of blitz, naargelang wat je kiest).</dd>
+<dt>Te verwerken</dt><dd>Partijen die al gespeeld zijn maar nog niet op een FIDE-lijst staan (clubkampioenschap, interclub en andere toernooien van clubleden), met de verwachte winst of het verwachte verlies.</dd>
+<dt>Geschat</dt><dd>De rating die je kunt verwachten op een volgende lijst, als die partijen verwerkt zijn.</dd>
+<dt>&plusmn; periode, hoogste, laagste</dt><dd>Kies bovenaan <i>van</i> en <i>tot</i> (per FIDE-lijst); alle kolommen volgen die periode.</dd>
+<dt>&#9656; voor een naam</dt><dd>Klapt de grafiek en de partijen van die speler open.</dd>
+<dt>Gekoppelde toernooien</dt><dd>Andere toernooien van clubleden die meetellen bij <i>Te verwerken</i>, met hoeveel partijen al op een FIDE-lijst staan.</dd>
+<dt>Statistieken</dt><dd>Ranglijsten (meeste partijen, beste prestatie, grootste stijging ...), mooiste overwinningen en toernooien per seizoen.</dd>
+</dl>
+</section>
+
+<section id="verslag"><h2>Seizoensverslag</h2>
+<p>Kampioenen en eindstanden van het clubkampioenschap, de matchen van de interclubploeg en de Elo van het seizoen, op &eacute;&eacute;n pagina. Wil je het bewaren of afdrukken: onderaan rechts staat een kleine knop <i>Opslaan als PDF</i> (die staat op elke pagina).</p>
+</section>
+</div></body></html>
