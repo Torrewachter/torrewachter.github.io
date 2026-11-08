@@ -67,8 +67,8 @@ tr.top td:first-child{color:var(--gold);font-weight:700}tr.zak td{color:var(--mu
 </div>
 <button type="button" class="pdfbtn" id="pdfbtn" title="Opent het afdrukvenster; kies daar Opslaan als PDF">Opslaan als PDF</button>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-club.js?v=173fcbeb81"></script>
-<script src="data-interclub.js?v=29e00600fe"></script>
+<script src="data-club.js?v=ea4e34051e"></script>
+<script src="data-interclub.js?v=5306996544"></script>
 <script src="verwerk.js?v=abfa9d75fc"></script>
 <script>
 'use strict';
@@ -86,7 +86,7 @@ $('voet').textContent='Gemaakt met de gegevens van '+(V&&V.tijd||'?')+' (SWAR, K
 $('pdfbtn').onclick=()=>window.print();
 // ---------- clubkampioenschap: stand per reeks uit de SWAR-rijen ----------
 {const C=V&&V.club;const el=$('clubIn');
- if(!C||!C.ok){el.innerHTML=(window.ONLINE?'<p class="leeg">Nog geen gegevens van het clubkampioenschap.</p>':'<p class="leeg">Geen gegevens van het clubkampioenschap (Bijwerken clubkampioenschap.bat).</p>')}
+ if(!C||!C.ok){el.innerHTML=(window.ONLINE?'<p class="leeg">Nog geen gegevens van het clubkampioenschap.</p>':'<p class="leeg">Geen gegevens van het clubkampioenschap (Website bijwerken.bat).</p>')}
  else{const NR=v=>v.n||C.rounds,PL=v=>v.played!=null?v.played:C.played;const af=Object.values(C.raw).every(v=>PL(v)>=NR(v));const kamp=[],tab=[];
   /* doel per reeks (instellingen.txt: doel <reeks> = ...); een beker alleen bij een reeks met titel, of als geen enkele reeks een titel heeft */
   const DL=v=>(v.doel&&v.doel.length)?v.doel:[{t:'top',n:5}],metTitel=Object.values(C.raw).some(v=>DL(v).some(z=>z.t==='titel'||z.t==='med'));
@@ -112,7 +112,7 @@ $('pdfbtn').onclick=()=>window.print();
 <p class="sub">Punten uit de SWAR-uitslagen; bij gelijke punten telt de Sonneborn-Berger (SB: de punten van de verslagen tegenstanders plus de helft van die van de remise-tegenstanders), dan het aantal winstpartijen. Forfaits tellen voor de punten (ook die al vooraf ingevuld zijn, bv. tegen een speler die stopte, zoals in SWAR), niet als gespeelde partij.</p>`}}
 // ---------- interclub ----------
 {const I=V&&V.ic;const el=$('icIn');
- if(!I||!I.ok){el.innerHTML=(window.ONLINE?'<p class="leeg">Nog geen interclubgegevens.</p>':'<p class="leeg">Geen interclubgegevens (Bijwerken interclub.bat).</p>')}
+ if(!I||!I.ok){el.innerHTML=(window.ONLINE?'<p class="leeg">Nog geen interclubgegevens.</p>':'<p class="leeg">Geen interclubgegevens (Website bijwerken.bat).</p>')}
  else{const S=I.series;const af=I.ronde>=S.rounds&&S.status.startsWith('na ronde');
   const st=[...I.ploegen].sort((a,b)=>b.mp-a.mp||b.bp-a.bp);const plaats=st.findIndex(t=>t.n===I.team)+1;
   const ind={};for(const g of I.ind){const p=ind[g.speler]??={n:g.speler,g:0,pt:0,ff:0,borden:[],elo:g.elo};if(g.score==='ff'){p.ff++;p.pt+=1;continue}if(g.score==null)continue;p.g++;p.pt+=g.score;p.borden.push(g.bord)}
@@ -142,7 +142,7 @@ function eloDeel(){const E=window.ELO;if(!E||!E.leden)return;
 <div><h3>Meeste partijen</h3>${top([...R].sort((a,b)=>b.n-a.n),x=>[esc(nice(x.p.n))+` <span class="na">${x.t.size} toernooi${x.t.size>1?'en':''}</span>`,x.n])}</div>
 <div><h3>Beste prestatie (minstens 5 partijen)</h3>${top(R.filter(x=>x.pr).sort((a,b)=>b.pr-a.pr),x=>[esc(nice(x.p.n))+` <span class="na">${half(x.pt)}/${x.n}</span>`,x.pr])}</div>
 <div><h3>Meeste Elo gewonnen</h3>${top(R.filter(x=>x.kc>0).sort((a,b)=>b.kc-a.kc),x=>[esc(nice(x.p.n)),'+'+Math.round(x.kc)])}</div></div>`}
-(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=867b3e7799';
+(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=dcb540ef96';
 a.onload=function(){var b=document.createElement('script');b.src='../elo/elo-verwerk.js?v=b6e87b0b86';b.onload=function(){try{eloDeel()}catch(e){}};document.head.appendChild(b)};document.head.appendChild(a)})();
 </script>
 </body>

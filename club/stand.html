@@ -147,10 +147,10 @@ td.de .na,td.de .todo{white-space:normal;display:inline-block;max-width:16ch;tex
 </div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="../elo/data-elo.js?v=867b3e7799"></script>
+<script src="../elo/data-elo.js?v=dcb540ef96"></script>
 <script src="../elo/elo-verwerk.js?v=b6e87b0b86"></script>
-<script src="data-club.js?v=173fcbeb81"></script>
-<script src="data-interclub.js?v=29e00600fe"></script>
+<script src="data-club.js?v=ea4e34051e"></script>
+<script src="data-interclub.js?v=5306996544"></script>
 <script src="verwerk.js?v=abfa9d75fc"></script>
 <script>
 const RAW={
@@ -267,7 +267,7 @@ tabs.innerHTML=ORD(Object.keys(RAW)).map(k=>`<a href="#r${k}">Reeks ${k}</a>`).j
 const WA={};
 const remRounds=key=>{const out={},per=PER(key);RAW[key].r.forEach((x,i)=>{const [a,ea,res,b]=x.split('|');if(res==='-'&&b!=='Bye')(out[Math.floor(i/per)+1]??=[]).push([i,a,b])});return out};
 function waHTML(key){const R=remRounds(key);const rs=Object.keys(R).map(Number);const per=PER(key),PL=PLD(key);const st=WA[key]??={r:rs.includes(PL+1)?PL+1:rs[0],res:{}};if(!rs.length&&!Object.keys(st.res).length)return '';const n=Object.keys(st.res).length;
-  const list=[...(R[st.r]||[]),...Object.keys(st.res).map(Number).filter(i=>Math.floor(i/per)+1===st.r).map(i=>{const [a,,,b]=RAW[key].r[i].split('|');return [i,a,b]})].sort((x,y)=>((y[1]===HL()||y[2]===HL())-(x[1]===HL()||x[2]===HL()))||x[0]-y[0]);
+  const list=[...(R[st.r]||[]).filter(([i])=>st.res[i]==null),...Object.keys(st.res).map(Number).filter(i=>Math.floor(i/per)+1===st.r).map(i=>{const [a,,,b]=RAW[key].r[i].split('|');return [i,a,b]})].sort((x,y)=>((y[1]===HL()||y[2]===HL())-(x[1]===HL()||x[2]===HL()))||x[0]-y[0]);
   const opt=v=>['','1-0','½-½','0-1'].map(o=>`<option value="${o}"${o===(v||'')?' selected':''}>${o||'nog open'}</option>`).join('');
   const rounds=[...new Set([...rs,...Object.keys(st.res).map(i=>Math.floor(i/per)+1)])].sort((a,b)=>a-b);
   return `<details class="wa"${st.open||n?' open':''}><summary>Wat als? <span>vul zelf uitslagen in en zie meteen hoe de kansen verschuiven</span></summary>

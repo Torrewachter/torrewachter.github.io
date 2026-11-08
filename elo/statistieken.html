@@ -95,7 +95,7 @@ tbody tr:hover td{background:var(--accent-soft)}
 </div>
 <button type="button" class="pdfbtn" id="pdfbtn" title="Opent het afdrukvenster; kies daar Opslaan als PDF">Opslaan als PDF</button>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=867b3e7799"></script>
+<script src="data-elo.js?v=dcb540ef96"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b6e87b0b86"></script>
 <script>
@@ -111,7 +111,7 @@ const cls=x=>x>0?'up':x<0?'down':'na';
 const E=window.ELO;
 const MND=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
 const dp=p=>p>=1?800:p<=0?-800:Math.max(-800,Math.min(800,Math.round(-400*Math.log10(1/p-1))));
-if(!E){document.querySelector('.wrap').insertAdjacentHTML('beforeend',(window.ONLINE?'<p>Er zijn nog geen gegevens opgeladen.</p>':'<p>Geen gegevens: zet data-elo.js in deze map (Elo bijwerken.bat).</p>'))}
+if(!E){document.querySelector('.wrap').insertAdjacentHTML('beforeend',(window.ONLINE?'<p>Er zijn nog geen gegevens opgeladen.</p>':'<p>Geen gegevens: zet data-elo.js in deze map (Website bijwerken.bat).</p>'))}
 else{
 $('bron').textContent=(window.ONLINE?'Bijgewerkt op ':'Gegevens van ')+E.tijd+' · FIDE-lijsten tot '+MND[+E.laatste.slice(5)-1]+' '+E.laatste.slice(0,4)+' · '+E.leden.length+' leden';
 // ---------- alle partijen in één lijst ----------
