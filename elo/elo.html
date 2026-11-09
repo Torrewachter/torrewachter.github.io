@@ -123,6 +123,7 @@ table.res tr.kind td{text-align:left;font-family:var(--display);font-size:16px;p
 .tnv .opm{color:var(--down)}
 .tnv p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:100ch}
 .tnv .sp{color:var(--muted)}
+a.spn{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}a.spn:hover{color:var(--accent)}
 </style>
 <style>html:not(.online) .alleenonline{display:none!important}html.online .pdfbtn{background:transparent!important;color:inherit!important;border:1px solid rgba(128,128,128,.45)!important;box-shadow:none!important;font-size:12px!important;font-weight:500!important;padding:4px 10px!important;opacity:.5}html.online .pdfbtn:hover,html.online .pdfbtn[aria-expanded="true"]{opacity:1}</style>
 <script>if(/^https?:$/.test(location.protocol))document.documentElement.classList.add('online')</script>
@@ -134,7 +135,7 @@ table.res tr.kind td{text-align:left;font-family:var(--display);font-size:16px;p
   <h1>Elo Torrewachters</h1>
   <p class="sub" id="sub">FIDE-ratings van alle leden per maandlijst, hun FIDE-partijen en de nog te verwerken partijen van het clubkampioenschap en de interclub. Klik op een kolomkop om te sorteren, sleep een kolomkop om de volgorde te wijzigen, of kies <b>Kolommen</b>.</p>
   <p class="bron" id="bron"></p>
-  <p class="bron stl"><a href="statistieken.html" style="color:var(--accent);font-weight:600;text-decoration:none">📊 Clubstatistieken</a> · ranglijsten, mooiste overwinningen en toernooien per seizoen · <a href="../club/index.html" style="color:var(--accent);font-weight:600;text-decoration:none">♜ Clubkampioenschap en interclub</a><span class="alleenonline"> · <a href="../index.html" style="color:var(--accent);font-weight:600;text-decoration:none">← Startpagina</a></span></p>
+  <p class="bron stl"><a href="speler.html" style="color:var(--accent);font-weight:600;text-decoration:none">👤 Spelers</a> · één pagina per speler · <a href="statistieken.html" style="color:var(--accent);font-weight:600;text-decoration:none">📊 Clubstatistieken</a> · ranglijsten, mooiste overwinningen en toernooien per seizoen · <a href="../club/index.html" style="color:var(--accent);font-weight:600;text-decoration:none">♜ Clubkampioenschap en interclub</a><span class="alleenonline"> · <a href="../index.html" style="color:var(--accent);font-weight:600;text-decoration:none">← Startpagina</a></span></p>
 </header>
 <details class="tnv" id="tnv" hidden><summary id="tnvk">Gekoppelde toernooien</summary><div id="tnvi"></div></details>
 <div class="stats" id="stats"></div>
@@ -173,7 +174,7 @@ table.res tr.kind td{text-align:left;font-family:var(--display);font-size:16px;p
   <small>De lijst komt in de PDF zoals ze nu op het scherm staat (periode, tempo, filters, opengeklapte spelers). Kies in het afdrukvenster <i>Opslaan als PDF</i>.</small>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=dcb540ef96"></script>
+<script src="data-elo.js?v=64a87827c3"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b6e87b0b86"></script>
 <script>
@@ -248,7 +249,7 @@ const spark=r=>{const s=r.s[r.t].slice(r.i0,r.i1+1);const v=s.filter(x=>x!=null)
   let d='';s.forEach((x,i)=>{if(x==null)return;d+=(d?'L':'M')+sx(i).toFixed(1)+' '+sy(x).toFixed(1)});const last=s.length-1;
   return `<svg class="spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-label="verloop van ${mn} tot ${mx}"><path d="${d}" fill="none" stroke="var(--l${r.t})" stroke-width="1.6"/>${s[last]!=null?`<circle cx="${sx(last)}" cy="${sy(s[last])}" r="2.4" fill="var(--l${r.t})"/>`:''}</svg>`};
 const COLS=[
- {k:'n',lab:'Speler',cls:'name',txt:true,vast:true,f:r=>`${(r.G.length||r.P.length||r.heeft||FP[r.fide])?`<button class="tg" data-n="${esc(r.n)}" aria-expanded="${open.has(r.n)}" aria-label="details">${open.has(r.n)?'▾':'▸'}</button>`:'<span class="tg0"></span>'}${esc(r.n)}${r.fx?`<span class="star" title="Buitenland: ${esc(r.fx)}"> *</span>`:''}`},
+ {k:'n',lab:'Speler',cls:'name',txt:true,vast:true,f:r=>`${(r.G.length||r.P.length||r.heeft||FP[r.fide])?`<button class="tg" data-n="${esc(r.n)}" aria-expanded="${open.has(r.n)}" aria-label="details">${open.has(r.n)?'▾':'▸'}</button>`:'<span class="tg0"></span>'}<a class="spn" href="speler.html#${esc(String(r.n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,''))}" title="spelerspagina: Elo, clubkampioenschap, interclub en toernooien">${esc(r.n)}</a>${r.fx?`<span class="star" title="Buitenland: ${esc(r.fx)}"> *</span>`:''}`},
  {k:'age',lab:'Lft.',f:r=>r.age??na},
  {k:'by',lab:'Geboortejaar',uit:true,f:r=>r.by||na},
  {k:'fide',lab:'FIDE-id',uit:true,f:r=>r.fide?`<a class="lk" href="https://ratings.fide.com/profile/${r.fide}" target="_blank" rel="noopener">${r.fide}</a>`:na},

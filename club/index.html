@@ -126,7 +126,7 @@ input:focus-visible,.cfgbtn button:focus-visible,summary:focus-visible{outline:2
   <p class="sub">Het clubkampioenschap en KRST 1 in de nationale interclub. Kies een speler, of klik op een naam in de tabellen, om zijn punten, kansen en interclubpartijen te zien.</p>
 </header>
 
-<div class="links toplinks"><a class="alleenonline" href="../index.html">← Startpagina</a><a href="https://lichess.org/study/GF8fIfKW" target="_blank" rel="noopener" title="studie KRST YouTube op lichess (internet nodig)">Partijen op lichess</a><a class="beheer" href="opstelling.html" title="wie kan spelen, voorstel van opstelling volgens de KBSB-regels">Opstelling interclub</a><a href="seizoensverslag.html" title="kampioenen, standen, interclub en Elo van het seizoen, klaar om als PDF te bewaren">Seizoensverslag</a><a class="pnTeg beheer" href="../Partijen-naspelen/tegenstander.html" hidden title="openingen en partijen van de spelers van de volgende tegenstander (map Partijen-naspelen)">Tegenstander voorbereiden</a><a id="ckLink" href="stand.html">Volledige stand en wat-als</a><a href="../elo/elo.html" title="FIDE-ratings van alle leden, partijen en nog te verwerken">Elo-ratings</a></div>
+<div class="links toplinks"><a class="alleenonline" href="../index.html">← Startpagina</a><a href="https://lichess.org/study/GF8fIfKW" target="_blank" rel="noopener" title="studie KRST YouTube op lichess (internet nodig)">Partijen op lichess</a><a class="beheer" href="opstelling.html" title="wie kan spelen, voorstel van opstelling volgens de KBSB-regels">Opstelling interclub</a><a href="seizoensverslag.html" title="kampioenen, standen, interclub en Elo van het seizoen, klaar om als PDF te bewaren">Seizoensverslag</a><a class="pnTeg beheer" href="../Partijen-naspelen/tegenstander.html" hidden title="openingen en partijen van de spelers van de volgende tegenstander (map Partijen-naspelen)">Tegenstander voorbereiden</a><a id="ckLink" href="stand.html">Volledige stand en wat-als</a><a href="../elo/elo.html" title="FIDE-ratings van alle leden, partijen en nog te verwerken">Elo-ratings</a><a href="../elo/speler.html" title="één pagina per speler: Elo, clubkampioenschap, interclub en toernooien">Spelers</a></div>
 
 <div class="pickrow"><label for="pick">Speler</label><select id="pick"><option value="">kies een speler…</option></select><span class="na" id="info">gegevens laden…</span><p class="bronlijn" id="bron"></p></div>
 
@@ -164,10 +164,10 @@ input:focus-visible,.cfgbtn button:focus-visible,summary:focus-visible{outline:2
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
 <script src="chess.js?v=1a6803b787"></script>
-<script src="data-club.js?v=ea4e34051e"></script>
-<script src="data-interclub.js?v=5306996544"></script>
+<script src="data-club.js?v=a37fb54338"></script>
+<script src="data-interclub.js?v=64c1431b55"></script>
 <script>try{if(String(((window.BRON_IC||{}).instellingen||{}).interclubbeheer||'').toLowerCase()==='nee')document.documentElement.classList.add('beperkt')}catch(e){}</script>
-<script src="data-partijen.js?v=84b18f49d9"></script>
+<script src="data-partijen.js?v=dd12da5362"></script>
 <script src="verwerk.js?v=abfa9d75fc"></script>
 <script>
 const pc=v=>v>=1?'100%':v<=0?'0%':v>.99?'>99%':v<.01?'<1%':v<.05?'<5%':v>.95?'>95%':Math.round(v*20)*5+'%';
@@ -228,7 +228,7 @@ function renderCard(){const box=$('pcard');if(!SEL){box.hidden=true;return}box.h
   const last=hist[hist.length-1];const games=(latest(IC)?.ind||[]).filter(g=>g.speler===SEL);
   const icSc=games.reduce((a,g)=>a+(g.score==='ff'?1:g.score),0);const cg=clubGames(SEL);const ag=agenda(SEL,cg);const ER=eloClub(SEL,cg,last&&RNU(SEL,last.p.elo));
   const resCls=r=>r==='1'||r==='1 (bye)'?'good':r==='0'||r==='forfait'?'bad':'';
-  box.innerHTML=`<div class="card"><span class="name">${esc(nice(SEL))}</span>
+  box.innerHTML=`<div class="card"><span class="name">${esc(nice(SEL))}</span><a href="../elo/speler.html#${String(SEL).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'')}" style="font-weight:600;font-size:14px">👤 Alles over ${esc(nice(SEL))} op de spelerspagina →</a>
 <div class="nums">${last?`<div class="num"><b>${fmt(last.p.pts)}</b><span>punten in reeks ${esc(last.k)}</span></div><div class="num"><b class="${(ckP(SEL)?.top??last.p.p5)>=.75?'good':''}">${pc(ckP(SEL)?.top??last.p.p5)}</b><span>kans op ${(ckP(SEL)&&ckP(SEL).L&&ckP(SEL).L.doel)?ckP(SEL).L.doel.txt:'top '+CFG.ckTop}</span></div>${RNU(SEL,last.p.elo)?`<div class="num"><b>${RNU(SEL,last.p.elo)}</b><span>Elo${RNU(SEL,last.p.elo)!==last.p.elo&&last.p.elo?' (start '+last.p.elo+')':''}</span></div>`:''}${ER&&ER.n?`<div class="num"><b>${f1(ER.min)} … ${f1(ER.max)}</b><span>Elo nog te winnen of te verliezen in ${ER.n} clubpartij${ER.n>1?'en':''}</span></div>`:''}`:''}
 ${games.length?`<div class="num"><b>${fmt(icSc)}/${games.length}</b><span>interclub voor KRST 1</span></div>`:''}</div>
 <details class="fold"><summary>Volgende partijen <span>${(()=>{const gm=ag.filter(a=>!a.club);return gm.length+' partij'+(gm.length===1?'':'en')+(gm.length?' · eerstvolgende: '+(gm[0].d?dlong(gm[0].d):'in te halen')+', '+(gm[0].sum||gm[0].what)+(()=>{if(gm[0].sum&&gm[0].sum.startsWith('clubkampioenschap'))return '';const k=gm.find(x=>x.sum&&x.sum.startsWith('clubkampioenschap'));return k?' · eerste clubpartij: '+(k.d?dlong(k.d):'in te halen')+', '+k.sum.replace(/^clubkampioenschap /,''):''})():'')})()}</span></summary>
@@ -452,7 +452,7 @@ start(EMBED);bronLijn();
 <script>(function(){if(window.ONLINE)return;var x=document.createElement('script');x.src='../Partijen-naspelen/data-partijen.js';
 x.onload=function(){window.PN_OK=true;document.querySelectorAll('a[data-pn]').forEach(function(a){a.href='../Partijen-naspelen/partijen.html#partij='+encodeURIComponent(a.getAttribute('data-pn'));a.title='partij naspelen in Partijen naspelen (met Stockfish)'});document.querySelectorAll('.pnTeg').forEach(function(a){a.hidden=false})};
 document.head.appendChild(x)})();</script>
-<script>(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=dcb540ef96';
+<script>(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=64a87827c3';
 a.onload=function(){var b=document.createElement('script');b.src='../elo/elo-verwerk.js?v=b6e87b0b86';b.onload=function(){try{var K={};(window.ELO&&ELO.leden||[]).forEach(function(p){var L=p.games&&p.games[0];if(L&&L.length&&L[L.length-1].K)K[p.n.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()]=L[L.length-1].K});window.KFIDE=K;if(typeof renderCard==='function')renderCard()}catch(e){}};document.head.appendChild(b)};
 document.head.appendChild(a)})();</script>
 </body>

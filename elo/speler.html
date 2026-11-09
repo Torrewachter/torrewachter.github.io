@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spelers Torrewachters</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Eén pagina per speler: speler.html#Familienaam_Voornaam. Zonder # de lijst van alle spelers. */
+:root{
+  --bg:#f3f5f2;--surface:#fff;--fg:#1b221e;--muted:#67716b;--line:#dbe1dc;--soft:#eef3ef;
+  --accent:#2f5d4b;--up:#2e9b57;--down:#d0453a;--warn:#a86a00;
+  --l0:#2f5d4b;--l1:#c47a12;--l2:#5a62c9;
+  --display:"Saira Condensed","Arial Narrow",system-ui,sans-serif;--body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121715;--surface:#1a201d;--fg:#e6ece8;--muted:#97a29b;--line:#2b3430;--soft:#1f2925;--accent:#8fc5ad;--up:#4cc27a;--down:#ef6d62;--warn:#f0b45a;--l0:#8fc5ad;--l1:#f0b45a;--l2:#9aa2ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121715;--surface:#1a201d;--fg:#e6ece8;--muted:#97a29b;--line:#2b3430;--soft:#1f2925;--accent:#8fc5ad;--up:#4cc27a;--down:#ef6d62;--warn:#f0b45a;--l0:#8fc5ad;--l1:#f0b45a;--l2:#9aa2ff;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 var(--body)}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:22px}
+a{color:var(--accent)}
+.top{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px}
+.top a{font-weight:600;text-decoration:none}
+header{display:flex;flex-direction:column;gap:4px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--display);font-size:clamp(32px,7vw,50px);line-height:1;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-size:26px;line-height:1.1;margin:0}
+h3{font-size:16px;margin:0}
+.sub,.na{color:var(--muted)}.sub{margin:0;max-width:72ch}
+.small{font-size:13px}
+section{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px 20px}
+.num b{font-family:var(--display);font-size:32px;line-height:1;font-variant-numeric:tabular-nums;display:block}
+.num span{display:block;font-size:13px;color:var(--muted);line-height:1.3}
+.up{color:var(--up)}.down{color:var(--down)}.warn{color:var(--warn)}
+.board{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+th,td{padding:6px 8px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--surface)}
+tr:last-child td{border-bottom:0}
+.l{text-align:left}
+td.tw{white-space:normal;min-width:180px}
+tr.tot td{font-weight:700;background:var(--soft)}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--soft);color:var(--accent);margin-left:6px;vertical-align:middle}
+.chip.out{color:var(--down)}
+details.fold{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+details.fold>summary{cursor:pointer;padding:10px 14px;font-weight:700;list-style-position:inside}
+details.fold>summary span{font-weight:400;color:var(--muted);font-size:14px}
+details.fold>.in{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+details.fold .board{border-radius:6px}
+.grafiek .lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
+.grafiek .lg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.grafiek svg{display:block;max-width:100%;height:auto}
+ul.agenda{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ul.agenda li{display:grid;grid-template-columns:110px 1fr;gap:2px 12px;padding:8px 0;border-bottom:1px solid var(--line)}
+ul.agenda li:last-child{border-bottom:0}
+ul.agenda .when{font-weight:700;font-variant-numeric:tabular-nums}
+ul.agenda .what span{display:block;color:var(--muted);font-size:14px}
+ul.agenda em{display:block;color:var(--warn);font-style:normal;font-size:13px}
+@media (max-width:520px){.hm{display:none}td.l{white-space:normal}td.nw{white-space:nowrap}.card{padding:12px}}
+@media (max-width:520px){ul.agenda li{grid-template-columns:1fr}}
+.plk{text-decoration:none}
+.pick{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.pick input,.pick select{font:inherit;padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);max-width:100%;min-width:0}
+.pick input{width:240px}
+.lijst{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.lijst a{display:flex;flex-direction:column;gap:1px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 12px;text-decoration:none;color:var(--fg)}
+.lijst a:hover,.lijst a:focus-visible{border-color:var(--accent);outline:none}
+.lijst a b{font-weight:600}
+.lijst a span{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.num b.sm{font-size:26px;white-space:nowrap}
+.leeg{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--muted)}
+.notes{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.notes p{margin:0;max-width:100ch}
+html:not(.online) .alleenonline{display:none!important}
+@media print{.top,.pick,.notes{display:none}details.fold{border:0}details.fold>summary{list-style:none}body{background:#fff}}
+</style>
+<script>if(/^https?:$/.test(location.protocol))document.documentElement.classList.add('online')</script>
+</head>
+<body>
+<div class="wrap">
+<nav class="top"><a class="alleenonline" href="../index.html">← Startpagina</a><a href="speler.html" id="alleL">Alle spelers</a><a href="elo.html" id="eloL">Elo-ratings</a><a href="../club/stand.html" id="standL">Stand clubkampioenschap</a><a href="../club/interclub.html">Interclub</a></nav>
+<div id="app"><p class="na">laden…</p></div>
+<div class="notes" id="notes"></div>
+</div>
+<script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
+<script src="data-elo.js?v=64a87827c3"></script>
+<script src="partijen-elo.js?v=e2087a950e"></script>
+<script src="elo-verwerk.js?v=b6e87b0b86"></script>
+<script src="../club/data-club.js?v=a37fb54338"></script>
+<script src="../club/data-interclub.js?v=64c1431b55"></script>
+<script src="../club/data-partijen.js?v=dd12da5362"></script>
+<script src="../club/verwerk.js?v=abfa9d75fc"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const E=window.ELO,V=window.VERWERKT;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nrm=t=>String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+const tok=n=>String(n).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'');
+const nice=n=>{const [l,f]=String(n).split(', ');return f?f+' '+l:n};
+const fmt=v=>String(v).replace('.5','½').replace(/^0½$/,'½');
+const f1=v=>(v>0?'+':v<0?'−':'')+Math.abs(Math.round(v*10)/10).toFixed(1).replace('.',',');
+const MN=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const mlab=ym=>MN[+ym.slice(5,7)-1]+' '+ym.slice(0,4);const mkort=ym=>MN[+ym.slice(5,7)-1]+" '"+ym.slice(2,4);
+const WD=['zo','ma','di','wo','do','vr','za'];
+const dlong=d=>{const t=new Date(d+'T12:00:00');return WD[t.getDay()]+' '+t.getDate()+' '+MN[t.getMonth()]+(d.slice(0,4)!==String(new Date().getFullYear())?' '+d.slice(0,4):'')};
+const dkort=d=>d?(+d.slice(8,10))+' '+MN[+d.slice(5,7)-1]:'';
+const TN=['standaard','rapid','blitz'];
+const TODAY=(E&&E.vandaag)||(V&&V.datum)||new Date().toISOString().slice(0,10);
+const anm=n=>{const w=String(n||'').split(',')[0].normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().split(/[^a-z]+/).filter(Boolean);const k=w.filter(x=>!/^(de|van|der|den|le|la|du|von|vande|ter|da|di|del|dos|el|al)$/.test(x));return k[0]||w.join('')};
+const rs=v=>v===1?'<b class="up">1</b>':v===0?'<b class="down">0</b>':v==='ff'?'<b class="up">1F</b>':'<b>½</b>';
+
+if(!E&&!(V&&V.club&&V.club.ok)){$('app').innerHTML='<div class="leeg">'+(window.ONLINE?'Er zijn nog geen gegevens opgeladen. Probeer het later opnieuw.':'Er zijn nog geen gegevens. Dubbelklik op <b>Website bijwerken.bat</b> en open daarna deze pagina opnieuw.')+'</div>';return}
+
+/* ---------- wie heeft een pagina: de leden (FRBE-ledenlijst), plus wie in het clubkampioenschap of voor KRST speelt ---------- */
+const LEDEN=(E&&E.leden)||[];const byN=new Map(LEDEN.map(m=>[nrm(m.n),m]));
+const SP=new Map();const add=(n,w)=>{if(!n||n==='Bye')return;const k=nrm(n);let s=SP.get(k);if(!s){const m=byN.get(k)||null;s={n:m?m.n:n,m,club:[],ic:false};SP.set(k,s)}if(w&&!s.club.includes(w))s.club.push(w)};
+LEDEN.forEach(m=>add(m.n));
+const RAW=(V&&V.club&&V.club.ok&&V.club.raw)||{};
+const RK=Object.keys(RAW).map((k,i)=>[k,i]).sort((a,b)=>{const da=((RAW[a[0]]||{}).rondes||{})[1]||'',db=((RAW[b[0]]||{}).rondes||{})[1]||'';return da<db?-1:da>db?1:a[1]-b[1]}).map(x=>x[0]);
+for(const k of RK)for(const r of RAW[k].r){const s=r.split('|');add(s[0],k);add(s[3],k)}
+const IC=(V&&V.ic&&V.ic.ok)?V.ic:null;
+if(IC){(IC.spelers||[]).forEach(n=>{add(n);SP.get(nrm(n)).ic=true});(IC.ind||[]).forEach(g=>{add(g.speler);SP.get(nrm(g.speler)).ic=true})}
+const spOf=n=>SP.get(nrm(n))||null;
+const spLink=(n,txt)=>{const s=spOf(n);return s?`<a href="#${tok(s.n)}">${esc(txt??nice(n))}</a>`:esc(txt??nice(n))};
+const M=(E&&E.maanden)||[];
+const curStd=s=>s&&s.m&&M.length?s.m.s[0][M.length-1]:null;
+
+/* ---------- clubkampioenschap: dezelfde berekening als de stand (stand.html) ---------- */
+const BY=Object.assign({},(V&&V.club&&V.club.by)||{});const K40=new Set((V&&V.club&&V.club.k40)||[]);
+const SZN=+(((window.BRON_CLUB||{}).instellingen||{}).seizoen)||(E&&E.seizoen)||+TODAY.slice(0,4);
+const AGEB=n=>{const y=BY[n];if(!y)return 0;const a=SZN-y;return a<12?0:a<=17?75:a<30?Math.round(75*(30-a)/13):a>50?Math.round(-2.75*(a-50)):0};
+const Ex=(a,b)=>1/(1+10**(Math.max(-400,Math.min(400,b-a))/400));
+const PLAYED=(V&&V.club&&V.club.played)||0,ROUNDS=(V&&V.club&&V.club.rounds)||9;
+const NUR={};((V&&V.elo&&V.elo.leden)||[]).forEach(m=>NUR[nrm(m.n)]=m.fr||0);
+const NUOF=(n,e)=>{if(E&&E.rNu){const r=E.rNu(n,'',0);if(r)return r}return NUR[nrm(n)]||e};
+const TOT=((window.BRON_CLUB||{}).instellingen||{})['elo verwerkt tot']||'';const RDAT=(V&&V.club&&V.club.rondes)||{};
+const VERW=(rd,a,b,r,key)=>{const RD=(key&&RAW[key]&&RAW[key].rondes)||RDAT;return !!(TOT&&RD[rd]&&RD[rd]<=TOT)||!!(E&&E.verwerkt&&RD[rd]&&E.verwerkt(a,b,RD[rd],r))};
+const PER=k=>(RAW[k]&&RAW[k].per)||5,PLD=k=>(RAW[k]&&RAW[k].played!=null)?RAW[k].played:PLAYED,NR=k=>(RAW[k]&&RAW[k].n)||ROUNDS;
+function build(key){
+  const per=PER(key),PL=PLD(key);const rows=RAW[key].r.map((s,i)=>[Math.floor(i/per)+1,...s.split('|')]);
+  const cnt={};rows.forEach(([rd,a,ea,res,b])=>{if(b==='Bye')return;for(const n of [a,b]){const c=cnt[n]??={all:0,ff:0};c.all++;if(res==='0ff-0ff')c.ff++}});
+  const gone=new Set(Object.keys(cnt).filter(n=>cnt[n].ff===cnt[n].all));
+  const REM=[];const P={};const get=(n,e)=>P[n]??=(P[n]={n,elo:NUOF(n,+e||0),sw:+e||0,de:0,rg:0,rp:0,rs:0,rr:0,w:0,l:0,f:0,open:0,bye:0,fb:0,wins:0,games:0});
+  rows.forEach(([rd,a,ea,res,b,eb])=>{if(gone.has(a)||gone.has(b))return;const A=get(a,ea);
+    if(b==='Bye'){if(rd<=PL){A.w+=2;A.bye++}else A.fb++;return}
+    const B=get(b,eb);
+    if(res==='-'){REM.push([a,b]);A.open++;B.open++;if(!A.elo&&B.elo)A.rr++;if(!B.elo&&A.elo)B.rr++;return}
+    if(res==='0ff-0ff'){A.f+=2;B.f+=2;return}
+    const sa={'1-0':2,'0-1':0,'½-½':1}[res];A.w+=sa;A.l+=2-sa;B.w+=2-sa;B.l+=sa;A.games++;B.games++;if(!A.elo&&B.elo){A.rp++;A.rs+=sa/2}if(!B.elo&&A.elo){B.rp++;B.rs+=(2-sa)/2}if(A.elo&&B.elo){const ka=K40.has(a)?40:20,kb=K40.has(b)?40:20;if(!VERW(rd,a,b,sa/2,key)){A.de+=ka*(sa/2-Ex(A.elo,B.elo));A.rg++}if(!VERW(rd,b,a,1-sa/2,key)){B.de+=kb*((2-sa)/2-Ex(B.elo,A.elo));B.rg++}}if(sa===2)A.wins++;if(sa===0)B.wins++});
+  const L=Object.values(P).map(p=>({...p,pts:p.w/2,max:(p.w+2*p.open+2*p.fb)/2}));
+  L.sort((x,y)=>y.pts-x.pts||y.wins-x.wins||y.max-x.max||x.n.localeCompare(y.n,'nl'));
+  L.gone=[...gone];L.rem=REM;return L}
+function maxflow(n,edges,s,t){const g=Array.from({length:n},()=>[]);const E2=[];for(const [u,v,c] of edges){g[u].push(E2.length);E2.push([v,c]);g[v].push(E2.length);E2.push([u,0])}
+  let f=0;for(;;){const lv=new Array(n).fill(-1);lv[s]=0;const q=[s];for(let i=0;i<q.length;i++){const u=q[i];for(const id of g[u]){const [v,c]=E2[id];if(c>0&&lv[v]<0){lv[v]=lv[u]+1;q.push(v)}}}if(lv[t]<0)return f;
+    const it=new Array(n).fill(0);const dfs=(u,fl)=>{if(u===t)return fl;for(;it[u]<g[u].length;it[u]++){const id=g[u][it[u]],[v,c]=E2[id];if(c>0&&lv[v]===lv[u]+1){const d=dfs(v,Math.min(fl,c));if(d>0){E2[id][1]-=d;E2[id^1][1]+=d;return d}}}return 0};
+    let d;while((d=dfs(s,1e9))>0)f+=d}}
+function feasible(L,p,S,T){const idx=new Map(L.map((q,i)=>[q.n,i]));const n0=L.length;const src=n0,snk=n0+1;let id=n0+2;const ed=[];let need=0;
+  const base=q=>q.w+2*q.fb;
+  for(const q of T){const r=Math.max(0,S-base(q));need+=r;ed.push([idx.get(q.n),snk,r])}
+  const pg=L.rem.filter(([a,b])=>a===p.n||b===p.n);const giveaway=2*pg.length-(S-base(p));if(giveaway<0)return false;
+  const hub=id++;ed.push([src,hub,giveaway]);
+  for(const [a,b] of L.rem){const gnode=id++;if(a===p.n||b===p.n){const o=a===p.n?b:a;ed.push([hub,gnode,2]);ed.push([gnode,idx.get(o),2])}else{ed.push([src,gnode,2]);ed.push([gnode,idx.get(a),2]);ed.push([gnode,idx.get(b),2])}}
+  return maxflow(id,ed,src,snk)>=need}
+function combos(arr,k){const out=[];const rec=(st,acc)=>{if(acc.length===k){out.push(acc.slice());return}for(let i=st;i<arr.length;i++){acc.push(arr[i]);rec(i+1,acc);acc.pop()}};rec(0,[]);return out}
+function safeFrom(L,p,K=5){const others=L.filter(q=>q!==p);if(others.length<K)return p.w+2*p.fb;if(K<=0)return null;const sets=combos(others,K);const lo=p.w+2*p.fb,hi=p.w+2*p.fb+2*p.open;let best=null;
+  for(let S=hi;S>=lo;S--){if(sets.some(T=>feasible(L,p,S,T)))break;best=S}return best}
+function chances(L,KS=[5],N=20000){let seed=12345;const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+  const est=p=>{if(p.elo)return p.elo;const n=p.games||0;const frac=n?(p.w-2*p.bye)/(2*n):.5;return Math.round(1400+400*(2*frac-1)*n/(n+3))};
+  const LAM=0.9,R=L.map(p=>est(p)+AGEB(p.n)),idx=new Map(L.map((p,i)=>[p.n,i]));
+  const tf=L.reduce((a,p)=>a+p.f/2,0),tg=L.reduce((a,p)=>a+p.games+p.f/2,0),GF=Math.min(0.2,(tf+1)/(tg+10));
+  const pf=L.map(p=>(p.f/2+2*GF)/(p.games+p.f/2+2));
+  const W=1600,EW=new Float64Array(2*W+1),ED=new Float64Array(2*W+1);for(let d=-W;d<=W;d++){const e=1/(1+10**(d/400)),dr=0.30*(1-Math.abs(2*e-1))+0.05;EW[d+W]=Math.max(0,e-dr/2);ED[d+W]=Math.min(1,e+dr/2)}
+  const G=L.rem.map(([a,b])=>[idx.get(a),idx.get(b)]);
+  const base=L.map(p=>p.w+2*p.fb),wins0=L.map(p=>p.wins),CNT=KS.map(()=>new Array(L.length).fill(0)),POS=[0,1,2].map(()=>new Array(L.length).fill(0)),fm=new Array(L.length);
+  const pts=new Array(L.length),wn=new Array(L.length),ord=L.map((_,i)=>i);
+  for(let k=0;k<N;k++){for(let i=0;i<L.length;i++){pts[i]=base[i];wn[i]=wins0[i];fm[i]=(Math.min(2,rnd()*3|0)-1)*50}
+    for(const [i,j] of G){if(rnd()<pf[i]||rnd()<pf[j])continue;let d=Math.round(LAM*(R[j]-R[i])-(fm[i]-fm[j]));d=d<-W?-W:d>W?W:d;const r=rnd();if(r<EW[d+W]){pts[i]+=2;wn[i]++}else if(r<ED[d+W]){pts[i]++;pts[j]++}else{pts[j]+=2;wn[j]++}}
+    const tb=L.map(()=>rnd());ord.sort((x,y)=>pts[y]-pts[x]||wn[y]-wn[x]||tb[y]-tb[x]);for(let r=0;r<ord.length;r++){const i=ord[r];if(r<3)POS[r][i]++;for(let q=0;q<KS.length;q++)if(r<KS[q])CNT[q][i]++}}
+  L.forEach((p,i)=>{p.chK={};KS.forEach((K,q)=>p.chK[K]=CNT[q][i]/N);p.pos=POS.map(a=>a[i]/N)})}
+function zones(key,n){const D=(RAW[key]&&RAW[key].doel)||[{t:'top',n:5}];return D.map(z=>{const k=z.t==='zakken'?Math.max(0,n-z.n):Math.min(z.n,n);
+  const L={top:{kans:'kans op de top '+z.n,sure:'zeker top '+z.n,out:'buiten top '+z.n,need:'zeker top '+z.n},
+    titel:{kans:'kans op de titel',sure:'zeker kampioen',out:'',need:'zeker kampioen'},
+    med:{kans:'kans op een medaille',sure:'zeker een medaille',out:'',need:'zeker een medaille'},
+    stijgen:{kans:'kans op promotie',sure:'promoveert',out:'geen promotie',need:'zeker promotie'},
+    zakken:{kans:'kans op degradatie',sure:'gered',out:'degradeert',need:'zeker gered'}}[z.t];
+  return {...z,k,...L}})}
+const pct=v=>v>=1?'100%':v<=0?'0%':v>.99?'>99%':v<.01?'<1%':v<.05?'<5%':v>.95?'>95%':Math.round(v*20)*5+'%';
+const CACHE={};
+function reeks(key){if(CACHE[key])return CACHE[key];const L=build(key),n=L.length,Z=zones(key,n);const KS=[...new Set(Z.map(z=>z.k))];chances(L,KS);L.thZ={};
+  for(const K of KS){L.forEach(p=>{p.sfZ??={};p.stZ??={};p.sfZ[K]=safeFrom(L,p,K);p.stZ[K]=(p.sfZ[K]!=null&&p.sfZ[K]<=p.w+2*p.fb)?'sure':(L.filter(q=>q!==p&&q.pts>p.max).length>=K?'out':'in')});
+    const th=L.filter(p=>p.sfZ[K]!=null).map(p=>p.sfZ[K]).sort((a,b)=>a-b);L.thZ[K]=th.length?th[th.length-1]:null}
+  let prev=null,rank=0;L.forEach((p,i)=>{const k=p.pts+'/'+p.wins;if(k!==prev){rank=i+1;prev=k}p.rank=rank});
+  return CACHE[key]={L,Z}}
+
+/* ---------- partijen met zetten (lichess-studie van de club, en lokaal ook de gevonden partijen) ---------- */
+const FP=(E&&E.partijen)||{};
+const STU=(E&&E.studie)||[];
+const SZ=(()=>{const d=(RDAT||{})['1']||'';if(!d)return '';const y=+d.slice(0,4),m=+d.slice(5,7);return (m>=7?y:y-1)+'-07-01'})();
+function stPartij(a,b,ic){const x=anm(a),y=anm(b);if(!x||!y)return null;return STU.find(g=>{const w=anm(g.w),bb=anm(g.b);return ((w===x&&bb===y)||(w===y&&bb===x))&&(!SZ||!/^\d{4}-\d\d-\d\d$/.test(g.d)||g.d>=SZ)&&(!g.e||(ic?/interclub/i.test(g.e):!/interclub/i.test(g.e)))})||null}
+const okLink=g=>g&&g.u&&!(window.ONLINE&&g.b==='lichess-uitzending');
+const plk=g=>okLink(g)?` <a class="plk" href="${esc(g.u)}" target="_blank" rel="noopener" title="partij naspelen op lichess${g.n?' ('+g.n+' zetten)':''}">♟</a>`:'';
+const dag=(d,k)=>{const t=new Date(d+'T12:00:00Z');t.setUTCDate(t.getUTCDate()+k);return t.toISOString().slice(0,10)};
+function fpZoek(m,o,van,tot){const L=(m&&FP[m.fide])||[];const a=anm(o);return L.find(g=>anm(g.o)===a&&g.d>=van&&g.d<=tot&&okLink(g))||null}
+function fpFIDE(m,x){if(x.d1)return fpZoek(m,x.o,dag(x.d1,-3),dag(x.d2||x.d1,3));const y=+x.ym.slice(0,4),mm=+x.ym.slice(5,7);const v=new Date(Date.UTC(y,mm-3,1)).toISOString().slice(0,10);return fpZoek(m,x.o,v,x.ym+'-31')}
+
+/* ---------- grafiek van de rating ---------- */
+function grafiek(m){if(!M.length)return '';const i1=M.length-1;let i0=0;while(i0<i1&&![0,1,2].some(t=>m.s[t][i0]!=null))i0++;
+  const W=720,H=200,pl=42,pr=12,pt=12,pb=24;const S=[0,1,2].map(t=>m.s[t].slice(i0,i1+1));const v=S.flat().filter(x=>x!=null);if(v.length<2)return '';
+  let mn=Math.min(...v),mx=Math.max(...v);if(mx-mn<40){mn-=20;mx+=20}const n=i1-i0+1;const sx=i=>pl+i*(W-pl-pr)/Math.max(1,n-1),sy=x=>pt+(mx-x)*(H-pt-pb)/(mx-mn);
+  let g='';const st=Math.max(10,Math.round((mx-mn)/4/10)*10);for(let y=Math.ceil(mn/st)*st;y<=mx;y+=st)g+=`<line x1="${pl}" x2="${W-pr}" y1="${sy(y)}" y2="${sy(y)}" stroke="var(--line)"/><text x="${pl-6}" y="${sy(y)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${y}</text>`;
+  const stap=Math.max(1,Math.ceil(n/10));for(let i=0;i<n;i+=stap)g+=`<text x="${sx(i)}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)">${mkort(M[i0+i])}</text>`;
+  const iM=M.indexOf('2024-03')-i0;if(iM>0&&iM<n)g+=`<line x1="${sx(iM)}" x2="${sx(iM)}" y1="${pt}" y2="${H-pb}" stroke="var(--muted)" stroke-dasharray="3 3"/><text x="${sx(iM)+4}" y="${H-pb-4}" font-size="10" fill="var(--muted)">correctie FIDE</text>`;
+  let lines='';S.forEach((s,t)=>{let d='';s.forEach((x,i)=>{if(x==null)return;d+=(d?'L':'M')+sx(i).toFixed(1)+' '+sy(x).toFixed(1)});if(d)lines+=`<path d="${d}" fill="none" stroke="var(--l${t})" stroke-width="${t===0?2.6:1.5}" stroke-linejoin="round" opacity="${t===0?1:.8}"/>`;
+    s.forEach((x,i)=>{if(x!=null&&m.g[t][i0+i])lines+=`<circle cx="${sx(i)}" cy="${sy(x)}" r="${t===0?3.2:2.2}" fill="var(--l${t})"><title>${TN[t]} ${mlab(M[i0+i])}: ${x} (${m.g[t][i0+i]} partij${m.g[t][i0+i]>1?'en':''})</title></circle>`})});
+  return `<div class="grafiek"><div class="lg">${[0,1,2].map(t=>S[t].some(x=>x!=null)?`<span><i style="background:var(--l${t})"></i>${TN[t]}</span>`:'').join('')}<span>· bolletje = maand met verwerkte partijen</span></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="verloop van de FIDE-rating per maandlijst">${g}${lines}</svg></div>`}
+
+/* ---------- onderdelen van een spelerspagina ---------- */
+function eloDeel(s){const m=s.m;if(!m)return {nums:'',html:`<section><h2>Elo</h2><div class="leeg">${esc(nice(s.n))} staat niet op de ledenlijst van de club, dus zijn FIDE-gegevens worden niet opgehaald.</div></section>`};
+  const last=M.length-1,cur=m.s[0][last],y12=M.indexOf(M[last].replace(/^\d{4}/,y=>+y-1)),d12=cur!=null&&y12>=0&&m.s[0][y12]!=null?cur-m.s[0][y12]:null;
+  let hi=null,hiM='';m.s[0].forEach((v,i)=>{if(v!=null&&(hi==null||v>hi)){hi=v;hiM=M[i]}});
+  const P=m.pend||[],pd=P.length?Math.round(P.reduce((a,x)=>a+(x.chg||0),0)*10)/10:null,est=P.length&&cur!=null?Math.round(cur+pd):null;
+  const RS=(m.rest||[]).filter(x=>x.or&&x.ro).map(x=>{const e=1/(1+10**(Math.max(-400,Math.min(400,x.or-x.ro))/400));return {...x,w:x.K*(1-e),l:-x.K*e}});
+  const basis=est??cur,pmin=RS.length&&basis!=null?Math.round(basis+RS.reduce((a,x)=>a+x.l,0)):null,pmax=RS.length&&basis!=null?Math.round(basis+RS.reduce((a,x)=>a+x.w,0)):null;
+  const K=m.games[0].length?m.games[0][m.games[0].length-1].K:null;
+  let nums=`<div class="num"><b>${cur??'–'}</b><span>FIDE standaard${m.tit?' · '+esc(m.tit):''}<br>lijst ${mlab(M[last])}</span></div>`;
+  if(d12!=null)nums+=`<div class="num"><b class="${d12>0?'up':d12<0?'down':''}">${d12>0?'+':d12<0?'−':'±'}${Math.abs(d12)}</b><span>tegenover ${mlab(M[y12])}</span></div>`;
+  if(pd!=null)nums+=`<div class="num"><b class="${pd>0?'up':pd<0?'down':''}">${f1(pd)}</b><span>nog te verwerken (${P.length} partij${P.length>1?'en':''})${est!=null?'<br>verwacht: '+est:''}</span></div>`;
+  let h=`<section><h2>Elo</h2><div class="card"><div class="nums">${nums}${hi!=null&&hi!==cur?`<div class="num"><b>${hi}</b><span>hoogste sinds ${mlab(M[0]).replace(/^\w+ /,'')}<br>${mlab(hiM)}</span></div>`:''}${m.s[1][last]!=null?`<div class="num"><b>${m.s[1][last]}</b><span>rapid</span></div>`:''}${m.s[2][last]!=null?`<div class="num"><b>${m.s[2][last]}</b><span>blitz</span></div>`:''}${pmin!=null?`<div class="num"><b class="sm">${pmin}–${pmax}</b><span>prognose na het clubkampioenschap (alles verloren tot alles gewonnen)</span></div>`:''}</div>
+${grafiek(m)}
+<p class="na small">${m.fide?`FIDE-id <a href="https://ratings.fide.com/profile/${m.fide}" target="_blank" rel="noopener">${m.fide}</a>`:'Geen FIDE-id bekend'}${K?` · K-factor ${K}`:''}${m.id?` · stamnummer ${m.id}`:''} · <a href="elo.html#${tok(m.n)}">in de Elo-lijst</a></p></div>`;
+  if(P.length){let lt='',sub='';h+=`<details class="fold" open><summary>Nog te verwerken <span>${P.length} partij${P.length>1?'en':''} · ${f1(pd)} · nog niet op een FIDE-lijst</span></summary><div class="in"><div class="board"><table><thead><tr><th class="l">Datum</th><th class="l">Toernooi</th><th class="l">Tegenstander</th><th>Elo</th><th>Uitslag</th><th>Elo ±</th></tr></thead><tbody>${P.map(x=>{const t=x.tour.replace(/ r(\d+)$/,'');const r=(x.tour.match(/ r(\d+)$/)||[])[1];const g=fpZoek(m,x.o,dag(x.dt,-1),dag(x.dt,1))||(/clubkampioenschap|interclub/i.test(x.tour)?stPartij(m.n,x.o,/interclub/i.test(x.tour)):null);return `<tr><td class="l nw">${dkort(x.dt)}</td><td class="l tw">${esc(t)}${r?' <span class="na">r'+r+'</span>':''}</td><td class="l">${spLink(x.o)}</td><td>${x.or||'<span class="na">–</span>'}</td><td>${rs(x.r)}${plk(g)}</td><td class="${x.chg>0?'up':x.chg<0?'down':''}">${x.chg!=null?f1(x.chg):''}</td></tr>`}).join('')}<tr class="tot"><td class="l" colspan="5">Samen (K ${P[0].K})</td><td>${f1(pd)}</td></tr></tbody></table></div><p class="na small">Gespeelde partijen van het clubkampioenschap, de interclub en de gekoppelde toernooien die nog op geen enkele FIDE-lijst staan. De winst of het verlies is berekend met de FIDE-formule.</p></div></details>`}
+  /* FIDE-toernooien per maandlijst, nieuwste eerst */
+  const T=[];for(const t of [0,1,2])for(const x of m.games[t]){const k=t+'|'+x.ym+'|'+x.tour;let o=T.find(y=>y.k===k);if(!o){o={k,t,ym:x.ym,tour:x.tour,pl:x.pl||'',d1:x.d1||'',d2:x.d2||'',G:[]};T.push(o)}o.G.push(x)}
+  T.sort((a,b)=>b.ym.localeCompare(a.ym)||(b.d1||'').localeCompare(a.d1||'')||a.t-b.t);
+  if(T.length){const nG=T.reduce((a,o)=>a+o.G.length,0);
+    h+=`<details class="fold"><summary>FIDE-partijen <span>${nG} partij${nG>1?'en':''} in ${T.length} toernooi${T.length>1?'en':''}, op de lijsten van ${mlab(M[0])} tot ${mlab(M[M.length-1])}</span></summary><div class="in"><div class="board"><table><thead><tr><th class="l">Lijst</th><th class="l">Toernooi</th><th>Partijen</th><th>Score</th><th>Gem. tegenstander</th><th>Elo ±</th></tr></thead><tbody>${T.map(o=>{const sc=o.G.reduce((a,x)=>a+x.r,0),ors=o.G.filter(x=>x.or),avg=ors.length?Math.round(ors.reduce((a,x)=>a+x.or,0)/ors.length):null,kc=o.G.reduce((a,x)=>a+(x.kc||0),0);
+      return `<tr><td class="l">${mkort(o.ym)}</td><td class="l tw"><details><summary>${esc(o.tour)}${o.t?` <span class="chip">${TN[o.t]}</span>`:''} <span class="na">${esc(o.pl)}${o.d1?' · '+dkort(o.d1)+(o.d2&&o.d2!==o.d1?' – '+dkort(o.d2):''):''}</span></summary><table>${o.G.map(x=>`<tr><td class="l">${x.c==='w'?'⚪':x.c==='b'?'⚫':''} ${spLink(x.o)}${x.ot?' <span class="na">'+esc(x.ot)+'</span>':''}${x.f&&x.f!=='BEL'?' <span class="na">'+esc(x.f)+'</span>':''}</td><td>${x.or||'<span class="na">–</span>'}</td><td>${rs(x.r)}${plk(fpFIDE(m,x))}</td><td class="${x.kc>0?'up':x.kc<0?'down':''}">${x.kc!=null?f1(x.kc):''}</td></tr>`).join('')}</table></details></td><td>${o.G.length}</td><td>${fmt(sc)}</td><td>${avg??'–'}</td><td class="${kc>0?'up':kc<0?'down':''}">${f1(kc)}</td></tr>`}).join('')}</tbody></table></div><p class="na small">Zoals ze in de FIDE-berekeningen staan (klik op een toernooi voor de partijen). <b>Elo ±</b> = winst of verlies op die lijst.</p></div></details>`}
+  h+='</section>';return {nums:'',html:h,cur,est}}
+
+function clubDeel(s){const ks=RK.filter(k=>s.club.includes(k));if(!ks.length)return '';let h='<section><h2>Clubkampioenschap</h2>';
+  for(const k of ks.slice().reverse()){const {L,Z}=reeks(k);const p=L.find(q=>q.n===s.club_n?.[k]||nrm(q.n)===nrm(s.n));if(!p)continue;const per=PER(k),PL=PLD(k);const lab=(V.club.labels&&V.club.labels[k])||'Reeks '+k;
+    const zs=Z.map(z=>{const st=p.stZ[z.k];let v=st==='sure'?1:st==='out'?0:p.chK[z.k];let c=v>=.75?'up':v<.4?'down':'';if(z.t==='zakken'){v=1-v;c=v>=.4?'down':''}
+      const S=p.sfZ[z.k],need=S!=null?(S-p.w-2*p.fb)/2:null;
+      const zk=st==='sure'&&z.t!=='zakken'?`<span class="up">${z.sure}</span>`:st==='out'&&z.out&&z.t!=='zakken'?`<span class="down">${z.out}</span>`:z.t==='zakken'&&st==='sure'?'<span class="up">zeker gered</span>':z.t==='zakken'&&st==='out'?'<span class="down">degradeert</span>':S==null?'niet zelf af te dwingen':need<=0?'<span class="up">bereikt</span>':`${z.need} met nog ${fmt(need)} uit ${p.open}`;
+      return `<div class="num"><b class="${c}">${pct(v)}</b><span>${z.kans}<br>${zk}</span></div>${z.t==='med'&&p.pos?`<div class="num"><b>${pct(p.pos[0])}</b><span>goud · zilver ${pct(p.pos[1])} · brons ${pct(p.pos[2])}</span></div>`:''}`}).join('');
+    const R=RAW[k].rondes||RDAT;const rows=[];RAW[k].r.forEach((row,i)=>{const [a,ea,res,b,eb]=row.split('|');if(nrm(a)!==nrm(p.n)&&nrm(b)!==nrm(p.n))return;const rd=Math.floor(i/per)+1;rows.push({rd,d:R[rd]||'',a,ea,res,b,eb,wit:nrm(a)===nrm(p.n)})});
+    const tr=rows.map(x=>{if(x.b==='Bye')return `<tr><td>${x.rd}</td><td class="l nw">${dkort(x.d)}</td><td class="l na">bye (vrij)</td><td class="hm"></td><td>${x.rd<=PL?'<b>1</b>':'<span class="na">1</span>'}</td></tr>`;
+      const o=x.wit?x.b:x.a,oe=NUOF(o,+(x.wit?x.eb:x.ea)||0);let r='';if(L.gone.includes(o))r='<span class="na" title="deze tegenstander speelt niet meer mee: zijn partijen tellen niet">vervalt</span>';else if(x.res==='-')r=x.d&&x.d<TODAY?'<span class="warn">in te halen</span>':'<span class="na">te spelen</span>';else if(x.res==='0ff-0ff')r='<span class="down">forfait</span>';else{const sa={'1-0':1,'0-1':0,'½-½':.5}[x.res];const v=x.wit?sa:1-sa;r=rs(v)+plk(stPartij(p.n,o,false))}
+      return `<tr><td>${x.rd}</td><td class="l nw">${dkort(x.d)}</td><td class="l"><span title="${x.wit?'wit':'zwart'}">${x.wit?'⚪':'⚫'}</span> ${spLink(o)}</td><td class="hm">${oe||'<span class="na">–</span>'}</td><td>${r}</td></tr>`}).join('');
+    const de=p.rg?Math.round(p.de*10)/10:null;
+    h+=`<div class="card"><h3>${esc(lab)} <span class="na" style="font-weight:400">· na ronde ${PL} van ${NR(k)}</span></h3><div class="nums"><div class="num"><b>${p.rank}<span style="display:inline;font-size:16px;color:var(--muted)">/${L.length}</span></b><span>plaats</span></div><div class="num"><b>${fmt(p.pts)}</b><span>punten uit ${p.games+p.bye}${p.open?' · nog '+p.open+' te spelen':''}<br>maximum ${fmt(p.max)}</span></div>${zs}${de!=null?`<div class="num"><b class="${de>0?'up':de<0?'down':''}">${f1(de)}</b><span>Elo uit deze reeks (nog niet verwerkt)</span></div>`:''}</div>
+<div class="board"><table><thead><tr><th>R</th><th class="l">Datum</th><th class="l">Tegenstander</th><th class="hm">Elo</th><th>Uitslag</th></tr></thead><tbody>${tr}</tbody></table></div>
+<p class="na small"><a href="../club/stand.html#r${encodeURIComponent(k)}~${tok(p.n)}">Volledige stand en wat-als</a> · kansen uit 20.000 nagespeelde verlopen van de rest van de reeks (zoals op de stand); <i>zeker</i> = wiskundig zeker, wat de anderen ook doen.</p></div>`}
+  return h+'</section>'}
+
+function icDeel(s){if(!IC)return '';const G=(IC.ind||[]).filter(g=>nrm(g.speler)===nrm(s.n)).sort((a,b)=>a.ronde-b.ronde);const inKern=(IC.spelers||[]).some(n=>nrm(n)===nrm(s.n));if(!G.length&&!inKern)return '';
+  const D=(IC.series&&IC.series.dates)||{};const sc=G.reduce((a,g)=>a+(g.score==='ff'?1:+g.score||0),0);
+  const ors=G.filter(g=>g.elo_t),avg=ors.length?Math.round(ors.reduce((a,g)=>a+g.elo_t,0)/ors.length):null;
+  const mt=r=>(IC.gespeeld||[]).find(x=>x.r===r);
+  return `<section><h2>Interclub</h2><div class="card"><h3>${esc(IC.team||'KRST')} · ${esc(IC.label||'')}</h3>${G.length?`<div class="nums"><div class="num"><b>${fmt(sc)}/${G.length}</b><span>score</span></div>${avg?`<div class="num"><b>${avg}</b><span>gemiddelde tegenstander</span></div>`:''}<div class="num"><b>${[...new Set(G.map(g=>g.bord))].sort((a,b)=>a-b).join(', ')}</b><span>bord${G.length>1?'en':''}</span></div></div>
+<div class="board"><table><thead><tr><th>R</th><th class="l">Datum</th><th>Bord</th><th class="l hm">Match</th><th class="l">Tegenstander</th><th>Elo</th><th>Uitslag</th></tr></thead><tbody>${G.map(g=>{const x=mt(g.ronde);return `<tr><td>${g.ronde}</td><td class="l nw">${dkort(D[g.ronde]||'')}</td><td>${g.bord}</td><td class="l na hm">${x?(x.thuis?'thuis tegen ':'uit bij ')+esc(x.opp)+' · '+fmt(x.voor)+'–'+fmt(x.tegen):''}</td><td class="l">${esc(nice(g.tegen))}</td><td>${g.elo_t||'<span class="na">–</span>'}</td><td>${rs(g.score==='ff'?'ff':+g.score)}${plk(stPartij(s.n,g.tegen,true))}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="na">Nog geen partij gespeeld dit seizoen.</p>'}
+<p class="na small"><a href="../club/interclub.html">Stand en alle uitslagen van de interclub</a></p></div></section>`}
+
+function agendaDeel(s){const A=[],AG=(V&&V.agenda)||{};
+  for(const k of RK.filter(k=>s.club.includes(k))){const per=PER(k),R=RAW[k].rondes||RDAT,lab=(V.club.labels&&V.club.labels[k])||'reeks '+k;RAW[k].r.forEach((row,i)=>{const [a,ea,res,b,eb]=row.split('|');if(res!=='-'&&b!=='Bye')return;if(nrm(a)!==nrm(s.n)&&nrm(b)!==nrm(s.n))return;const rd=Math.floor(i/per)+1;const d=R[rd]||'';if(b==='Bye'){if(rd>PLD(k)&&d>=TODAY)A.push({d,what:`Clubkampioenschap ${lab}, ronde ${rd}`,detail:'bye (vrij, 1 punt)'});return}
+    const wit=nrm(a)===nrm(s.n),o=wit?b:a,oe=NUOF(o,+(wit?eb:ea)||0);const past=d&&d<TODAY;A.push({d:past?'':d,what:`Clubkampioenschap ${lab}, ronde ${rd}`,detail:`${wit?'met wit':'met zwart'} tegen ${nice(o)}${oe?' ('+oe+')':''}${AG.club&&AG.club.plaats&&!past?' · '+AG.club.plaats+(AG.club.uur?', '+AG.club.uur:''):''}`,warn:past?'nog in te halen (oorspronkelijk '+dkort(d)+')':''})})}
+  if(IC&&(IC.spelers||[]).some(n=>nrm(n)===nrm(s.n)))for(const g of IC.kalender||[])if(g.d>=TODAY)A.push({d:g.d,what:`Interclub ${IC.team}, ronde ${g.r}`,detail:`${g.thuis?'thuis tegen':'uit bij'} ${g.opp} · de opstelling is nog niet gekend`});
+  if(AG.liga&&(AG.liga.spelers||[]).some(n=>nrm(n)===nrm(s.n)))for(const [d,u,r] of AG.liga.rondes||[])if(d>=TODAY)A.push({d,what:`${AG.liga.naam}, ${r}`,detail:`${u}${AG.liga.plaats?' · '+AG.liga.plaats:''}`});
+  for(const [n,L] of Object.entries(AG.andere||{}))if(nrm(n)===nrm(s.n))for(const t of L)if((t.tot||t.van)>=TODAY)A.push({d:t.van<TODAY?TODAY:t.van,what:t.t,detail:`${t.van&&t.tot&&t.tot!==t.van?dkort(t.van)+' tot '+dkort(t.tot):''}${t.plaats?' · '+t.plaats:''}`,link:t.link,bezig:t.van<=TODAY});
+  for(const t of (E&&E.toernooien)||[])if((t.spelers||[]).some(n=>nrm(n)===nrm(s.n))&&t.laatste&&t.laatste>=dag(TODAY,-3)&&!A.some(a=>a.link&&t.url&&a.link.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]===t.url.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]))A.push({d:t.laatste,what:t.naam,detail:`bezig · ${t.rondes} ronde${t.rondes>1?'s':''} gespeeld`,link:t.url,bezig:true});
+  A.sort((a,b)=>(a.d||'0').localeCompare(b.d||'0'));
+  const li=a=>`<li><span class="when">${a.bezig?'nu bezig':a.d?dlong(a.d):'<span class="warn">in te halen</span>'}</span><span class="what"><b>${esc(a.what)}</b><span>${esc(a.detail)}${a.link?` · <a href="${esc(a.link)}" target="_blank" rel="noopener">uitslagen</a>`:''}</span>${a.warn?`<em>${esc(a.warn)}</em>`:''}</span></li>`;
+  const N=5,kom=A.length?`<ul class="agenda">${A.slice(0,N).map(li).join('')}</ul>${A.length>N?`<details><summary class="na" style="cursor:pointer">nog ${A.length-N} later</summary><ul class="agenda">${A.slice(N).map(li).join('')}</ul></details>`:''}`:'<p class="na">Geen geplande partijen bekend.</p>';
+  /* gekoppelde toernooien waarin hij speelde */
+  const T=((E&&E.toernooien)||[]).filter(t=>(t.spelers||[]).some(n=>nrm(n)===nrm(s.n)));
+  const tt=T.length?`<div class="board"><table><thead><tr><th class="l">Toernooi</th><th class="l">Site</th><th>Rondes</th><th class="l">Laatste ronde</th><th class="l">Op een FIDE-lijst</th></tr></thead><tbody>${T.map(t=>`<tr><td class="l tw">${t.url?`<a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.naam)}</a>`:esc(t.naam)}</td><td class="l na">${esc(t.soort)}</td><td>${t.rondes||'–'}</td><td class="l">${t.laatste?dkort(t.laatste):''}</td><td class="l">${t.verwerkt?(t.verwerkt>=t.partijen?'ja':t.verwerkt+' van '+t.partijen+' partijen'):'<span class="na">nog niet</span>'}</td></tr>`).join('')}</tbody></table></div>`:'';
+  return `<section><h2>Volgende partijen en toernooien</h2><div class="card">${kom}</div>${tt?`<h3>Gekoppelde toernooien</h3>${tt}`:''}</section>`}
+
+/* ---------- lijst van alle spelers ---------- */
+const ALLE=[...SP.values()].sort((a,b)=>a.n.localeCompare(b.n,'nl'));
+const wat=s=>[s.club.length?'reeks '+s.club.slice().reverse()[0]:'',s.ic?(IC&&IC.team)||'interclub':''].filter(Boolean).join(' · ');
+function lijst(){document.title='Spelers Torrewachters';
+  $('app').innerHTML=`<header><span class="eyebrow">Koninklijke Roeselaarse Schaakclub De Torrewachters · club ${esc((E&&E.club)||309)}</span><h1>Spelers</h1><p class="sub">Per speler: Elo en verloop, clubkampioenschap met kansen, interclub en toernooien. Kies een naam.</p></header>
+<div class="pick"><input type="search" id="q" placeholder="Zoek speler…" aria-label="Zoek speler"><label class="na">Volgorde <select id="srt"><option value="n">naam</option><option value="r">rating</option></select></label><span class="na" id="aantal"></span></div>
+<div class="lijst" id="lijst"></div>`;
+  const tek=()=>{const q=nrm($('q').value);let L=ALLE.filter(s=>!q||nrm(s.n).includes(q)||nrm(nice(s.n)).includes(q));if($('srt').value==='r')L=L.slice().sort((a,b)=>(curStd(b)||0)-(curStd(a)||0)||a.n.localeCompare(b.n,'nl'));
+    $('lijst').innerHTML=L.map(s=>{const r=curStd(s);return `<a href="#${tok(s.n)}"><b>${esc(nice(s.n))}</b><span>${[wat(s),r?r:''].filter(Boolean).join(' · ')}</span></a>`}).join('')||'<p class="na">Niemand gevonden.</p>';$('aantal').textContent=L.length+' speler'+(L.length===1?'':'s')};
+  $('q').addEventListener('input',tek);$('srt').addEventListener('change',tek);tek()}
+
+function pagina(s){document.title=nice(s.n)+' · Torrewachters';
+  $('eloL').href='elo.html#'+tok(s.n);if(s.club.length)$('standL').href='../club/stand.html#r'+encodeURIComponent(s.club.slice().reverse()[0])+'~'+tok(s.n);
+  const el=eloDeel(s);const ck=clubDeel(s);const ic=icDeel(s);const ag=agendaDeel(s);
+  const opts=ALLE.map(x=>`<option value="${esc(tok(x.n))}"${x===s?' selected':''}>${esc(nice(x.n))}</option>`).join('');
+  $('app').innerHTML=`<header><span class="eyebrow">Speler · De Torrewachters</span><h1>${esc(nice(s.n))}</h1><p class="sub">${[wat(s)?wat(s).replace(/^reeks/,'clubkampioenschap reeks'):'',s.m&&s.m.tit?s.m.tit:''].filter(Boolean).map(esc).join(' · ')||'&nbsp;'}</p></header>
+<div class="pick"><label class="na" for="ander">Andere speler</label><select id="ander">${opts}</select></div>
+${ag}${ck}${el.html}${ic}`;
+  $('ander').addEventListener('change',e=>{location.hash=e.target.value});window.scrollTo(0,0)}
+
+function route(){const h=decodeURIComponent(location.hash.slice(1));const s=h&&ALLE.find(x=>tok(x.n)===h||x.n===h);if(s)pagina(s);else lijst()}
+window.addEventListener('hashchange',route);route();
+{const t=(E&&E.tijd)||(V&&V.tijd)||'';$('notes').innerHTML=`<p>${window.ONLINE?'Bijgewerkt op ':'Gegevens van '}${t?(+t.slice(8,10))+'/'+(+t.slice(5,7))+'/'+t.slice(0,4)+' om '+t.slice(11):'?'}. FIDE-ratings van de maandlijsten van de FIDE, het clubkampioenschap uit SWAR, de interclub van de KBSB, toernooien van chess-results, OpenResults en de Franse bond.</p><p>Een fout gezien? Laat het weten aan de verantwoordelijke van de website.</p>`}
+})();
+</script>
+</body>
+</html>

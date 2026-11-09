@@ -41,6 +41,7 @@ tbody tr:last-child td{border-bottom:none}
 td.pl{font-family:var(--display);font-size:20px;color:var(--muted);width:2.5em}
 td.nm,th.nm{text-align:left}
 td.nm{font-weight:600}
+a.spn{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}a.spn:hover{color:var(--accent)}
 td.nm .elo{display:block;font-weight:400;font-size:12px;color:var(--muted)}
 tr.me td{background:var(--me)}
 td.pts{font-family:var(--display);font-size:24px;line-height:1}
@@ -160,8 +161,8 @@ table.ov{min-width:720px}table.ov a{color:var(--fg);font-weight:600;text-decorat
 </div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-interclub.js?v=5306996544"></script>
-<script src="data-partijen.js?v=84b18f49d9"></script>
+<script src="data-interclub.js?v=64c1431b55"></script>
+<script src="data-partijen.js?v=dd12da5362"></script>
 <script src="verwerk.js?v=abfa9d75fc"></script>
 <script>
 /* ---- partijen uit de lichess-studie (data-partijen.js): ♟ achter de uitslag ---- */
@@ -248,7 +249,7 @@ ${zlo!=null?`<p class="need likely">Waarschijnlijk niet bij de laatste 2 met <b>
     const avg=t.lineup?Math.round(t.lineup.reduce((a,b)=>a+b,0)/t.lineup.length):null;
     return `<tr class="${S.me.includes(t.nr)?'me':''}" id="t-${S.key}-${t.nr}"><td class="pl">${rank}</td><td class="nm">${t.n}<span class="elo">${avg?'gem. opstelling '+avg:''}</span></td><td class="pts">${t.mp}</td><td>${fmt(t.bp)}</td><td>${t.games}</td><td class="max">${t.max}</td><td class="ch"><span class="pc ${t.p1>=.4?'hi':'mid'}">${pc(t.p1)}</span>${rg(t.p1lo,t.p1hi)}${pbar(t.p1,t.p1lo,t.p1hi)}</td><td class="ch"><span class="pc ${t.pb>=.4?'lo2':'mid'}">${pc(t.pb)}</span>${rg(t.pblo,t.pbhi)}${pbar(t.pb,t.pblo,t.pbhi,1)}</td><td class="barc">${bar}</td></tr>`}).join('');
   const ind=S.ind.map(([team,r,bd,n,ra,K,o,ro,s])=>{const ff=s==='ff',unk=ra==null,ou=ro===null&&o.startsWith('(');const rated=ro>0&&ra>0&&!ff;const d=rated?K*(s-Ex(ra,ro)):null;const t=d==null?'':Math.abs(d).toFixed(1).replace('.',',');
-    return `<tr><td class="nm">${team}</td><td>${r}</td><td>${bd}</td><td class="nm">${n}${K!==20?` <span class="na">(K ${K})</span>`:''}</td><td>${unk?'?':ra||'<span class="na">geen</span>'}</td><td class="nm">${o}</td><td>${ou?'<span class="na">–</span>':ro||'<span class="na">geen</span>'}</td><td>${ff?'<b class="up">1F</b>':s===1?'<b class="up">1</b>':s===0?'<b class="down">0</b>':'½'}${ff?'':stLk(n,o)}</td><td>${ou?'<span class="na">volgt</span>':unk?'<span class="na">onzeker</span>':d==null?(ff?'<span class="na">forfait</span>':'<span class="na">telt niet</span>'):`<span class="${d>0?'up':'down'}">${d>0?'▲':'▼'} ${t}</span>`}</td></tr>`}).join('');
+    return `<tr><td class="nm">${team}</td><td>${r}</td><td>${bd}</td><td class="nm"><a class="spn" href="../elo/speler.html#${String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'')}" title="spelerspagina">${n}</a>${K!==20?` <span class="na">(K ${K})</span>`:''}</td><td>${unk?'?':ra||'<span class="na">geen</span>'}</td><td class="nm">${o}</td><td>${ou?'<span class="na">–</span>':ro||'<span class="na">geen</span>'}</td><td>${ff?'<b class="up">1F</b>':s===1?'<b class="up">1</b>':s===0?'<b class="down">0</b>':'½'}${ff?'':stLk(n,o)}</td><td>${ou?'<span class="na">volgt</span>':unk?'<span class="na">onzeker</span>':d==null?(ff?'<span class="na">forfait</span>':'<span class="na">telt niet</span>'):`<span class="${d>0?'up':'down'}">${d>0?'▲':'▼'} ${t}</span>`}</td></tr>`}).join('');
   S._T=T;S._mes=mes;return `<section class="ser" id="r${S.key}"><h2>${S.label.replace('afdeling','Afdeling')}<small>${S.me.map(i=>S.teams[i-1][1]).join(' en ')} · ${T.length} ploegen · ${S.boards} borden · ${S.status} · ${S.rounds} matchen per ploeg</small></h2>${call}
 ${mes.map(me=>`<div class="meta"><span>${me.n}: <b>${me.mp} MP</b>, ${fmt(me.bp)} BP, plaats ${me.rank}</span><span>kans op plaats 1: <b>${pc(me.p1)}</b> (${rg(me.p1lo,me.p1hi).replace(/<[^>]+>/g,'')||pc(me.p1)})</span><span>kans op de laatste 2: <b>${pc(me.pb)}</b> (${rg(me.pblo,me.pbhi).replace(/<[^>]+>/g,'')||pc(me.pb)})</span></div>`).join('')}
 <div class="board"><table><thead><tr><th>#</th><th class="nm">Ploeg</th><th>MP</th><th>BP</th><th>Gesp.</th><th>Max</th><th>Kans 1e</th><th>Kans laatste 2</th><th class="nm">Verloop (groen = gewonnen, grijs = open, rood = verloren)</th></tr></thead><tbody>${rows}</tbody></table></div>

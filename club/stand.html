@@ -62,6 +62,7 @@ tbody tr:last-child td{border-bottom:none}
 td.pl{font-family:var(--display);font-size:20px;color:var(--muted);width:2.5em}
 td.nm,th.nm{text-align:left}
 td.nm{font-weight:600}
+a.spn{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}a.spn:hover{color:var(--accent)}
 td.nm .elo{display:block;font-weight:400;font-size:12px;color:var(--muted)}
 tr.me td{background:var(--me)}
 td.pts{font-family:var(--display);font-size:24px;line-height:1}
@@ -147,10 +148,10 @@ td.de .na,td.de .todo{white-space:normal;display:inline-block;max-width:16ch;tex
 </div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="../elo/data-elo.js?v=dcb540ef96"></script>
+<script src="../elo/data-elo.js?v=64a87827c3"></script>
 <script src="../elo/elo-verwerk.js?v=b6e87b0b86"></script>
-<script src="data-club.js?v=ea4e34051e"></script>
-<script src="data-interclub.js?v=5306996544"></script>
+<script src="data-club.js?v=a37fb54338"></script>
+<script src="data-interclub.js?v=64c1431b55"></script>
 <script src="verwerk.js?v=abfa9d75fc"></script>
 <script>
 const RAW={
@@ -257,7 +258,7 @@ function section(key){
     const cells=[];for(let k=0;k<p.w;k++)cells.push('w');for(let k=0;k<2*p.fb;k++)cells.push('b');const lost=p.l+p.f;while(cells.length<L.cells-lost)cells.push('o');for(let k=0;k<p.f;k++)cells.push('f');for(let k=0;k<p.l;k++)cells.push('l');
     const bar=`<div class="bar" style="--n:${L.cells}" role="img" aria-label="${fmt(p.pts)} punten, ${p.open} partijen open, maximum ${fmt(p.max)}">${cells.map(c=>`<i class="c ${c}"></i>`).join('')}<span class="lead" style="left:calc(${lead/(L.cells/2)*100}% - 1px)" title="${z0.nr} heeft nu ${fmt(lead)} punten"></span></div>`;
     const chip=Z.map(z=>{const s=p.stZ[z.k];return s==='sure'&&z.sure?`<span class="chip ${z.t==='zakken'?'in':'sure'}">${z.sure}</span>`:s==='out'&&z.out?`<span class="chip out">${z.out}</span>`:''}).join('');
-    return `<tr class="${p.n===HL()?'me':''}${cuts.has(i)?' cut':''}"><td class="pl">${rank}</td><td class="nm">${p.n}${chip}<span class="elo">${p.elo?'Elo '+p.elo:'geen rating'}${p.sw&&p.sw!==p.elo?' (start '+p.sw+')':''}${p.bye?' · '+p.bye+' bye':''}</span></td><td class="pts">${fmt(p.pts)}</td><td>${p.games}</td><td>${p.open}${p.fb?' + bye':''}</td><td class="max">${fmt(p.max)}</td>${Z.map((z,j)=>`<td class="ch">${pctZ(p,z)}</td>${j===0?`<td class="sf">${safeZ(L,p,z)}</td>`:''}`).join('')}<td class="de">${elo(p)}</td><td class="barc">${bar}</td></tr>`}).join('');
+    return `<tr class="${p.n===HL()?'me':''}${cuts.has(i)?' cut':''}"><td class="pl">${rank}</td><td class="nm"><a class="spn" href="../elo/speler.html#${tok(p.n)}" title="spelerspagina">${p.n}</a>${chip}<span class="elo">${p.elo?'Elo '+p.elo:'geen rating'}${p.sw&&p.sw!==p.elo?' (start '+p.sw+')':''}${p.bye?' · '+p.bye+' bye':''}</span></td><td class="pts">${fmt(p.pts)}</td><td>${p.games}</td><td>${p.open}${p.fb?' + bye':''}</td><td class="max">${fmt(p.max)}</td>${Z.map((z,j)=>`<td class="ch">${pctZ(p,z)}</td>${j===0?`<td class="sf">${safeZ(L,p,z)}</td>`:''}`).join('')}<td class="de">${elo(p)}</td><td class="barc">${bar}</td></tr>`}).join('');
   const needs=Z.map((z,j)=>{const th=L['th'+z.k];const thr=th.length?fmt(th[th.length-1]/2):'–';const lk=L.likely[z.k];
     if(j)return `<p class="need sec">${z.need} met <b>${thr} punten</b>${th.length>1?` <span>(zeker voor iedereen; wie nog tegen concurrenten speelt, soms met minder)</span>`:''}${lk!=null?` <span class="lk">· waarschijnlijk voldoende: <b>${fmt(lk/2)}</b></span>`:''}</p>`;
     return `<p class="need">${z.need} met <b>${thr} punten</b> op ${L.cells/2}<span>${th.length>1?'zeker voor iedereen; wie nog tegen rechtstreekse concurrenten speelt, kan met minder al zeker zijn: zie per speler de kolom '+z.zeker:'wiskundig zeker, wat de andere uitslagen ook worden'}</span></p>${lk!=null?`<p class="need likely">Waarschijnlijk voldoende voor ${z.likely}: <b>${fmt(lk/2)} punten</b><span>in de simulatie haalt wie zo eindigt dat in minstens 95% van de gevallen</span></p>`:''}`}).join('');
