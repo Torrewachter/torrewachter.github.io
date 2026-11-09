@@ -86,12 +86,12 @@ html:not(.online) .alleenonline{display:none!important}
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=6898f91e5f"></script>
+<script src="data-elo.js?v=a066a689c7"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
-<script src="elo-verwerk.js?v=b6e87b0b86"></script>
-<script src="../club/data-club.js?v=d94ffbe621"></script>
-<script src="../club/data-interclub.js?v=d6e80077b0"></script>
-<script src="../club/data-partijen.js?v=6c5793aa77"></script>
+<script src="elo-verwerk.js?v=b570857bb2"></script>
+<script src="../club/data-club.js?v=9620a04725"></script>
+<script src="../club/data-interclub.js?v=b200148f6c"></script>
+<script src="../club/data-partijen.js?v=ef4b126135"></script>
 <script src="../club/verwerk.js?v=abfa9d75fc"></script>
 <script>
 (function(){
@@ -271,10 +271,14 @@ function agendaDeel(s){const A=[],AG=(V&&V.agenda)||{};
     const wit=nrm(a)===nrm(s.n),o=wit?b:a,oe=NUOF(o,+(wit?eb:ea)||0);const past=d&&d<TODAY;A.push({d:past?'':d,what:`Clubkampioenschap ${lab}, ronde ${rd}`,detail:`${wit?'met wit':'met zwart'} tegen ${nice(o)}${oe?' ('+oe+')':''}${AG.club&&AG.club.plaats&&!past?' · '+AG.club.plaats+(AG.club.uur?', '+AG.club.uur:''):''}`,warn:past?'nog in te halen (oorspronkelijk '+dkort(d)+')':''})})}
   if(IC&&(IC.spelers||[]).some(n=>nrm(n)===nrm(s.n)))for(const g of IC.kalender||[])if(g.d>=TODAY)A.push({d:g.d,what:`Interclub ${IC.team}, ronde ${g.r}`,detail:`${g.thuis?'thuis tegen':'uit bij'} ${g.opp} · de opstelling is nog niet gekend`});
   if(AG.liga&&(AG.liga.spelers||[]).some(n=>nrm(n)===nrm(s.n)))for(const [d,u,r] of AG.liga.rondes||[])if(d>=TODAY)A.push({d,what:`${AG.liga.naam}, ${r}`,detail:`${u}${AG.liga.plaats?' · '+AG.liga.plaats:''}`});
-  for(const [n,L] of Object.entries(AG.andere||{}))if(nrm(n)===nrm(s.n))for(const t of L)if((t.tot||t.van)>=TODAY)A.push({d:t.van<TODAY?TODAY:t.van,what:t.t,detail:`${t.van&&t.tot&&t.tot!==t.van?dkort(t.van)+' tot '+dkort(t.tot):''}${t.plaats?' · '+t.plaats:''}`,link:t.link,bezig:t.van<=TODAY});
-  for(const t of (E&&E.toernooien)||[])if((t.spelers||[]).some(n=>nrm(n)===nrm(s.n))&&t.laatste&&t.laatste>=dag(TODAY,-3)&&!A.some(a=>a.link&&t.url&&a.link.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]===t.url.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]))A.push({d:t.laatste,what:t.naam,detail:`bezig · ${t.rondes} ronde${t.rondes>1?'s':''} gespeeld`,link:t.url,bezig:true});
+  /* lopende toernooien: de volgende partij (al gepaard, nog geen uitslag) met tegenstander, kleur en bord */
+  const ul=u=>String(u||'').replace(/^https?:\/\/(s\d+\.|www\.)?/,'').split(/[?#]/)[0].replace(/\/$/,'').toLowerCase();
+  const VG=((E&&E.volgend)||{})[s.n]||[];const VU=new Set(VG.map(v=>ul(v.url)).filter(Boolean)),VT=new Set(VG.map(v=>v.tour));
+  for(const v of VG){const nu=v.dt<=TODAY;A.push({d:nu?TODAY:v.dt,lab:v.dt===TODAY?'vandaag':nu?'nu bezig':'',what:`${v.tour}, ronde ${v.rn}`,detail:`${v.c==='w'?'met wit':'met zwart'} tegen ${nice(v.o)}${v.or?' ('+v.or+')':''}${v.bo?' · bord '+v.bo:''}`,link:v.url})}
+  for(const [n,L] of Object.entries(AG.andere||{}))if(nrm(n)===nrm(s.n))for(const t of L)if((t.tot||t.van)>=TODAY&&!(t.link&&VU.has(ul(t.link))))A.push({d:t.van<TODAY?TODAY:t.van,what:t.t,detail:`${t.van&&t.tot&&t.tot!==t.van?dkort(t.van)+' tot '+dkort(t.tot):''}${t.plaats?' · '+t.plaats:''}`,link:t.link,bezig:t.van<=TODAY});
+  for(const t of (E&&E.toernooien)||[])if(!VT.has(t.naam)&&!VU.has(ul(t.url))&&(t.spelers||[]).some(n=>nrm(n)===nrm(s.n))&&t.laatste&&t.laatste>=dag(TODAY,-3)&&!A.some(a=>a.link&&t.url&&a.link.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]===t.url.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]))A.push({d:t.laatste,what:t.naam,detail:`bezig · ${t.rondes} ronde${t.rondes>1?'s':''} gespeeld`,link:t.url,bezig:true});
   A.sort((a,b)=>(a.d||'0').localeCompare(b.d||'0'));
-  const li=a=>`<li><span class="when">${a.bezig?'nu bezig':a.d?dlong(a.d):'<span class="warn">in te halen</span>'}</span><span class="what"><b>${esc(a.what)}</b><span>${esc(a.detail)}${a.link?` · <a href="${esc(a.link)}" target="_blank" rel="noopener">uitslagen</a>`:''}</span>${a.warn?`<em>${esc(a.warn)}</em>`:''}</span></li>`;
+  const li=a=>`<li><span class="when">${a.lab?a.lab:a.bezig?'nu bezig':a.d?dlong(a.d):'<span class="warn">in te halen</span>'}</span><span class="what"><b>${esc(a.what)}</b><span>${esc(a.detail)}${a.link?` · <a href="${esc(a.link)}" target="_blank" rel="noopener">uitslagen</a>`:''}</span>${a.warn?`<em>${esc(a.warn)}</em>`:''}</span></li>`;
   const N=5,kom=A.length?`<ul class="agenda">${A.slice(0,N).map(li).join('')}</ul>${A.length>N?`<details><summary class="na" style="cursor:pointer">nog ${A.length-N} later</summary><ul class="agenda">${A.slice(N).map(li).join('')}</ul></details>`:''}`:'<p class="na">Geen geplande partijen bekend.</p>';
   /* gekoppelde toernooien waarin hij speelde */
   const T=((E&&E.toernooien)||[]).filter(t=>(t.spelers||[]).some(n=>nrm(n)===nrm(s.n)));
@@ -306,6 +310,6 @@ window.addEventListener('hashchange',route);route();
 {const t=(E&&E.tijd)||(V&&V.tijd)||'';$('notes').innerHTML=`<p>${window.ONLINE?'Bijgewerkt op ':'Gegevens van '}${t?(+t.slice(8,10))+'/'+(+t.slice(5,7))+'/'+t.slice(0,4)+' om '+t.slice(11):'?'}. FIDE-ratings van de maandlijsten van de FIDE, het clubkampioenschap uit SWAR, de interclub van de KBSB, toernooien van chess-results, OpenResults en de Franse bond.</p><p>Een fout gezien? Laat het weten aan de verantwoordelijke van de website.</p>`}
 })();
 </script>
-<script src="vast.js?v=afde67243e"></script>
+<script src="vast.js?v=2004891f75"></script>
 </body>
 </html>

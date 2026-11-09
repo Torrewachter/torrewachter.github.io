@@ -1,4 +1,4 @@
-/* vast.js - vastgezette pagina's: elke bezoeker zet zelf tot 5 pagina's vast (bewaard in zijn eigen browser).
+/* vast.js - vastgezette pagina's: elke bezoeker zet zelf tot 8 pagina's vast (ook eigen links naar andere sites) (bewaard in zijn eigen browser).
    De startpagina opent meteen de eerste; met de knoppen links onderaan blader je naar de volgende.
    Volgorde: zoals de bezoeker ze zet, of de laatst bijgewerkte pagina eerst (volgens de gegevens zelf:
    SWAR-tijd van een reeks, laatste partij van een speler, FIDE-lijst, laatste interclubronde).
@@ -7,7 +7,7 @@
 (function(){
 'use strict';
 if(window.__twVast)return;window.__twVast=1;
-var KEY='tw-vast',MAX=5;
+var KEY='tw-vast',MAX=8;
 var me=document.currentScript;var isStart=!!(me&&me.hasAttribute('data-start'));var JS=me&&me.getAttribute('data-js')||'';
 function lees(){try{var v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&Array.isArray(v.p))return {p:v.p.filter(function(x){return x&&x.u}).slice(0,MAX),auto:v.auto!==false,volg:/^(nieuw|ongezien)$/.test(v.volg)?v.volg:'vast',d:v.d||{},g:v.g||{}}}catch(e){}return {p:[],auto:true,volg:'vast',d:{},g:{}}}
 function bewaar(s){var k={};s.p.forEach(function(x){k[norm(x.u)]=1});['d','g'].forEach(function(f){for(var u in s[f])if(!k[u])delete s[f][u]});try{localStorage.setItem(KEY,JSON.stringify(s));return true}catch(e){return false}}
@@ -78,7 +78,7 @@ var css='.twv{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align
 +'.twm li.nu{outline:2px solid #2f5d4b}.twm li b{font-variant-numeric:tabular-nums;color:#2f5d4b;min-width:1.2em}.twm li a{flex:1;min-width:0;color:#1d2420;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.twm li a:hover{text-decoration:underline}'
 +'.twm li button{all:unset;cursor:pointer;color:#2f5d4b;padding:2px 5px;border-radius:5px;font-size:13px}.twm li button:hover,.twm li button:focus-visible{background:#dfe8e2}.twm li button[disabled]{color:#bcc5bf;cursor:default;background:none}'
 +'.twm .hoofd{all:unset;cursor:pointer;display:block;text-align:center;background:#2f5d4b;color:#fff;font-weight:600;border-radius:8px;padding:8px 10px;margin-bottom:10px}.twm .hoofd:hover,.twm .hoofd:focus-visible{background:#244a3b}'
-+'.twm label{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#1d2420}.twm .leeg{color:#5d6862;font-size:13px;margin:0 0 10px}.twm .ft{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:13px}.twm .ft a{color:#2f5d4b}'
++'.twm label{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#1d2420}.twm .twl{color:#5d6862;font-size:13px;margin:0 0 10px}.twm .ft{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:13px}.twm .ft a{color:#2f5d4b}'
 +'.twm .dt{font-size:12px;color:#5d6862;white-space:nowrap}.twm .nw{font-size:11px;font-weight:700;color:#fff;background:#c47a12;border-radius:99px;padding:1px 6px;white-space:nowrap}.twv .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#f0b45a;margin-left:5px;vertical-align:middle}'
 +'.twm .exk{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.twm .exk button{all:unset;cursor:pointer;font-size:13px;color:#2f5d4b;border:1px solid #c9d6cd;border-radius:99px;padding:3px 10px}.twm .exk button:hover,.twm .exk button:focus-visible{background:#e8efea}'
 +'.twv .sep{width:1px;align-self:stretch;margin:5px 3px;background:rgba(255,255,255,.35)}'
@@ -86,8 +86,9 @@ var css='.twv{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align
 +'.twp .rij{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.twp .rij button{all:unset;cursor:pointer;font-size:13px;color:#2f5d4b;border:1px solid #c9d6cd;border-radius:99px;padding:4px 11px}.twp .rij button:hover,.twp .rij button:focus-visible{background:#e8efea}.twp .rij button.warn{color:#c23b32;border-color:#e3b5b1}'
 +'.twp .st{font-size:12px;color:#5d6862;margin-top:6px;min-height:1em}.twmed{font-size:14px;line-height:1.5}.twmed p{margin:0 0 8px;color:inherit;font-size:14px}.twmed ul{margin:0 0 8px;padding-left:20px}.twmed a{color:#2f5d4b}'
 +'.twmedk{background:var(--kaart,#fff);border:1px solid var(--lijn,#dfe4e0);border-left:4px solid var(--accent,#2f5d4b);border-radius:12px;padding:14px 16px;margin:0 0 20px}.twmedk h2{margin:0 0 6px;font-size:17px;color:var(--accent,#2f5d4b)}.twmedk .twmed p{color:var(--fg,#1d2420)}.twmedk .twmed a{color:var(--accent,#2f5d4b)}'
++'.twm .eig{display:flex;flex-direction:column;gap:6px;margin:-4px 0 10px;padding:8px;border:1px solid #c9d6cd;border-radius:8px}.twm .eig label{flex-direction:column;gap:2px}.twm .eig input{font:inherit;font-size:13px;padding:5px 7px;border:1px solid #c9d6cd;border-radius:6px;background:#fff;color:#1d2420;width:100%;box-sizing:border-box}.twm .eig .rij2{display:flex;gap:6px}.twm .eig .rij2 button{all:unset;cursor:pointer;font-size:13px;padding:4px 11px;border-radius:99px;border:1px solid #c9d6cd;color:#2f5d4b}.twm .eig .rij2 button[type=submit]{background:#2f5d4b;color:#fff;border-color:#2f5d4b}.twm .eig .fout{font-size:12px;color:#c23b32;min-height:0}'
 +'.twm fieldset{border:0;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:3px}.twm legend{font-size:13px;font-weight:600;margin-bottom:3px;padding:0}'
-+'@media (prefers-color-scheme:dark){.twv{background:#8fc5ad;color:#14201b}.twv button:hover,.twv button:focus-visible{background:rgba(0,0,0,.12)}.twm{background:#1b2220;color:#e7ece8;border-color:#2c3531}.twm p,.twm .leeg{color:#97a39b}.twm li{background:#232c29}.twm li a,.twm label{color:#e7ece8}.twm li b,.twm li button,.twm .ft a{color:#8fc5ad}.twm li.nu{outline-color:#8fc5ad}.twm .dt{color:#97a39b}.twm li button:hover{background:#2c3a35}.twm .hoofd{background:#8fc5ad;color:#14201b}.twm .exk button{color:#8fc5ad;border-color:#36443e}.twm .exk button:hover{background:#22302a}.twv .sep{background:rgba(0,0,0,.25)}.twp textarea{background:#141917;color:#e7ece8;border-color:#36443e}.twp .rij button{color:#8fc5ad;border-color:#36443e}.twp .rij button:hover{background:#22302a}.twp .rij button.warn{color:#f07a70;border-color:#5a3431}.twp .st{color:#97a39b}.twmed a{color:#8fc5ad}}'
++'@media (prefers-color-scheme:dark){.twv{background:#8fc5ad;color:#14201b}.twv button:hover,.twv button:focus-visible{background:rgba(0,0,0,.12)}.twm{background:#1b2220;color:#e7ece8;border-color:#2c3531}.twm p,.twm .twl{color:#97a39b}.twm li{background:#232c29}.twm li a,.twm label{color:#e7ece8}.twm li b,.twm li button,.twm .ft a{color:#8fc5ad}.twm li.nu{outline-color:#8fc5ad}.twm .dt{color:#97a39b}.twm li button:hover{background:#2c3a35}.twm .hoofd{background:#8fc5ad;color:#14201b}.twm .exk button{color:#8fc5ad;border-color:#36443e}.twm .exk button:hover{background:#22302a}.twm .eig{border-color:#36443e}.twm .eig input{background:#141917;color:#e7ece8;border-color:#36443e}.twm .eig .rij2 button{color:#8fc5ad;border-color:#36443e}.twm .eig .rij2 button[type=submit]{background:#8fc5ad;color:#14201b}.twm .eig .fout{color:#f07a70}.twv .sep{background:rgba(0,0,0,.25)}.twp textarea{background:#141917;color:#e7ece8;border-color:#36443e}.twp .rij button{color:#8fc5ad;border-color:#36443e}.twp .rij button:hover{background:#22302a}.twp .rij button.warn{color:#f07a70;border-color:#5a3431}.twp .st{color:#97a39b}.twmed a{color:#8fc5ad}}'
 +'@media print{.twv,.twm{display:none!important}}';
 var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
 var bar=document.createElement('div');bar.className='twv';bar.setAttribute('role','navigation');bar.setAttribute('aria-label','vastgezette pagina\'s');
@@ -136,6 +137,7 @@ function notesActie(a,b){var ta=pan.querySelector('textarea');if(!ta)return;
   else if(a==='n-terug'){if(vorigeNotes!=null){ta.value=vorigeNotes;notesBewaar(vorigeNotes);vorigeNotes=null;nst('Teruggezet.')}}
   else if(a==='n-wis'){if(!ta.value){nst('Er staat niets.');return}if(Date.now()<wisKlaar){vorigeNotes=ta.value;ta.value='';notesBewaar('');wisKlaar=0;b.textContent='Wissen';var st=pan.querySelector('.st');st.innerHTML='Gewist. <button type="button" data-a="n-terug" style="all:unset;cursor:pointer;text-decoration:underline">Ongedaan maken</button>'}
     else{wisKlaar=Date.now()+4000;b.textContent='Zeker? Klik nog eens';setTimeout(function(){if(b.isConnected)b.textContent='Wissen'},4000)}}}
+var eigenOpen=false;
 function teken(){var s=lees(),L=volgorde(s),i=posNav(L),n=L.length;var andereNieuw=L.some(function(x,k){return k!==i&&nieuw(s,x)});
   if(!n){bar.innerHTML='<button type="button" data-a="menu" aria-expanded="'+!menu.hidden+'" aria-controls="twv-menu" title="Zet deze pagina vast: de site opent dan meteen hier">📌 Vastzetten</button>'}
   else{bar.innerHTML='<button type="button" data-a="vorige" aria-label="vorige vastgezette pagina"'+(n<2&&i>=0?' disabled':'')+'>◀</button>'
@@ -143,18 +145,19 @@ function teken(){var s=lees(),L=volgorde(s),i=posNav(L),n=L.length;var andereNie
     +'<button type="button" data-a="volgende" aria-label="volgende vastgezette pagina"'+(n<2&&i>=0?' disabled':'')+'>▶</button>'}
   bar.insertAdjacentHTML('beforeend','<span class="sep" aria-hidden="true"></span>'+(medTekst()?'<button type="button" data-a="med" aria-expanded="'+(!pan.hidden&&pan.dataset.k==='med')+'" aria-controls="twv-paneel" title="Mededelingen van de club'+(medNieuw()?' (nieuw)':'')+'">📢'+(medNieuw()?'<span class="dot" aria-label="nieuw"></span>':'')+'</button>':'')
     +'<button type="button" data-a="notes" aria-expanded="'+(!pan.hidden&&pan.dataset.k==='notes')+'" aria-controls="twv-paneel" title="Mijn notities (alleen voor jou)">📝</button>');
-  if(!menu.hidden)tekenMenu()}
+  if(!menu.hidden&&!(document.activeElement&&menu.contains(document.activeElement)&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)))tekenMenu()}
 function tekenMenu(){var s=lees(),L=volgorde(s),i=posIn(L),n=L.length,vast=s.volg!=='nieuw';
   var h='<h2>Vastgezette pagina\'s</h2><p>Alleen voor jou, in deze browser. Als je de site opent, kom je meteen op de eerste pagina van deze site; met ◀ ▶ links onderaan blader je verder. Andere sites openen in een nieuw tabblad.</p>';
   h+=i>=0?'<button type="button" class="hoofd" data-a="los" data-u="'+esc(L[i].u)+'">Deze pagina losmaken</button>'
-     :n>=MAX?'<p class="leeg">Er staan al '+MAX+' pagina\'s vast. Maak er eerst een los (✕).</p>'
+     :n>=MAX?'<p class="twl">Er staan al '+MAX+' pagina\'s vast. Maak er eerst een los (✕).</p>'
      :'<button type="button" class="hoofd" data-a="vast">📌 Deze pagina vastzetten</button>';
   h+=n?'<ol>'+L.map(function(x,k){var d=s.d[norm(x.u)]||'';var j=s.p.indexOf(x);return '<li'+(k===i?' class="nu"':'')+'><b>'+(k+1)+'</b><a href="'+esc(x.u)+'" title="'+esc(x.t)+'"'+(x.e?' target="_blank" rel="noopener" data-e="1"':'')+'>'+esc(x.t)+(x.e?' ↗':'')+'</a>'+(nieuw(s,x)?'<span class="nw" title="bijgewerkt sinds je vorige bezoek">nieuw</span>':d?'<span class="dt" title="laatst bijgewerkt">'+dtxt(d)+'</span>':'')
       +(vast?'<button type="button" data-a="op" data-i="'+j+'" aria-label="hoger"'+(j?'':' disabled')+'>▲</button><button type="button" data-a="neer" data-i="'+j+'" aria-label="lager"'+(j<n-1?'':' disabled')+'>▼</button>':'')
       +'<button type="button" data-a="los" data-u="'+esc(x.u)+'" aria-label="losmaken">✕</button></li>'}).join('')+'</ol>'
-     :'<p class="leeg">Nog niets vastgezet. Ga naar een pagina die je vaak bekijkt (bv. je eigen spelerspagina of de stand van je reeks) en klik op Vastzetten.</p>';
+     :'<p class="twl">Nog niets vastgezet. Ga naar een pagina die je vaak bekijkt (bv. je eigen spelerspagina of de stand van je reeks) en klik op Vastzetten.</p>';
   var ex=externen().filter(function(x){return !s.p.some(function(q){return q.u===x.u})});
-  if(ex.length&&n<MAX)h+='<p class="leeg" style="margin-bottom:4px">Andere sites vastzetten (openen in een nieuw tabblad):</p><div class="exk">'+ex.map(function(x){return '<button type="button" data-a="ext" data-id="'+x.id+'">+ '+esc(x.t)+'</button>'}).join('')+'</div>';
+  if(n<MAX){h+='<p class="twl" style="margin-bottom:4px">Andere sites vastzetten (openen in een nieuw tabblad):</p><div class="exk">'+ex.map(function(x){return '<button type="button" data-a="ext" data-id="'+x.id+'">+ '+esc(x.t)+'</button>'}).join('')+'<button type="button" data-a="eigen">+ Eigen link …</button></div>';
+    if(eigenOpen)h+='<form class="eig" data-f="eigen"><label>Adres <input type="text" inputmode="url" name="u" placeholder="bv. www.youtube.com/@... of facebook.com/..." autocomplete="url" spellcheck="false"></label><label>Naam <input type="text" name="t" maxlength="60" placeholder="bv. Mijn YouTube (mag leeg)"></label><div class="rij2"><button type="submit">Toevoegen</button><button type="button" data-a="eigen-weg">Annuleren</button></div><div class="fout" aria-live="polite"></div></form>'}
   var rb=function(v,t){return '<label><input type="radio" name="twvolg" data-a="volg" value="'+v+'"'+(s.volg===v?' checked':'')+'> '+t+'</label>'};
   if(n>1)h+='<fieldset><legend>Volgorde</legend>'+rb('vast','Vaste volgorde: zoals ik ze zet (▲ ▼)')+rb('nieuw','Laatst bijgewerkte pagina eerst')+rb('ongezien','Eerst wat nieuw is sinds mijn vorige bezoek, daarna mijn volgorde')+'</fieldset>';
   h+='<label><input type="checkbox" data-a="auto"'+(s.auto?' checked':'')+'> Bij het openen van de site meteen naar de eerste vastgezette pagina van deze site gaan</label>';
@@ -174,11 +177,20 @@ document.addEventListener('click',function(e){var le=e.target.closest&&e.target.
   else if(a==='sluit'){menu.hidden=true;pan.hidden=true;teken()}
   else if(a==='vorige'&&n){var j=posNav(L);ga(L[j<0?n-1:(j-1+n)%n])}
   else if(a==='volgende'&&n){var j2=posNav(L);ga(L[j2<0?0:(j2+1)%n])}
+  else if(a==='eigen'){eigenOpen=true;tekenMenu();var fi=menu.querySelector('.eig input');if(fi)fi.focus()}
+  else if(a==='eigen-weg'){eigenOpen=false;tekenMenu()}
   else if(a==='ext')wijzig(function(s){var x=externen().filter(function(q){return q.id===b.getAttribute('data-id')})[0];if(x&&s.p.length<MAX&&!s.p.some(function(q){return q.u===x.u})){s.p.push({u:x.u,t:x.t,e:1});datums(s);var k2=norm(x.u);if(s.d[k2])s.g[k2]=s.d[k2]}})
   else if(a==='vast')wijzig(function(s){if(posIn(s.p)<0&&s.p.length<MAX){s.p.push({u:hier(),t:titel()});datums(s);var q=norm(hier());if(s.d[q])s.g[q]=s.d[q]}})
   else if(a==='los')wijzig(function(s){var j=nr(s,u);if(j>=0)s.p.splice(j,1)})
   else if(a==='op'&&k>0)wijzig(function(s){var x=s.p.splice(k,1)[0];s.p.splice(k-1,0,x)})
   else if(a==='neer')wijzig(function(s){if(k<s.p.length-1){var x=s.p.splice(k,1)[0];s.p.splice(k+1,0,x)}})});
+document.addEventListener('submit',function(e){var f=e.target;if(!f.matches||!f.matches('.twm form[data-f="eigen"]'))return;e.preventDefault();
+  var u=String(f.u.value||'').trim(),t=String(f.t.value||'').trim(),fo=f.querySelector('.fout');
+  if(u&&!/^[a-z][a-z0-9+.-]*:/i.test(u))u='https://'+u;
+  var ok=false;try{var x=new URL(u);ok=/^https?:$/.test(x.protocol)&&/\./.test(x.hostname);if(ok){u=x.href;if(!t)t=x.hostname.replace(/^www\./,'')+(x.pathname.length>1?x.pathname.replace(/\/$/,''):'')}}catch(er){}
+  if(!ok){fo.textContent='Dat is geen geldig internetadres (bv. https://www.youtube.com/@kanaal).';return}
+  var s=lees();if(s.p.some(function(q){return q.u===u})){fo.textContent='Die link staat al in je lijst.';return}if(s.p.length>=MAX){fo.textContent='Er staan al '+MAX+' pagina\'s vast.';return}
+  s.p.push({u:u,t:t.slice(0,60),e:1});bewaar(s);eigenOpen=false;f.blur&&f.blur();if(document.activeElement)document.activeElement.blur();teken()});
 document.addEventListener('change',function(e){var t=e.target;if(!t.matches)return;
   if(t.matches('.twm [data-a="auto"]')){var c=t.checked;wijzig(function(s){s.auto=c})}
   else if(t.matches('.twm [data-a="volg"]')){var v=t.value;try{sessionStorage.removeItem('tw-volg')}catch(e){}wijzig(function(s){s.volg=v;datums(s)})}});

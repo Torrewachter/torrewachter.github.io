@@ -82,6 +82,9 @@ const verwerkt=(n,o,dt,r)=>{const id=idOf(n);const m=id&&LED[id];const P=m&&m.fi
     if(r!=null&&g.r!=null&&Math.abs(g.r-r)>.01)continue;return true}return false};
 const VWK={};   /* per toernooi: aantal partijen dat al op een FIDE-lijst staat */
 const pend={},rest={};const add=(n,x)=>{if(x.r!=null&&verwerkt(n,x.o,x.dt,x.r)){const t=String(x.tour||'').replace(/ r\d+( ·.*)?$/,'');VWK[t]=(VWK[t]||0)+1;return}(pend[nrm(n)]??=[]).push(x)};const addR=(n,x)=>(rest[nrm(n)]??=[]).push(x);
+/* volgende partij per lid en per gekoppeld toernooi: de laagste ronde die al gepaard is maar nog geen uitslag heeft (bezig of nog te spelen) */
+const VOLG={};const addV=(n,x)=>{const L=(VOLG[n]??=[]);const j=L.findIndex(y=>y.tour===x.tour);if(j<0)L.push(x);else if(x.rn<L[j].rn)L[j]=x};
+const urlT=naam=>(B.toernooien||{})[naam]||'';
 const Ex=(a,b)=>1/(1+10**(Math.max(-400,Math.min(400,b-a))/400));
 const lastK={};for(const m of eigen){const P=CALC[m.fide];if(P&&P[0].length){const g=P[0][P[0].length-1];lastK[nrm(m.n)]=g.K}}
 const Kof=(n,r)=>{const id=idOf(n);const by=id&&LED[id]?LED[id].by:0;if((r||0)>=2400)return 10;if(by&&by>=seizoen-18&&(r||0)<2300)return 40;return lastK[nrm(n)]||20};
@@ -96,6 +99,7 @@ for(const [k,b64] of Object.entries(B.swar||{})){if(/^[OCF]:/.test(k))continue;c
   for(const tr of d.querySelectorAll('tr[id^="Round"]')){const rn=+tr.id.slice(5);const dt=iso(tr.textContent)||vandaag;const t=tr.closest('table');
     for(const r of t.querySelectorAll('tr')){if(r===tr)continue;const c=[...r.children].map(x=>x.textContent.replace(/\s+/g,' ').trim());if(c.length<6||c[1]===''||/Naam/.test(c[1]))continue;
       if(/^bye$/i.test(c[5])||(c[5]===''&&c[4]==='1'))continue;let res=(c[4]||'').replace(/\s+/g,'');
+      if((res===''||res==='-')&&ander&&c[5]){const a=c[1],b=c[5];for(const [me,op,ro,kl] of [[a,b,elo(c[7]),'w'],[b,a,elo(c[3]),'z']])if(isLid(me))addV(me,{tour:k.slice(2),rn,dt,o:op,or:rNu(op,'',ro)||null,c:kl,bo:c[0]||'',url:urlT(k.slice(2))});continue}
       if(res===''||res==='-'){/* nog te spelen: voor de prognose (alleen het clubkampioenschap) */if(c[5]&&!ander){const a=c[1],b=c[5],ra=rNu(a,'',elo(c[3])),rb=rNu(b,'',elo(c[7]));for(const [me,rm,op,ro] of [[a,ra,b,rb],[b,rb,a,ra]])addR(me,{dt,tour:naamT(rn),o:op,or:ro||null,ro:rm||null,K:Kof(me,rm)})}continue}
       if(/ff|\+|^-/i.test(res))continue;const sa=/^1-0$/.test(res)?1:/^0-1$/.test(res)?0:/^(½|0[.,]5)-(½|0[.,]5)$/.test(res)?.5:null;if(sa==null)continue;
       if(tot&&dt<=tot)continue;laatsteR=Math.max(laatsteR,rn);
@@ -114,7 +118,8 @@ for(const [k,b64] of Object.entries(B.swar||{})){if(/^[OCF]:/.test(k))continue;c
       const a=nm('.seat-white .name')||nm('.seat-white'),b=nm('.seat-black .name')||nm('.seat-black');if(!a||!b)continue;
       const R=[...tr.querySelectorAll('td.col-rating')].map(x=>parseInt(x.textContent,10)||0);const ra=rNu(a,dt,R[0]||0),rb=rNu(b,dt,R[1]||0);
       const res=(nm('.col-result .token')||nm('.col-result')).replace(/\s+/g,'').replace(/½/g,'1/2');
-      const sa=res==='1-0'?1:res==='0-1'?0:res==='1/2-1/2'?.5:null;if(sa==null)continue;   /* nog te spelen, forfait of bye */
+      const sa=res==='1-0'?1:res==='0-1'?0:res==='1/2-1/2'?.5:null;
+      if(sa==null){if(res===''||res==='-'||res==='–'){const bo=nm('.col-board')||nm('td.col-table')||'';for(const [me,op,ro,kl] of [[a,b,R[1],'w'],[b,a,R[0],'z']])if(isLid(me))addV(me,{tour:naam,rn,dt,o:op,or:ro||null,c:kl,bo,url:urlT(naam)})}continue}   /* nog te spelen (volgende partij), forfait of bye */
       if(tot&&dt<=tot)continue;(OR[naam]??={r:0}).r=Math.max(OR[naam].r,rn);const when=dt>vandaag?'vooraf (r'+rn+')':ddmm(dt);
       tInfo(naam,'OpenResults');telT(naam,rn,dt,[a,b].filter(isLid));
       for(const [me,rm,op,ro,sc] of [[a,ra,b,rb,sa],[b,rb,a,ra,1-sa]]){if(!idOf(me))continue;const K=Kof(me,rm);add(me,{d:when,dt,tour:naam+' r'+rn,o:op,or:ro||null,ro:rm||null,r:sc,K,chg:(rm&&ro)?Math.round(K*(sc-Ex(rm,ro))*10)/10:null})}}}
@@ -146,13 +151,17 @@ const tempoVan=x=>{x=String(x||'').toLowerCase();if(!x)return null;if(/blitz/.te
     if(fideOk===null&&!Object.keys(FID).length)t.opm.push('niet zeker of dit toernooi FIDE-gerateerd is: kijk het na op chess-results');
     for(const [rs,b64] of Object.entries(R)){const rn=+rs;if(!rn)continue;const d=pars(b64);if(!d)continue;
       const kop=[...d.querySelectorAll('h3,td,th')].map(x=>x.textContent).find(x=>/Round\s+\d+\s+on\s+\d{4}\/\d\d\/\d\d/.test(x));const dm=kop&&/(\d{4})\/(\d\d)\/(\d\d)/.exec(kop);const dt=dm?dm[1]+'-'+dm[2]+'-'+dm[3]:(datum1||vandaag);
-      for(const T of d.querySelectorAll('table.CRs1')){let iW=-1,iB=-1,iR=-1,rt=[],iNw=-1,iNb=-1;
+      for(const T of d.querySelectorAll('table.CRs1')){let iW=-1,iB=-1,iR=-1,rt=[],iNw=-1,iNb=-1,iBo=-1;
         for(const tr of T.querySelectorAll('tr')){const c=[...tr.cells].map(x=>x.textContent.replace(/ /g,' ').trim());
-          if(c.includes('White')&&c.includes('Black')){iW=c.indexOf('White');iB=c.indexOf('Black');iR=c.indexOf('Result');rt=c.map((x,j)=>/^(Rtg|Elo|FideRtg)$/i.test(x)?j:-1).filter(j=>j>=0);
+          if(c.includes('White')&&c.includes('Black')){iW=c.indexOf('White');iB=c.indexOf('Black');iR=c.indexOf('Result');iBo=c.findIndex(x=>/^(Bo\.?|Board)$/i.test(x));rt=c.map((x,j)=>/^(Rtg|Elo|FideRtg)$/i.test(x)?j:-1).filter(j=>j>=0);
             const nr=c.map((x,j)=>x==='No.'?j:-1).filter(j=>j>=0);iNw=nr.length?nr.reduce((a,j)=>Math.abs(j-iW)<Math.abs(a-iW)?j:a):-1;iNb=nr.length?nr.reduce((a,j)=>Math.abs(j-iB)<Math.abs(a-iB)?j:a):-1;continue}
           if(iW<0||iR<0||c.length<=iB)continue;
           const a=nmCR(c[iW]),b=nmCR(c[iB]);if(!a||!b||/^(bye|spielfrei|not paired|nicht gepaart)$/i.test(b))continue;
-          const res=c[iR].replace(/\s+/g,'').replace(/½/g,'1/2');const sa=res==='1-0'?1:res==='0-1'?0:res==='1/2-1/2'?.5:null;if(sa==null)continue;   /* nog te spelen, forfait (+ - -) of bye */
+          const res=c[iR].replace(/\s+/g,'').replace(/½/g,'1/2');const sa=res==='1-0'?1:res==='0-1'?0:res==='1/2-1/2'?.5:null;
+          if(sa==null){if(res===''||res==='-'||res==='-:-'){const rO=i=>{if(!rt.length)return 0;const j=rt.reduce((x,y)=>Math.abs(y-i)<Math.abs(x-i)?y:x);return parseInt(c[j],10)||0};
+              const fa=FID[a]||(iNw>=0&&FID['#'+c[iNw]])||'',fb=FID[b]||(iNb>=0&&FID['#'+c[iNb]])||'';const ida=idCR(a,fa),idb=idCR(b,fb);
+              for(const [id,op,ro,kl] of [[ida,b,rO(iB),'w'],[idb,a,rO(iW),'z']])if(id&&LED[id].club===club)addV(LED[id].n,{tour:naam,rn,dt,o:op,or:ro||null,c:kl,bo:iBo>=0?c[iBo]:'',url:urlT(naam)})}
+            continue}   /* nog te spelen (volgende partij), forfait (+ - -) of bye */
           const rOf=i=>{if(!rt.length)return 0;const j=rt.reduce((x,y)=>Math.abs(y-i)<Math.abs(x-i)?y:x);return parseInt(c[j],10)||0};const ra0=rOf(iW),rb0=rOf(iB);
           const fa=FID[a]||(iNw>=0&&FID['#'+c[iNw]])||'',fb=FID[b]||(iNb>=0&&FID['#'+c[iNb]])||'';
           const ida=idCR(a,fa),idb=idCR(b,fb);const leden=[ida,idb].filter(id=>id&&LED[id].club===club).map(id=>LED[id].n);const ra=ida?rNu(LED[ida].n,dt,ra0):ra0,rb=idb?rNu(LED[idb].n,dt,rb0):rb0;
@@ -182,7 +191,10 @@ const tempoVan=x=>{x=String(x||'').toLowerCase();if(!x)return null;if(/blitz/.te
         /* "DUPONT Jean" -> "Dupont, Jean" */
         const ffeN=x=>{const w=nmCR(x).split(' ');let i=0;while(i<w.length&&/[A-Z]/.test(w[i])&&w[i]===w[i].toUpperCase())i++;return i&&i<w.length?w.slice(0,i).map(v=>v.charAt(0)+v.slice(1).toLowerCase()).join(' ')+', '+w.slice(i).join(' '):nmCR(x)};
         const a=ffeN(c[iW]),b=ffeN(c[iB]);if(!a||!b||/^exempt/i.test(b))continue;
-        const res=c[iR].replace(/\s+/g,'');const sa=res==='1-0'?1:res==='0-1'?0:(res==='X-X'||res==='½-½'||res==='1/2-1/2')?.5:null;if(sa==null)continue;   /* nog te spelen, forfait (F) of vrij */
+        const res=c[iR].replace(/\s+/g,'');const sa=res==='1-0'?1:res==='0-1'?0:(res==='X-X'||res==='½-½'||res==='1/2-1/2')?.5:null;
+        if(sa==null){if(res===''||res==='-'){const rO=j=>{const m=/^(\d+)\s*[FNE]?$/.exec(c[j+1]||'');return m?+m[1]:0};const ida=idCR(a),idb=idCR(b);
+            for(const [id,op,ro,kl] of [[ida,b,rO(iB),'w'],[idb,a,rO(iW),'z']])if(id&&LED[id].club===club)addV(LED[id].n,{tour:naam,rn,dt,o:op,or:ro||null,c:kl,bo:c[0]||'',url:urlT(naam)})}
+          continue}   /* nog te spelen (volgende partij), forfait (F) of vrij */
         const rOf=j=>{const m=/^(\d+)\s*F$/.exec(c[j+1]||'');return m?+m[1]:0};const ra0=rOf(iW),rb0=rOf(iB);   /* alleen FIDE-ratings (F), niet nationaal (N) of geschat (E) */
         const ida=idCR(a),idb=idCR(b);const ra=ida?rNu(LED[ida].n,dt,ra0):ra0,rb=idb?rNu(LED[idb].n,dt,rb0):rb0;const leden=[ida,idb].filter(id=>id&&LED[id].club===club).map(id=>LED[id].n);
         telT(naam,rn,dt,leden);if(tot&&dt<=tot)continue;const when=dt>vandaag?'vooraf (r'+rn+')':ddmm(dt);
@@ -242,5 +254,7 @@ for(const f of fouten){const m=/^toernooi (.+?) : (.*)$/.exec(f);if(m)tInfo(m[1]
 for(const [n,u] of Object.entries(B.toernooien||{}))tInfo(n);
 for(const t of Object.values(TOERN))if(!t.rondes&&!t.opm.length)t.opm.push('nog geen rondes met uitslagen');
 const toernooien=Object.values(TOERN).map(t=>({verwerkt:VWK[t.naam]||0,naam:t.naam,soort:t.soort||(/chess-results/i.test(t.url)?'chess-results':/echecs\.asso\.fr/i.test(t.url)?'FFE':/openresults/i.test(t.url)?'OpenResults':t.url?'SWAR':''),url:t.url,rondes:t.rondes,partijen:t.partijen,spelers:[...t.sp],laatste:t.laatste,opm:t.opm})).sort((a,b)=>a.naam.localeCompare(b.naam,'nl'));
-window.ELO={verwerkt,rNu,verwerktPer:VWK,partijen:FP,toernooien,studie:STUDIE,tijd:B.tijd||'',vanaf,laatste,maanden:M,leden,club,seizoen,tot,fouten,clubInfo,icInfo,vandaag};
+/* alleen wat nog moet komen of vandaag bezig is (een oude ronde zonder uitslag is een vergeten uitslag, geen volgende partij) */
+const volgend={};for(const [n,L] of Object.entries(VOLG)){const M2=L.filter(x=>x.dt>=vandaag||(TOERN[x.tour]&&TOERN[x.tour].laatste<=x.dt));if(M2.length)volgend[n]=M2.sort((x,y)=>x.dt.localeCompare(y.dt))}
+window.ELO={verwerkt,rNu,volgend,verwerktPer:VWK,partijen:FP,toernooien,studie:STUDIE,tijd:B.tijd||'',vanaf,laatste,maanden:M,leden,club,seizoen,tot,fouten,clubInfo,icInfo,vandaag};
 })();

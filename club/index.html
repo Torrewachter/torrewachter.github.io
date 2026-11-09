@@ -164,10 +164,10 @@ input:focus-visible,.cfgbtn button:focus-visible,summary:focus-visible{outline:2
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
 <script src="chess.js?v=1a6803b787"></script>
-<script src="data-club.js?v=d94ffbe621"></script>
-<script src="data-interclub.js?v=d6e80077b0"></script>
+<script src="data-club.js?v=9620a04725"></script>
+<script src="data-interclub.js?v=b200148f6c"></script>
 <script>try{if(String(((window.BRON_IC||{}).instellingen||{}).interclubbeheer||'').toLowerCase()==='nee')document.documentElement.classList.add('beperkt')}catch(e){}</script>
-<script src="data-partijen.js?v=6c5793aa77"></script>
+<script src="data-partijen.js?v=ef4b126135"></script>
 <script src="verwerk.js?v=abfa9d75fc"></script>
 <script>
 const pc=v=>v>=1?'100%':v<=0?'0%':v>.99?'>99%':v<.01?'<1%':v<.05?'<5%':v>.95?'>95%':Math.round(v*20)*5+'%';
@@ -209,7 +209,11 @@ function agenda(n,cg){const A=[];const ligaD=new Set(X.liga.spelers.includes(n)?
   if(cg)for(const g of cg.games)if(g.res==null){const past=g.date<TODAY;A.push({d:past?null:g.date,what:`Clubkampioenschap ${cg.label}, ronde ${g.rd}`,detail:g.opp==='bye'?'bye (vrij, 1 punt)':`${g.kleur==='wit'?'met wit':'met zwart'} tegen ${nice(g.opp)}${g.oe?' ('+g.oe+')':''}`,sum:g.opp==='bye'?'clubkampioenschap: bye':`clubkampioenschap ronde ${g.rd}: met ${g.kleur} tegen ${nice(g.opp)}${g.oe?' ('+g.oe+')':''}`,warn:past?'nog in te halen':ligaD.has(g.date)?'valt samen met het ligakampioenschap':''})}
   if(X.ic.spelers.includes(n))for(const g of X.ic.kalender)A.push({d:g.d,what:`Interclub ${X.ic.team}, ronde ${g.r}`,detail:`${g.thuis?'thuis tegen':'uit bij'} ${g.opp} · opstelling nog niet gekend`,sum:`interclub ronde ${g.r}: ${g.thuis?'thuis tegen':'uit bij'} ${g.opp} (bord en kleur nog niet gekend)`});
   if(X.liga.spelers.includes(n))for(const [d,u,r] of X.liga.rondes)A.push({d,what:X.liga.naam+', '+r,detail:u+' · '+X.liga.plaats,sum:`ligakampioenschap ${r} om ${u} in Brugge (tegenstander en kleur volgen bij de loting)`});
-  for(const t of X.andere[n]||[])A.push({d:t.van,what:t.t,detail:`${dat(t.van)} tot ${dat(t.tot)} · ${t.plaats}`,link:t.link,sum:`${t.t} (paringen nog niet gekend)`});
+  /* lopende toernooien (Elo-gegevens): de volgende partij met tegenstander, kleur en bord */
+  const nz=x=>String(x).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(),ul=u=>String(u||'').replace(/^https?:\/\/(s\d+\.|www\.)?/,'').split(/[?#]/)[0].replace(/\/$/,'').toLowerCase();
+  const VO=(window.ELO&&ELO.volgend)||{};const VG=VO[Object.keys(VO).find(k=>nz(k)===nz(n))]||[];const VU=new Set(VG.map(v=>ul(v.url)));
+  for(const v of VG){const nu=v.dt<=TODAY;const kl=v.c==='w'?'wit':'zwart';A.push({d:nu?TODAY:v.dt,what:`${v.tour}, ronde ${v.rn}`,detail:`${nu?(v.dt===TODAY?'vandaag':'nu bezig')+': ':''}met ${kl} tegen ${nice(v.o)}${v.or?' ('+v.or+')':''}${v.bo?' · bord '+v.bo:''}`,link:v.url,sum:`${v.tour} ronde ${v.rn}: met ${kl} tegen ${nice(v.o)}${v.or?' ('+v.or+')':''}`})}
+  for(const t of X.andere[n]||[])if(!(t.link&&VU.has(ul(t.link))))A.push({d:t.van<TODAY&&(t.tot||t.van)>=TODAY?TODAY:t.van,what:t.t,detail:`${dat(t.van)} tot ${dat(t.tot)} · ${t.plaats}`,link:t.link,sum:`${t.t} (paringen nog niet gekend)`});
   for(const e of X.events)A.push({d:e.d,what:e.t,detail:e.plaats,club:1});
   return A.filter(a=>!a.d||a.d>=TODAY).sort((x,y)=>(x.d||'0').localeCompare(y.d||'0'))}
 /* rating van de laatste FIDE-lijst (map Elo-Torrewachters ernaast, wordt na het laden opnieuw getekend); anders die uit SWAR */
@@ -452,9 +456,9 @@ start(EMBED);bronLijn();
 <script>(function(){if(window.ONLINE)return;var x=document.createElement('script');x.src='../Partijen-naspelen/data-partijen.js';
 x.onload=function(){window.PN_OK=true;document.querySelectorAll('a[data-pn]').forEach(function(a){a.href='../Partijen-naspelen/partijen.html#partij='+encodeURIComponent(a.getAttribute('data-pn'));a.title='partij naspelen in Partijen naspelen (met Stockfish)'});document.querySelectorAll('.pnTeg').forEach(function(a){a.hidden=false})};
 document.head.appendChild(x)})();</script>
-<script>(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=6898f91e5f';
-a.onload=function(){var b=document.createElement('script');b.src='../elo/elo-verwerk.js?v=b6e87b0b86';b.onload=function(){try{var K={};(window.ELO&&ELO.leden||[]).forEach(function(p){var L=p.games&&p.games[0];if(L&&L.length&&L[L.length-1].K)K[p.n.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()]=L[L.length-1].K});window.KFIDE=K;if(typeof renderCard==='function')renderCard()}catch(e){}};document.head.appendChild(b)};
+<script>(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=a066a689c7';
+a.onload=function(){var b=document.createElement('script');b.src='../elo/elo-verwerk.js?v=b570857bb2';b.onload=function(){try{var K={};(window.ELO&&ELO.leden||[]).forEach(function(p){var L=p.games&&p.games[0];if(L&&L.length&&L[L.length-1].K)K[p.n.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()]=L[L.length-1].K});window.KFIDE=K;if(typeof renderCard==='function')renderCard()}catch(e){}};document.head.appendChild(b)};
 document.head.appendChild(a)})();</script>
-<script src="../elo/vast.js?v=afde67243e"></script>
+<script src="../elo/vast.js?v=2004891f75"></script>
 </body>
 </html>
