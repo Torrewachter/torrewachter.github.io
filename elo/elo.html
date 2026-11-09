@@ -174,7 +174,7 @@ a.spn{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}a
   <small>De lijst komt in de PDF zoals ze nu op het scherm staat (periode, tempo, filters, opengeklapte spelers). Kies in het afdrukvenster <i>Opslaan als PDF</i>.</small>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=a066a689c7"></script>
+<script src="data-elo.js?v=9b623b1328"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
 <script>
@@ -366,7 +366,10 @@ function partT(r){const G=r.G;if(!G.length)return '';let h=`<tr class="kind"><td
   const heeft={};for(const x of G){x._gp=vindFIDE(r,x);if(x._gp)heeft[x.tour]=1}
   for(const x of G.slice().reverse()){const k=x.ym+x.tour;if(k!==last){h+=`<tr class="tour"><td colspan="6">${esc(x.tour)} <span class="na">· ${esc(x.pl)}${x.d1?' · '+x.d1.split('-').reverse().join('/'):''} · lijst ${mlab(x.ym)} · K ${x.K??'?'}</span>${pnKnop(r,x.tour,heeft[x.tour])}</td></tr>`;last=k}
     const gp=x._gp;if(gp)r._gebruikt.add(gp);const df=(x.or&&x.ro)?x.or-x.ro:null;h+=`<tr><td>${x.c==='w'?'⚪':x.c==='b'?'⚫':''} ${esc(short(x.o))}${pnAan(r,x.tour)?plk(gp,r):''}${x.ot?' <span class="na">'+esc(x.ot)+'</span>':''} <span class="na">${esc(x.f)}</span></td><td>${x.or??na}</td><td class="${df>0?'up':df<0?'down':''}">${df==null?na:(df>0?'+':'')+df}</td><td>${rs(x.r)}</td><td>${x.kc==null?'':fmtP(Math.round(x.kc*10)/10)}</td><td class="na">${x.ro??''}</td></tr>`}return h}
-function detail(r,n){r._gebruikt=new Set();const pt=r.t===0?pendT(r)+restT(r):'',ft=partT(r);return `<tr class="det"><td colspan="${n}"><div class="detbox">${grafiek(r)}${(FP[r.fide]||[]).length&&$('pnaan').checked?`<div class="pnsp">♟ Links naar de partijen van ${esc(r.n)} <button type="button" class="pnt pnp${PNSP.has(r.n)?' uit':''}" data-n="${esc(r.n)}" title="${PNSP.has(r.n)?'links voor deze speler weer tonen':'alle links voor deze speler verbergen'}">♟ ${PNSP.has(r.n)?'uit':'aan'}</button></div>`:''}<table class="res"><thead><tr><th>Tegenstander</th><th>Rating</th><th>Verschil</th><th>Uitslag</th><th>± Elo</th><th>Eigen Elo</th></tr></thead><tbody>${pt}${ft}${andereT(r,r._gebruikt)}</tbody></table></div></td></tr>`}
+/* volgende partij in een lopend toernooi (al gepaard, nog geen uitslag) */
+function volgT(r){const V=((window.ELO&&ELO.volgend)||{})[r.n]||[];if(!V.length)return '';const vd=(ELO.vandaag||'');const MN=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  return V.map(v=>`<div class="pnsp">▶ <b>Volgende partij</b> (${v.dt===vd?'vandaag':v.dt<vd?'nu bezig':(+v.dt.slice(8,10))+' '+MN[+v.dt.slice(5,7)-1]}): ${v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.tour)}</a>`:esc(v.tour)}, ronde ${v.rn} · ${v.c==='w'?'met wit':'met zwart'} tegen ${esc(v.o)}${v.or?' ('+v.or+')':''}${v.bo?' · bord '+esc(v.bo):''}</div>`).join('')}
+function detail(r,n){r._gebruikt=new Set();const pt=r.t===0?pendT(r)+restT(r):'',ft=partT(r);return `<tr class="det"><td colspan="${n}"><div class="detbox">${grafiek(r)}${volgT(r)}${(FP[r.fide]||[]).length&&$('pnaan').checked?`<div class="pnsp">♟ Links naar de partijen van ${esc(r.n)} <button type="button" class="pnt pnp${PNSP.has(r.n)?' uit':''}" data-n="${esc(r.n)}" title="${PNSP.has(r.n)?'links voor deze speler weer tonen':'alle links voor deze speler verbergen'}">♟ ${PNSP.has(r.n)?'uit':'aan'}</button></div>`:''}<table class="res"><thead><tr><th>Tegenstander</th><th>Rating</th><th>Verschil</th><th>Uitslag</th><th>± Elo</th><th>Eigen Elo</th></tr></thead><tbody>${pt}${ft}${andereT(r,r._gebruikt)}</tbody></table></div></td></tr>`}
 
 /* ---------- samenvatting ---------- */
 function stats(list){const R=rows.filter(r=>r.cur!=null);const up=R.filter(r=>r.dlt>0).length,down=R.filter(r=>r.dlt<0).length;const avg=R.length?Math.round(R.reduce((a,r)=>a+r.cur,0)/R.length):'–';
