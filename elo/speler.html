@@ -86,12 +86,12 @@ html:not(.online) .alleenonline{display:none!important}
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=64a87827c3"></script>
+<script src="data-elo.js?v=6898f91e5f"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b6e87b0b86"></script>
-<script src="../club/data-club.js?v=a37fb54338"></script>
-<script src="../club/data-interclub.js?v=64c1431b55"></script>
-<script src="../club/data-partijen.js?v=dd12da5362"></script>
+<script src="../club/data-club.js?v=d94ffbe621"></script>
+<script src="../club/data-interclub.js?v=d6e80077b0"></script>
+<script src="../club/data-partijen.js?v=6c5793aa77"></script>
 <script src="../club/verwerk.js?v=abfa9d75fc"></script>
 <script>
 (function(){
@@ -306,5 +306,6 @@ window.addEventListener('hashchange',route);route();
 {const t=(E&&E.tijd)||(V&&V.tijd)||'';$('notes').innerHTML=`<p>${window.ONLINE?'Bijgewerkt op ':'Gegevens van '}${t?(+t.slice(8,10))+'/'+(+t.slice(5,7))+'/'+t.slice(0,4)+' om '+t.slice(11):'?'}. FIDE-ratings van de maandlijsten van de FIDE, het clubkampioenschap uit SWAR, de interclub van de KBSB, toernooien van chess-results, OpenResults en de Franse bond.</p><p>Een fout gezien? Laat het weten aan de verantwoordelijke van de website.</p>`}
 })();
 </script>
+<script src="vast.js?v=afde67243e"></script>
 </body>
 </html>
