@@ -15,10 +15,13 @@ const bronFouten=[].concat((BC||{}).fouten||[],(BI||{}).fouten||[],(BP||{}).fout
 const laatste=Object.values(tijden).filter(Boolean).sort().pop()||'';
 const V={tijd:laatste,tijden,datum:laatste.slice(0,10),fouten,bronFouten};
 /* agenda.txt (komt mee in data-club.js): clublokaal, ligakampioenschap, andere toernooien en clubactiviteiten voor de startpagina */
-V.agenda=null;try{const t=BC&&BC.agenda&&BC.agenda.tekst?dec(BC.agenda.tekst):'';if(t){const A={club:{},liga:{naam:'',plaats:'',spelers:[],rondes:[]},andere:{},events:[]};
+V.agenda=null;try{const t=BC&&BC.agenda&&BC.agenda.tekst?dec(BC.agenda.tekst):'';if(t){const A={club:{},liga:{naam:'',plaats:'',spelers:[],rondes:[]},andere:{},events:[],inhaal:[]};
   for(const r0 of t.replace(/^\uFEFF/,'').split(/\r?\n/)){const r=r0.trim();if(!r||r[0]==='#')continue;const i=r.indexOf('=');if(i<1)continue;const k=r.slice(0,i).trim().toLowerCase().replace(/\s+/g,' '),v=r.slice(i+1).trim(),p=v.split('|').map(x=>x.trim());
     if(k==='clublokaal')A.club.plaats=v;else if(k==='cluburen')A.club.uur=v;else if(k==='liga')A.liga.naam=v;else if(k==='liga plaats')A.liga.plaats=v;else if(k==='liga spelers')A.liga.spelers=v.split(';').map(x=>x.trim()).filter(Boolean);
     else if(k==='liga ronde'&&p[0])A.liga.rondes.push([p[0],p[1]||'',p[2]||'']);else if(k==='toernooi'&&p.length>=4)(A.andere[p[0]]??=[]).push({t:p[1],van:p[2],tot:p[3],plaats:p[4]||'',link:p[5]||''});else if(k==='activiteit'&&p[0])A.events.push({d:p[0],t:p[1]||'',plaats:p[2]||''});
+    else if(k==='inhaaldagen'){const m=/(maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)[\s\S]*?tot\s+(\d{4}-\d\d-\d\d)/i.exec(v),m2=/vanaf\s+(\d{4}-\d\d-\d\d)/i.exec(v);
+      if(m)A.inhaalRegel={dag:['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'].indexOf(m[1].toLowerCase()),tot:m[2],vanaf:m2?m2[1]:''};else fouten.push('agenda.txt: inhaaldagen niet begrepen (bv. elke zaterdag tot 2026-12-31)')}
+    else if(k==='inhaaldag'&&p[0]){A.inhaal.push(p[0]);A.events.push({d:p[0],t:p[1]||'Inhaaldag clubkampioenschap (achterstallige partijen)',plaats:p[2]||A.club.plaats||''})}
     else fouten.push('agenda.txt: regel niet begrepen: '+r.slice(0,40))}
   V.agenda=A}}catch(e){fouten.push('agenda.txt onleesbaar')}
 const vandaag=(tijden.club||laatste).slice(0,10)||new Date().toISOString().slice(0,10);
@@ -73,6 +76,11 @@ for(const [k,b64] of Object.entries(B.swar||{})){const h=dec(b64);if(!/tr id=.Ro
   for(const [r,d] of Object.entries(s.rondes))if(!CLUB.rondes[r]||d<CLUB.rondes[r])CLUB.rondes[r]=d}
 // gespeeld = laatste ronde waarvan de datum voorbij is en waarin al een echte uitslag staat (geen forfait)
 CLUB.played=CLUB.played||0;
+/* inhaaldagen volgens een regel in agenda.txt ("inhaaldagen = elke zaterdag tot 2026-12-31"): elke zo'n dag die geen speeldag is */
+if(V.agenda&&V.agenda.inhaalRegel&&V.agenda.inhaalRegel.dag>=0){const IR=V.agenda.inhaalRegel,speel=new Set(Object.values(CLUB.raw).flatMap(x=>Object.values(x.rondes||{})));
+  const t=new Date(((IR.vanaf&&IR.vanaf>vandaag)?IR.vanaf:vandaag)+'T12:00:00Z');
+  for(let i=0;i<400;i++){const d=t.toISOString().slice(0,10);if(d>IR.tot)break;if(t.getUTCDay()===IR.dag&&!speel.has(d)&&!V.agenda.inhaal.includes(d)){V.agenda.inhaal.push(d);V.agenda.events.push({d,t:'Inhaaldag clubkampioenschap (achterstallige partijen)',plaats:V.agenda.club.plaats||''})}t.setUTCDate(t.getUTCDate()+1)}
+  V.agenda.inhaal.sort();V.agenda.events.sort((a,b)=>a.d.localeCompare(b.d))}
 // geboortejaren van de spelers in de reeksen
 for(const v of Object.values(CLUB.raw))for(const row of v.r){const [a,,,b]=row.split('|');for(const n of [a,b]){if(!n||n==='Bye')continue;const id=idOf(n);if(id&&LEDEN[id].by)CLUB.by[n]=LEDEN[id].by}}
 CLUB.k40=Object.entries(CLUB.by).filter(([n,y])=>seizoen-y<18).map(([n])=>n);
