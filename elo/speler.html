@@ -86,12 +86,12 @@ html:not(.online) .alleenonline{display:none!important}
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=f472ed505a"></script>
+<script src="data-elo.js?v=693a648271"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
-<script src="../club/data-club.js?v=d8799e51da"></script>
-<script src="../club/data-interclub.js?v=f875db942a"></script>
-<script src="../club/data-partijen.js?v=539e995b0c"></script>
+<script src="../club/data-club.js?v=90d21bec9d"></script>
+<script src="../club/data-interclub.js?v=08a02ca856"></script>
+<script src="../club/data-partijen.js?v=18e2e96ba9"></script>
 <script src="../club/verwerk.js?v=abfa9d75fc"></script>
 <script>
 (function(){
@@ -296,15 +296,52 @@ function lijst(){document.title='Spelers Torrewachters';
     $('lijst').innerHTML=L.map(s=>{const r=curStd(s);return `<a href="#${tok(s.n)}"><b>${esc(nice(s.n))}</b><span>${[wat(s),r?r:''].filter(Boolean).join(' · ')}</span></a>`}).join('')||'<p class="na">Niemand gevonden.</p>';$('aantal').textContent=L.length+' speler'+(L.length===1?'':'s')};
   $('q').addEventListener('input',tek);$('srt').addEventListener('change',tek);tek()}
 
+/* ---------- meldingen voor deze speler: hij abonneert zich zelf in de app ntfy (zie meldingen.js) ---------- */
+function meldDeel(s){const I=((window.BRON_CLUB||{}).instellingen)||{};if(String(I['spelermeldingen']||'').toLowerCase()==='nee')return '';const k=window.TW_KANAAL(s.n),vn=esc(nice(s.n).split(' ')[0]);
+  const ua=navigator.userAgent||'',and=/Android/i.test(ua),ios=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
+  const knop='display:inline-block;text-decoration:none;font-weight:700;padding:9px 16px;border-radius:8px;border:0;cursor:pointer;font:inherit;font-weight:700;';
+  const groot=`${knop}background:var(--accent);color:var(--surface)`,licht=`${knop}background:var(--soft);color:var(--accent);border:1px solid var(--line)`;
+  const app=and?`<a style="${groot}" href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank" rel="noopener">App ntfy installeren</a>`:ios?`<a style="${groot}" href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank" rel="noopener">App ntfy installeren</a>`:'';
+  const kanaal=`<code id="kanaal" style="font-weight:700;user-select:all;word-break:break-all">${esc(k)}</code>`;
+  let stappen;
+  if(and)stappen=`<li>${app} <span class="na">gratis, zonder account</span></li><li><a style="${groot}" href="ntfy://ntfy.sh/${esc(k)}">Meldingen aanzetten</a> <span class="na">opent ntfy met jouw kanaal; tik daar op <b>Abonneren</b></span></li><li><button type="button" class="proef" style="${licht}">Stuur een proefbericht</button></li>`;
+  else if(ios)stappen=`<li>${app} <span class="na">gratis, zonder account</span></li><li><button type="button" id="kopieer" style="${groot}">Kanaal kopiëren</button> ${kanaal}<br><span class="na">Open ntfy, tik op <b>+</b>, plak bij <i>Topic</i> en tik op <b>Subscribe</b>.</span></li><li><button type="button" class="proef" style="${licht}">Stuur een proefbericht</button></li>`;
+  else stappen=`<li><b>Op je gsm:</b> scan deze code met de camera. Je komt dan op deze uitleg, met de knoppen voor je gsm.<div id="qr" style="margin-top:8px;width:150px;height:150px;background:#fff;padding:6px;border-radius:6px;border:1px solid var(--line)"></div></li><li><b>Of op deze computer:</b> open <a href="https://ntfy.sh/${esc(k)}" target="_blank" rel="noopener">ntfy.sh/${esc(k)}</a> en sta daar meldingen toe (zolang je browser open is). Kanaal: ${kanaal} <button type="button" id="kopieer" style="${licht};padding:2px 10px;font-size:13px">kopiëren</button></li><li><button type="button" class="proef" style="${licht}">Stuur een proefbericht</button></li>`;
+  return `<details class="fold" id="melden"><summary>🔔 Meldingen voor ${vn} <span>een bericht op je gsm bij een nieuwe uitslag, een nieuwe FIDE-lijst of de paring van je volgende ronde</span></summary><div class="in">
+<p class="small" style="margin:0">Na elke automatische update krijg je een bericht als er voor ${vn} iets nieuw is, bv. <i>“Clubkampioenschap reeks 1A, ronde 7: winst tegen … Nu 6 uit 7, 2e van 9.”</i> De club bewaart daarvoor niets over jou; stoppen doe je in de app.</p>
+<ol style="margin:0;padding-left:22px;display:flex;flex-direction:column;gap:12px">${stappen}</ol><div class="na small" id="proefst" aria-live="polite"></div>
+<p class="na small" style="margin:0">Wie de naam van dit kanaal kent, kan meelezen; er staat alleen in wat ook op deze website staat.</p></div></details>`}
+function meldKoppel(s){const d=$('melden');if(!d)return;const k=window.TW_KANAAL(s.n);
+  if(/^#?melden$/i.test(new URLSearchParams(location.search).get('m')||'')||location.search.includes('melden'))d.open=true;
+  const kp=$('kopieer');if(kp)kp.addEventListener('click',()=>{const ok=()=>{const o=kp.textContent;kp.textContent='gekopieerd ✓';setTimeout(()=>kp.textContent=o,2000)};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(k).then(ok,()=>{});else{const r=document.createRange();r.selectNodeContents($('kanaal'));const sl=getSelection();sl.removeAllRanges();sl.addRange(r);try{document.execCommand('copy');ok()}catch(e){}}});
+  d.querySelectorAll('.proef').forEach(b=>b.addEventListener('click',()=>{const st=$('proefst');st.textContent='versturen…';
+    fetch('https://ntfy.sh/',{method:'POST',body:JSON.stringify({topic:k,title:'Torrewachters: proefbericht',message:`Het werkt! Je krijgt voortaan een bericht als er voor ${nice(s.n)} iets nieuw is.`,tags:['white_check_mark'],click:location.href.split('?')[0]})})
+      .then(r=>{st.textContent=r.ok?'Verstuurd. Kreeg je niets binnen een halve minuut? Kijk of je in ntfy geabonneerd bent op '+k+' en of meldingen van ntfy aanstaan.':'Versturen lukte niet ('+r.status+'). Probeer later opnieuw.'}).catch(()=>{st.textContent='Versturen lukte niet (geen internet?).'})}));
+  const q=$('qr');if(q){const doe=()=>{try{const c=qrcode(0,'M');c.addData(location.href.split('#')[0].split('?')[0]+'?m=melden#'+tok(s.n));c.make();q.innerHTML=c.createSvgTag({cellSize:4,margin:0,scalable:true})}catch(e){q.textContent=''}};
+    if(window.qrcode)doe();else{const x=document.createElement('script');x.src='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';x.onload=doe;x.onerror=()=>{q.remove()};document.head.appendChild(x)}}}
 function pagina(s){document.title=nice(s.n)+' · Torrewachters';
   $('eloL').href='elo.html#'+tok(s.n);if(s.club.length)$('standL').href='../club/stand.html#r'+encodeURIComponent(s.club.slice().reverse()[0])+'~'+tok(s.n);
   const el=eloDeel(s);const ck=clubDeel(s);const ic=icDeel(s);const ag=agendaDeel(s);
   const opts=ALLE.map(x=>`<option value="${esc(tok(x.n))}"${x===s?' selected':''}>${esc(nice(x.n))}</option>`).join('');
   $('app').innerHTML=`<header><span class="eyebrow">Speler · De Torrewachters</span><h1>${esc(nice(s.n))}</h1><p class="sub">${[wat(s)?wat(s).replace(/^reeks/,'clubkampioenschap reeks'):'',s.m&&s.m.tit?s.m.tit:''].filter(Boolean).map(esc).join(' · ')||'&nbsp;'}</p></header>
 <div class="pick"><label class="na" for="ander">Andere speler</label><select id="ander">${opts}</select></div>
-${ag}${ck}${el.html}${ic}`;
-  $('ander').addEventListener('change',e=>{location.hash=e.target.value});window.scrollTo(0,0)}
+${meldDeel(s)}${ag}${ck}${el.html}${ic}`;
+  $('ander').addEventListener('change',e=>{location.hash=e.target.value});
+  meldKoppel(s);window.scrollTo(0,0)}
 
+/* ---------- samenvatting per speler, voor de meldingen na het automatisch bijwerken (meldingen.js op GitHub) ---------- */
+window.TW_SPELERS=()=>ALLE.map(s=>s.n);
+window.TW_KANAAL=n=>{const I=((window.BRON_CLUB||{}).instellingen)||{};const pre=String(I['meldingen kanaal']||'torrewachters').trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'-');return pre+'-'+tok(n).toLowerCase().replace(/_/g,'-')};
+window.TW_SAMENVATTING=n=>{const s=spOf(n);if(!s)return null;const o={n:s.n,tok:tok(s.n),kanaal:TW_KANAAL(s.n),club:[],ic:[],elo:null,volg:((E&&E.volgend)||{})[s.n]||[]};
+  for(const k of RK.filter(k=>s.club.includes(k))){const {L,Z}=reeks(k);const p=L.find(q=>nrm(q.n)===nrm(s.n));if(!p)continue;const per=PER(k),R=RAW[k].rondes||RDAT;const games=[];
+    RAW[k].r.forEach((row,i)=>{const [a,ea,res,b,eb]=row.split('|');if(nrm(a)!==nrm(p.n)&&nrm(b)!==nrm(p.n))return;const rd=Math.floor(i/per)+1;if(b==='Bye'){games.push([rd,'bye',rd<=PLD(k)?'1':'-']);return}
+      const wit=nrm(a)===nrm(p.n),op=wit?b:a;const sc=res==='-'?'-':res==='0ff-0ff'?'F':{'1-0':wit?'1':'0','0-1':wit?'0':'1','½-½':'½'}[res]||res;games.push([rd,op,sc,wit?'w':'z',NUOF(op,+(wit?eb:ea)||0)||null,R[rd]||''])});
+    const kans=Z.map(z=>{const st=p.stZ[z.k];let v=st==='sure'?1:st==='out'?0:p.chK[z.k];if(z.t==='zakken')v=1-v;return {t:z.t,lab:z.kans,v:Math.round(v*1000)/1000,pct:pct(v),zeker:st}});
+    o.club.push({k,label:(V.club.labels&&V.club.labels[k])||'reeks '+k,rank:p.rank,of:L.length,pts:p.pts,gesp:p.games+p.bye,open:p.open,games,kans})}
+  if(s.m){const m=s.m,i=M.length-1;o.elo={lijst:M[i],std:m.s[0][i],rapid:m.s[1][i],blitz:m.s[2][i],pend:(m.pend||[]).map(x=>[x.dt,x.tour,x.o,x.or||null,x.r,x.chg])}}
+  if(IC)o.ic=(IC.ind||[]).filter(g=>nrm(g.speler)===nrm(s.n)).map(g=>[g.ronde,g.tegen,g.elo_t||null,g.score,(IC.series&&IC.series.dates||{})[g.ronde]||'']);
+  return o};
 function route(){const h=decodeURIComponent(location.hash.slice(1));const s=h&&ALLE.find(x=>tok(x.n)===h||x.n===h);if(s)pagina(s);else lijst()}
 window.addEventListener('hashchange',route);route();
 {const t=(E&&E.tijd)||(V&&V.tijd)||'';$('notes').innerHTML=`<p>${window.ONLINE?'Bijgewerkt op ':'Gegevens van '}${t?(+t.slice(8,10))+'/'+(+t.slice(5,7))+'/'+t.slice(0,4)+' om '+t.slice(11):'?'}. FIDE-ratings van de maandlijsten van de FIDE, het clubkampioenschap uit SWAR, de interclub van de KBSB, toernooien van chess-results, OpenResults en de Franse bond.</p><p>Een fout gezien? Laat het weten aan de verantwoordelijke van de website.</p>`}
