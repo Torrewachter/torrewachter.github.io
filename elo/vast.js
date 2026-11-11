@@ -54,7 +54,7 @@ function volgorde(s){if(s.volg==='vast')return s.p.slice();var sig=s.volg+'|'+s.
   try{z=JSON.parse(sessionStorage.getItem('tw-volg')||'null')}catch(e){}
   if(z&&z.k===sig){var m={};s.p.forEach(function(x){m[norm(x.u)]=x});return z.L.map(function(u){return m[u]})}
   var L=sorteer(s);try{sessionStorage.setItem('tw-volg',JSON.stringify({k:sig,L:L.map(function(x){return norm(x.u)})}))}catch(e){}return L}
-function sorteer(s){var o=s.p.map(function(x,i){return {x:x,i:i,d:s.d[norm(x.u)]||'',n:nieuw(s,x)?1:0}});
+function sorteer(s){var o=s.p.map(function(x,i){return {x:x,i:i,d:(s.d[norm(x.u)]||'').slice(0,10),n:nieuw(s,x)?1:0}});   /* per dag: op dezelfde dag bijgewerkt = je eigen volgorde */
   o.sort(s.volg==='nieuw'?function(a,b){return a.d<b.d?1:a.d>b.d?-1:a.i-b.i}:function(a,b){return b.n-a.n||a.i-b.i});return o.map(function(q){return q.x})}
 
 /* ---------- startpagina: meteen naar de eerste vastgezette pagina (één keer per bezoek) ---------- */
@@ -107,7 +107,10 @@ function medTekst(){var M=window.TW_MED;return M&&M.tekst?M.tekst:''}
 function medNieuw(){var M=window.TW_MED;if(!M||!M.tekst)return false;var g='';try{g=localStorage.getItem(KEY+'-med')||''}catch(e){}return g!==M.id}
 function medGelezen(){var M=window.TW_MED;if(M&&M.id){try{localStorage.setItem(KEY+'-med',M.id)}catch(e){}}}
 function opmaak(t){/* lege regel = nieuwe alinea, "- " = opsomming, links worden klikbaar */
-  var lk=function(x){return esc(x).replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)\]])/g,'<a href="$1" target="_blank" rel="noopener">$1</a>')};
+  /* links: [naam](https://...) toont de naam, een los adres (https://... of www....) wordt zelf de link */
+  var a=function(u,t){if(/^www\./i.test(u))u='https://'+u;return '<a href="'+u+'" target="_blank" rel="noopener">'+t+'</a>'};
+  var lk=function(x){var d=[];x=String(x).replace(/\[([^\]\n]+)\]\(\s*((?:https?:\/\/|www\.)[^\s)]+)\s*\)/gi,function(m,t,u){d.push(a(esc(u),esc(t)));return '\u0000'+(d.length-1)+'\u0000'});
+    return esc(x).replace(/((?:https?:\/\/|www\.)[^\s<\u0000]+[^\s<\u0000.,;:!?)\]])/gi,function(m,u){return a(u,u.replace(/^https?:\/\//,''))}).replace(/\u0000(\d+)\u0000/g,function(m,i){return d[+i]})};
   return '<div class="twmed">'+t.split(/\n\s*\n/).map(function(bl){var r=bl.split('\n');if(r.every(function(x){return /^\s*[-*•]\s+/.test(x)}))return '<ul>'+r.map(function(x){return '<li>'+lk(x.replace(/^\s*[-*•]\s+/,''))+'</li>'}).join('')+'</ul>';return '<p>'+r.map(lk).join('<br>')+'</p>'}).join('')+'</div>'}
 function tekenMed(){pan.innerHTML='<h2>Mededelingen</h2>'+opmaak(medTekst())+'<div class="ft"><span></span><button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';medGelezen()}
 function medStart(){var d=document.getElementById('twmed');if(!d)return;var t=medTekst();d.innerHTML=t?'<div class="twmedk"><h2>Mededelingen</h2>'+opmaak(t)+'</div>':'';if(t)medGelezen()}
@@ -152,14 +155,14 @@ function tekenMenu(){var s=lees(),L=volgorde(s),i=posIn(L),n=L.length,vast=s.vol
      :n>=MAX?'<p class="twl">Er staan al '+MAX+' pagina\'s vast. Maak er eerst een los (✕).</p>'
      :'<button type="button" class="hoofd" data-a="vast">📌 Deze pagina vastzetten</button>';
   h+=n?'<ol>'+L.map(function(x,k){var d=s.d[norm(x.u)]||'';var j=s.p.indexOf(x);return '<li'+(k===i?' class="nu"':'')+'><b>'+(k+1)+'</b><a href="'+esc(x.u)+'" title="'+esc(x.t)+'"'+(x.e?' target="_blank" rel="noopener" data-e="1"':'')+'>'+esc(x.t)+(x.e?' ↗':'')+'</a>'+(nieuw(s,x)?'<span class="nw" title="bijgewerkt sinds je vorige bezoek">nieuw</span>':d?'<span class="dt" title="laatst bijgewerkt">'+dtxt(d)+'</span>':'')
-      +(vast?'<button type="button" data-a="op" data-i="'+j+'" aria-label="hoger"'+(j?'':' disabled')+'>▲</button><button type="button" data-a="neer" data-i="'+j+'" aria-label="lager"'+(j<n-1?'':' disabled')+'>▼</button>':'')
+      +(true?'<button type="button" data-a="op" data-i="'+j+'" aria-label="hoger"'+(j?'':' disabled')+'>▲</button><button type="button" data-a="neer" data-i="'+j+'" aria-label="lager"'+(j<n-1?'':' disabled')+'>▼</button>':'')
       +'<button type="button" data-a="los" data-u="'+esc(x.u)+'" aria-label="losmaken">✕</button></li>'}).join('')+'</ol>'
      :'<p class="twl">Nog niets vastgezet. Ga naar een pagina die je vaak bekijkt (bv. je eigen spelerspagina of de stand van je reeks) en klik op Vastzetten.</p>';
   var ex=externen().filter(function(x){return !s.p.some(function(q){return q.u===x.u})});
   if(n<MAX){h+='<p class="twl" style="margin-bottom:4px">Andere sites vastzetten (openen in een nieuw tabblad):</p><div class="exk">'+ex.map(function(x){return '<button type="button" data-a="ext" data-id="'+x.id+'">+ '+esc(x.t)+'</button>'}).join('')+'<button type="button" data-a="eigen">+ Eigen link …</button></div>';
     if(eigenOpen)h+='<form class="eig" data-f="eigen"><label>Adres <input type="text" inputmode="url" name="u" placeholder="bv. www.youtube.com/@... of facebook.com/..." autocomplete="url" spellcheck="false"></label><label>Naam <input type="text" name="t" maxlength="60" placeholder="bv. Mijn YouTube (mag leeg)"></label><div class="rij2"><button type="submit">Toevoegen</button><button type="button" data-a="eigen-weg">Annuleren</button></div><div class="fout" aria-live="polite"></div></form>'}
   var rb=function(v,t){return '<label><input type="radio" name="twvolg" data-a="volg" value="'+v+'"'+(s.volg===v?' checked':'')+'> '+t+'</label>'};
-  if(n>1)h+='<fieldset><legend>Volgorde</legend>'+rb('vast','Vaste volgorde: zoals ik ze zet (▲ ▼)')+rb('nieuw','Laatst bijgewerkte pagina eerst')+rb('ongezien','Eerst wat nieuw is sinds mijn vorige bezoek, daarna mijn volgorde')+'</fieldset>';
+  if(n>1)h+='<fieldset><legend>Volgorde</legend>'+rb('vast','Vaste volgorde: zoals ik ze zet (▲ ▼)')+rb('nieuw','Laatst bijgewerkte pagina eerst (op dezelfde dag: mijn volgorde)')+rb('ongezien','Eerst wat nieuw is sinds mijn vorige bezoek, daarna mijn volgorde')+'</fieldset>';
   h+='<label><input type="checkbox" data-a="auto"'+(s.auto?' checked':'')+'> Bij het openen van de site meteen naar de eerste vastgezette pagina van deze site gaan</label>';
   var su=startUrl();h+='<div class="ft">'+(su?'<a href="'+su+'">Startpagina</a>':'<span></span>')+'<button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';
   menu.innerHTML=h}
