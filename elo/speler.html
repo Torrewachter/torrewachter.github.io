@@ -87,14 +87,14 @@ html:not(.online) .alleenonline{display:none!important}
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=3fc2114a20"></script>
+<script src="data-elo.js?v=56cd5f995b"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
 <script src="../club/data-club.js?v=77f043418b"></script>
 <script src="../club/data-interclub.js?v=6eba1f518a"></script>
 <script src="../club/data-partijen.js?v=59d749fa40"></script>
 <script src="../club/verwerk.js?v=ef349255c3"></script>
-<script src="clubsite.js?v=227aad2b0b"></script>
+<script src="clubsite.js?v=418e518780"></script>
 <script>
 (function(){
 'use strict';
@@ -331,11 +331,21 @@ function meldKoppel(s){const d=$('melden');if(!d)return;const k=window.TW_KANAAL
     if(window.qrcode)doe();else{const x=document.createElement('script');x.src='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';x.onload=doe;x.onerror=()=>{q.remove()};document.head.appendChild(x)}}}
 /* ---------- in het nieuws op torrewachters.be: artikels waarin de speler met voor- en achternaam vermeld wordt (de namen haalt Website bijwerken.bat op) ---------- */
 const platN=t=>String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
-window.TW_IN_NIEUWS=n=>{const [l,f]=String(n||'').split(', ');if(!l||!f)return [];const L=platN(l),P=platN(f).split(' ').filter(v=>v.length>1).flatMap(v=>[v+' '+L,L+' '+v]);
-  return (window.TW_CLUBSITE||[]).filter(x=>Array.isArray(x.n)&&x.n.some(q=>{q=' '+q+' ';return P.some(p=>q.includes(' '+p+' '))}))};
+/* gekoppeld als de voor- en familienaam samen in het artikel staan, of een voor- of familienaam die maar een keer in de club voorkomt (bv. Borys) */
+window.TW_NIEUWS_KOPPEL=function(naam,alle,L){const delen=n=>{const [l,f]=String(n||'').split(', ');return {L:platN(l),F:platN(f||'').split(' ').filter(v=>v.length>1)}};
+  const ik=delen(naam);if(!ik.L||!ik.F.length)return [];const tv={},ta={};
+  for(const n of alle){const d=delen(n);new Set(d.F).forEach(v=>tv[v]=(tv[v]||0)+1);if(d.L)ta[d.L]=(ta[d.L]||0)+1}
+  const vol=ik.F.flatMap(v=>[v+' '+ik.L,ik.L+' '+v]),uV=ik.F.filter(v=>v.length>=3&&tv[v]===1),uA=ik.L.length>=3&&ta[ik.L]===1?ik.L:'';
+  return (L||[]).filter(x=>{const n=(x.n||[]).map(q=>' '+q+' '),w=new Set(x.w||[]);
+    if(vol.some(p=>n.some(q=>q.includes(' '+p+' '))))return true;   // voor- en familienaam samen
+    const ander=v=>(x.n||[]).some(q=>{const t=q.split(' ');for(let i=0;i<t.length-1;i++)if(t[i]===v&&!ik.L.startsWith(t[i+1]))return true;return false});   // bv. "Tom Piceu" is niet Tom Veys
+    if(uV.some(v=>w.has(v)&&!ander(v)))return true;                   // een voornaam die maar een keer in de club voorkomt
+    if(uA)return uA.includes(' ')?n.some(q=>q.includes(' '+uA+' ')):w.has(uA);   // idem voor de familienaam
+    return false})};
+window.TW_IN_NIEUWS=n=>window.TW_NIEUWS_KOPPEL(n,ALLE.map(x=>x.n),window.TW_CLUBSITE);
 function nieuwsDeel(s){const L=window.TW_IN_NIEUWS(s.n);if(!L.length)return '';
   const rij=x=>`<div class="nwr"><a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)}</a><span class="na small">${[x.d?dmy(x.d):'',x.a?'door '+esc(x.a):''].filter(Boolean).join(' · ')}</span></div>`;
-  return `<section><h2>In het nieuws</h2><div class="card"><p class="na small" style="margin:0">Artikels op <a href="https://torrewachters.be/Nieuws" target="_blank" rel="noopener">torrewachters.be</a> waarin ${esc(nice(s.n))} vermeld wordt</p>${L.slice(0,8).map(rij).join('')}${L.length>8?`<details><summary class="na small">nog ${L.length-8} ouder</summary>${L.slice(8).map(rij).join('')}</details>`:''}</div></section>`}
+  return `<section><h2>In het nieuws</h2><div class="card"><p class="na small" style="margin:0">Artikels op <a href="https://torrewachters.be/Nieuws" target="_blank" rel="noopener">torrewachters.be</a> waarin ${esc(nice(s.n))} vermeld wordt (met voor- en familienaam, of met een naam die maar één keer in de club voorkomt)</p>${L.slice(0,8).map(rij).join('')}${L.length>8?`<details><summary class="na small">nog ${L.length-8} ouder</summary>${L.slice(8).map(rij).join('')}</details>`:''}</div></section>`}
 const dmy=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(d);return m?(+m[3])+'/'+(+m[2])+'/'+m[1]:d};
 function pagina(s){document.title=nice(s.n)+' · Torrewachters';
   $('eloL').href='elo.html#'+tok(s.n);if(s.club.length)$('standL').href='../club/stand.html#r'+encodeURIComponent(s.club.slice().reverse()[0])+'~'+tok(s.n);

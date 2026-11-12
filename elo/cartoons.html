@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cartoons van de column</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* De prent (cartoon of foto) bovenaan elk artikel op torrewachters.be/Nieuws, om door te bladeren.
+   De prenten zelf blijven op torrewachters.be staan; clubsite.js (gemaakt door Website bijwerken.bat) zegt welke. */
+:root{
+  --bg:#f3f5f2;--surface:#fff;--fg:#1b221e;--muted:#67716b;--line:#dbe1dc;--soft:#eef3ef;--accent:#2f5d4b;
+  --display:"Saira Condensed","Arial Narrow",system-ui,sans-serif;--body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121715;--surface:#1a201d;--fg:#e6ece8;--muted:#97a29b;--line:#2b3430;--soft:#1f2925;--accent:#8fc5ad;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121715;--surface:#1a201d;--fg:#e6ece8;--muted:#97a29b;--line:#2b3430;--soft:#1f2925;--accent:#8fc5ad;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 var(--body)}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+a{color:var(--accent)}
+.top{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px}.top a{font-weight:600;text-decoration:none}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--display);font-size:clamp(32px,7vw,50px);line-height:1;margin:2px 0 0}
+.na{color:var(--muted)}
+.buhne{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.prent{display:flex;align-items:center;justify-content:center;min-height:240px;height:min(66vh,640px);touch-action:pan-y}
+.prent img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px;user-select:none;-webkit-user-drag:none}
+.pijl{position:absolute;top:calc(50% - 60px);width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--fg);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.pijl:disabled{opacity:.3;cursor:default}
+.pijl.l{left:8px}.pijl.r{right:8px}
+.bij{display:flex;align-items:center;gap:10px}.mid{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 16px}
+.bij h2{font-family:var(--display);font-size:24px;line-height:1.15;margin:0}
+.bij h2 a{color:var(--fg);text-decoration:none}.bij h2 a:hover{text-decoration:underline}
+.teller{font-variant-numeric:tabular-nums;white-space:nowrap}
+.strook{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x proximity}
+.strook button{flex:0 0 auto;width:74px;height:74px;padding:0;border:2px solid transparent;border-radius:8px;background:var(--soft);cursor:pointer;scroll-snap-align:center;overflow:hidden}
+.strook button img{width:100%;height:100%;object-fit:cover;display:block}
+.strook button[aria-current="true"]{border-color:var(--accent)}
+.strook button:focus-visible,.pijl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.leeg{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--muted)}
+.wrap{padding-bottom:96px}
+@media (max-width:560px){.pijl{position:static;flex:0 0 auto;width:42px;height:42px;box-shadow:none}.prent{height:auto;min-height:180px}.prent img{max-height:58vh}.bij h2{font-size:20px}.mid{flex-direction:column;align-items:flex-start}}
+</style>
+<script>if(/^https?:$/.test(location.protocol))document.documentElement.classList.add('online')</script>
+<style>html:not(.online) .alleenonline{display:none!important}</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="top"><a class="alleenonline" href="../index.html">← Startpagina</a><a href="speler.html">Spelers</a><a href="https://torrewachters.be/Nieuws" target="_blank" rel="noopener">Alle nieuws op torrewachters.be ↗</a></nav>
+<header><span class="eyebrow">Nieuws · De Torrewachters</span><h1>Cartoons van de column</h1>
+<p class="na" style="margin:4px 0 0">De prent bij elk artikel op torrewachters.be, de nieuwste eerst. Blader met de pijlen, door te vegen of met de pijltjestoetsen; tik op de titel om het artikel te lezen.</p></header>
+<div id="app"><p class="na">laden…</p></div>
+</div>
+<script src="clubsite.js?v=418e518780"></script>
+<script>
+(function(){
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// de prenten van blogger komen als kleine voorbeelden (w297-h398): voor de grote weergave een grotere versie vragen
+const groot=u=>String(u).replace(/\/(?:w\d+-h\d+|s\d+)(-[a-z0-9-]+)?\//,'/s1200/').replace(/=(?:w\d+-h\d+|s\d+)(-[a-z0-9-]+)?$/,'=s1200');
+const dmy=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(d||'');return m?(+m[3])+'/'+(+m[2])+'/'+m[1]:''};
+const L=(window.TW_CLUBSITE||[]).filter(x=>x.i).slice().sort((a,b)=>(b.d||'').localeCompare(a.d||''));
+const app=document.getElementById('app');
+if(!L.length){app.innerHTML='<div class="leeg">Nog geen prenten: ze worden opgehaald bij het volgende bijwerken van de website.</div>';return}
+app.innerHTML=`<div class="buhne"><div class="prent" id="prent"><img id="img" alt=""></div>
+<div class="bij"><button type="button" class="pijl l" id="vorige" aria-label="Nieuwere prent">‹</button><div class="mid"><h2><a id="tit" target="_blank" rel="noopener"></a></h2><span class="na teller" id="teller"></span></div><button type="button" class="pijl r" id="volgende" aria-label="Oudere prent">›</button></div></div>
+<div class="strook" id="strook" aria-label="Alle prenten">${L.map((x,i)=>`<button type="button" data-i="${i}" title="${esc(x.t)}" aria-label="${esc(x.t)}"><img loading="lazy" src="${esc(x.i)}" alt=""></button>`).join('')}</div>`;
+const $=id=>document.getElementById(id);let nu=-1;
+function toon(i,stil){i=Math.max(0,Math.min(L.length-1,i));if(i===nu)return;nu=i;const x=L[i];
+  $('img').src=groot(x.i);$('img').alt=x.t;$('img').onerror=function(){if(this.src!==x.i)this.src=x.i};
+  $('tit').textContent=x.t;$('tit').href=x.u;
+  $('teller').textContent=[dmy(x.d),x.a?'door '+x.a:'',(i+1)+' / '+L.length].filter(Boolean).join(' · ');
+  $('vorige').disabled=i===0;$('volgende').disabled=i===L.length-1;
+  document.querySelectorAll('#strook button').forEach((b,j)=>b.setAttribute('aria-current',j===i?'true':'false'));
+  const b=document.querySelector(`#strook button[data-i="${i}"]`);if(b&&!stil)b.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+  [i-1,i+1].forEach(j=>{if(L[j]){const p=new Image();p.src=groot(L[j].i)}});   // de buren alvast laden
+  try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
+$('vorige').onclick=()=>toon(nu-1);$('volgende').onclick=()=>toon(nu+1);
+$('strook').addEventListener('click',e=>{const b=e.target.closest('button');if(b)toon(+b.dataset.i)});
+document.addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('input,textarea,select'))return;if(e.key==='ArrowLeft')toon(nu-1);else if(e.key==='ArrowRight')toon(nu+1)});
+let x0=null;const pr=$('prent');
+pr.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+pr.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)toon(nu+(dx<0?1:-1))});
+const h=parseInt(location.hash.slice(1),10);toon(h>0?h-1:0,true);
+})();
+</script>
+<script src="vast.js?v=66f0a0240d"></script>
+</body>
+</html>
