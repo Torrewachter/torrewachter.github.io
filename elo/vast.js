@@ -84,7 +84,7 @@ var css='.twv{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align
 +'.twv .sep{width:1px;align-self:stretch;margin:5px 3px;background:rgba(255,255,255,.35)}'
 +'.twp textarea{box-sizing:border-box;width:100%;min-height:200px;resize:vertical;font:14px/1.45 ui-monospace,Consolas,monospace;padding:8px;border:1px solid #c9d6cd;border-radius:8px;background:#fff;color:#1d2420}'
 +'.twp .rij{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.twp .rij button{all:unset;cursor:pointer;font-size:13px;color:#2f5d4b;border:1px solid #c9d6cd;border-radius:99px;padding:4px 11px}.twp .rij button:hover,.twp .rij button:focus-visible{background:#e8efea}.twp .rij button.warn{color:#c23b32;border-color:#e3b5b1}'
-+'.twp .st{font-size:12px;color:#5d6862;margin-top:6px;min-height:1em}.twmed{font-size:14px;line-height:1.5}.twmed p{margin:0 0 8px;color:inherit;font-size:14px}.twmed ul{margin:0 0 8px;padding-left:20px}.twmed a{color:#2f5d4b}'
++'.twp .st{font-size:12px;color:#5d6862;margin-top:6px;min-height:1em}.twmed{font-size:14px;line-height:1.5}.twmed p{margin:0 0 8px;color:inherit;font-size:14px}.twmed ul{margin:0 0 8px;padding-left:20px}.twmed a{color:#2f5d4b}.twmed .twk1{font-size:22px;line-height:1.2;font-weight:700;margin:2px 0 8px}.twmed .twk2{font-size:17px;font-weight:700;margin:2px 0 6px}.twmed .twgr{font-size:1.3em;font-weight:600}'
 +'.twmedk{background:var(--kaart,#fff);border:1px solid var(--lijn,#dfe4e0);border-left:4px solid var(--accent,#2f5d4b);border-radius:12px;padding:14px 16px;margin:0 0 20px}.twmedk h2{margin:0 0 6px;font-size:17px;color:var(--accent,#2f5d4b)}.twmedk .twmed p{color:var(--fg,#1d2420)}.twmedk .twmed a{color:var(--accent,#2f5d4b)}'
 +'.twm .eig{display:flex;flex-direction:column;gap:6px;margin:-4px 0 10px;padding:8px;border:1px solid #c9d6cd;border-radius:8px}.twm .eig label{flex-direction:column;gap:2px}.twm .eig input{font:inherit;font-size:13px;padding:5px 7px;border:1px solid #c9d6cd;border-radius:6px;background:#fff;color:#1d2420;width:100%;box-sizing:border-box}.twm .eig .rij2{display:flex;gap:6px}.twm .eig .rij2 button{all:unset;cursor:pointer;font-size:13px;padding:4px 11px;border-radius:99px;border:1px solid #c9d6cd;color:#2f5d4b}.twm .eig .rij2 button[type=submit]{background:#2f5d4b;color:#fff;border-color:#2f5d4b}.twm .eig .fout{font-size:12px;color:#c23b32;min-height:0}'
 +'.twm fieldset{border:0;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:3px}.twm legend{font-size:13px;font-weight:600;margin-bottom:3px;padding:0}'
@@ -107,11 +107,20 @@ function medTekst(){var M=window.TW_MED;return M&&M.tekst?M.tekst:''}
 function medNieuw(){var M=window.TW_MED;if(!M||!M.tekst)return false;var g='';try{g=localStorage.getItem(KEY+'-med')||''}catch(e){}return g!==M.id}
 function medGelezen(){var M=window.TW_MED;if(M&&M.id){try{localStorage.setItem(KEY+'-med',M.id)}catch(e){}}}
 function opmaak(t){/* lege regel = nieuwe alinea, "- " = opsomming, links worden klikbaar */
-  /* links: [naam](https://...) toont de naam, een los adres (https://... of www....) wordt zelf de link */
+  /* links: [naam](https://...) toont de naam, een los adres (https://... of www....) wordt zelf de link
+     opmaak: **vet**, _schuin_, ++groter++; een regel die begint met "!! " is een grote titel, met "! " een kleine titel */
   var a=function(u,t){if(/^www\./i.test(u))u='https://'+u;return '<a href="'+u+'" target="_blank" rel="noopener">'+t+'</a>'};
-  var lk=function(x){var d=[];x=String(x).replace(/\[([^\]\n]+)\]\(\s*((?:https?:\/\/|www\.)[^\s)]+)\s*\)/gi,function(m,t,u){d.push(a(esc(u),esc(t)));return '\u0000'+(d.length-1)+'\u0000'});
-    return esc(x).replace(/((?:https?:\/\/|www\.)[^\s<\u0000]+[^\s<\u0000.,;:!?)\]])/gi,function(m,u){return a(u,u.replace(/^https?:\/\//,''))}).replace(/\u0000(\d+)\u0000/g,function(m,i){return d[+i]})};
-  return '<div class="twmed">'+t.split(/\n\s*\n/).map(function(bl){var r=bl.split('\n');if(r.every(function(x){return /^\s*[-*•]\s+/.test(x)}))return '<ul>'+r.map(function(x){return '<li>'+lk(x.replace(/^\s*[-*•]\s+/,''))+'</li>'}).join('')+'</ul>';return '<p>'+r.map(lk).join('<br>')+'</p>'}).join('')+'</div>'}
+  var lk=function(x){var d=[],bew=function(h){d.push(h);return '\u0000'+(d.length-1)+'\u0000'};
+    x=String(x).replace(/\[([^\]\n]+)\]\(\s*((?:https?:\/\/|www\.)[^\s)]+)\s*\)/gi,function(m,t,u){return bew(a(esc(u),vorm(esc(t))))});
+    x=x.replace(/((?:https?:\/\/|www\.)[^\s\u0000]+[^\s\u0000.,;:!?)\]])/gi,function(m,u){return bew(a(esc(u),esc(u.replace(/^https?:\/\//,''))))});
+    return vorm(esc(x)).replace(/\u0000(\d+)\u0000/g,function(m,i){return d[+i]})};
+  var vorm=function(h){return h.replace(/\*\*([^*\n]+?)\*\*/g,'<b>$1</b>').replace(/\+\+([^+\n]+?)\+\+/g,'<span class="twgr">$1</span>').replace(/(^|[\s(>])_([^_\n]+?)_(?=$|[\s.,;:!?)<])/g,'$1<i>$2</i>')};
+  return '<div class="twmed">'+t.split(/\n\s*\n/).map(function(bl){var r=bl.split('\n'),uit='';
+    // titels: een regel die begint met "!! " of "! "
+    while(r.length&&/^\s*!{1,2}\s+/.test(r[0])){var m=/^\s*(!{1,2})\s+(.*)$/.exec(r.shift());uit+='<p class="'+(m[1].length===2?'twk1':'twk2')+'">'+lk(m[2])+'</p>'}
+    if(!r.length)return uit;
+    if(r.every(function(x){return /^\s*[-*•]\s+/.test(x)}))return uit+'<ul>'+r.map(function(x){return '<li>'+lk(x.replace(/^\s*[-*•]\s+/,''))+'</li>'}).join('')+'</ul>';
+    return uit+'<p>'+r.map(lk).join('<br>')+'</p>'}).join('')+'</div>'}
 function tekenMed(){pan.innerHTML='<h2>Mededelingen</h2>'+opmaak(medTekst())+'<div class="ft"><span></span><button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';medGelezen()}
 function medStart(){var d=document.getElementById('twmed');if(!d)return;var t=medTekst();d.innerHTML=t?'<div class="twmedk"><h2>Mededelingen</h2>'+opmaak(t)+'</div>':'';if(t)medGelezen()}
 (function(){var src=me&&me.src||'';if(!src)return;var x=document.createElement('script');x.src=src.replace(/[^\/]*$/,'')+'mededelingen.js?u='+Math.floor(Date.now()/600000);
