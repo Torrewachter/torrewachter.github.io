@@ -72,6 +72,8 @@ ul.agenda em{display:block;color:var(--warn);font-style:normal;font-size:13px}
 .lijst a span{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
 .num b.sm{font-size:26px;white-space:nowrap}
 .nwr{display:flex;flex-direction:column;gap:1px}.nwr a{font-weight:600}
+.nwtop{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;margin:2px 0 10px;color:var(--fg);text-decoration:none}.nwtop:hover b{text-decoration:underline}
+.nwtop img{width:64px;height:64px;object-fit:cover;border-radius:6px;flex:0 0 auto}.nwtop>span{display:flex;flex-direction:column;gap:2px;min-width:0}.nwtop b{font-size:17px;line-height:1.25}
 .leeg{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--muted)}
 .notes{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 .notes p{margin:0;max-width:100ch}
@@ -87,7 +89,7 @@ html:not(.online) .alleenonline{display:none!important}
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=56cd5f995b"></script>
+<script src="data-elo.js?v=6bb39e784d"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
 <script src="../club/data-club.js?v=77f043418b"></script>
@@ -343,6 +345,10 @@ window.TW_NIEUWS_KOPPEL=function(naam,alle,L){const delen=n=>{const [l,f]=String
     if(uA)return uA.includes(' ')?n.some(q=>q.includes(' '+uA+' ')):w.has(uA);   // idem voor de familienaam
     return false})};
 window.TW_IN_NIEUWS=n=>window.TW_NIEUWS_KOPPEL(n,ALLE.map(x=>x.n),window.TW_CLUBSITE);
+/* staat de speler in het nieuwste artikel op torrewachters.be, dan dat artikel ook bovenaan de pagina */
+function nieuwBoven(s){const A=(window.TW_CLUBSITE||[]).slice().sort((a,b)=>(b.d||'').localeCompare(a.d||''))[0];
+  if(!A||!window.TW_IN_NIEUWS(s.n).some(x=>x.u===A.u))return '';
+  return `<a class="nwtop" href="${esc(A.u)}" target="_blank" rel="noopener">${A.i?`<img src="${esc(A.i)}" alt="" loading="lazy">`:''}<span><span class="eyebrow">In het nieuws op torrewachters.be</span><b>${esc(A.t)}</b><span class="na small">${[A.d?dmy(A.d):'',A.a?'door '+esc(A.a):''].filter(Boolean).join(' · ')} · lees het artikel ↗</span></span></a>`}
 function nieuwsDeel(s){const L=window.TW_IN_NIEUWS(s.n);if(!L.length)return '';
   const rij=x=>`<div class="nwr"><a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)}</a><span class="na small">${[x.d?dmy(x.d):'',x.a?'door '+esc(x.a):''].filter(Boolean).join(' · ')}</span></div>`;
   return `<section><h2>In het nieuws</h2><div class="card"><p class="na small" style="margin:0">Artikels op <a href="https://torrewachters.be/Nieuws" target="_blank" rel="noopener">torrewachters.be</a> waarin ${esc(nice(s.n))} vermeld wordt (met voor- en familienaam, of met een naam die maar één keer in de club voorkomt)</p>${L.slice(0,8).map(rij).join('')}${L.length>8?`<details><summary class="na small">nog ${L.length-8} ouder</summary>${L.slice(8).map(rij).join('')}</details>`:''}</div></section>`}
@@ -353,7 +359,7 @@ function pagina(s){document.title=nice(s.n)+' · Torrewachters';
   const opts=ALLE.map(x=>`<option value="${esc(tok(x.n))}"${x===s?' selected':''}>${esc(nice(x.n))}</option>`).join('');
   $('app').innerHTML=`<header><span class="eyebrow">Speler · De Torrewachters</span><h1>${esc(nice(s.n))}</h1><p class="sub">${[wat(s)?wat(s).replace(/^reeks/,'clubkampioenschap reeks'):'',s.m&&s.m.tit?s.m.tit:''].filter(Boolean).map(esc).join(' · ')||'&nbsp;'}</p></header>
 <div class="pick"><label class="na" for="ander">Andere speler</label><select id="ander">${opts}</select></div>
-${meldDeel(s)}${ag}${ck}${el.html}${ic}${nieuwsDeel(s)}`;
+${nieuwBoven(s)}${meldDeel(s)}${ag}${ck}${el.html}${ic}${nieuwsDeel(s)}`;
   $('ander').addEventListener('change',e=>{location.hash=e.target.value});
   meldKoppel(s);window.scrollTo(0,0)}
 
