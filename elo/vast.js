@@ -1,4 +1,4 @@
-/* vast.js - vastgezette pagina's: elke bezoeker zet zelf tot 8 pagina's vast (ook eigen links naar andere sites) (bewaard in zijn eigen browser).
+/* vast.js - vastgezette pagina's: elke bezoeker zet zelf zoveel pagina's vast als hij wil (ook eigen links naar andere sites) (bewaard in zijn eigen browser).
    De startpagina opent meteen de eerste; met de knoppen links onderaan blader je naar de volgende.
    Volgorde: zoals de bezoeker ze zet, of de laatst bijgewerkte pagina eerst (volgens de gegevens zelf:
    SWAR-tijd van een reeks, laatste partij van een speler, FIDE-lijst, laatste interclubronde).
@@ -7,7 +7,7 @@
 (function(){
 'use strict';
 if(window.__twVast)return;window.__twVast=1;
-var KEY='tw-vast',MAX=8;
+var KEY='tw-vast',MAX=1000;   // geen echte grens: alles staat in de browser van de bezoeker
 var me=document.currentScript;var isStart=!!(me&&me.hasAttribute('data-start'));var JS=me&&me.getAttribute('data-js')||'';
 function lees(){try{var v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&Array.isArray(v.p))return {p:v.p.filter(function(x){return x&&x.u}).slice(0,MAX),auto:v.auto!==false,volg:/^(nieuw|ongezien)$/.test(v.volg)?v.volg:'vast',d:v.d||{},g:v.g||{}}}catch(e){}return {p:[],auto:true,volg:'vast',d:{},g:{}}}
 function bewaar(s){var k={};s.p.forEach(function(x){k[norm(x.u)]=1});['d','g'].forEach(function(f){for(var u in s[f])if(!k[u])delete s[f][u]});try{localStorage.setItem(KEY,JSON.stringify(s));return true}catch(e){return false}}
