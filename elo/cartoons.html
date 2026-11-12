@@ -45,7 +45,15 @@ html.dia,html.dia body{background:#000;color:#eee;cursor:none}
 html.dia .wrap{max-width:none;padding:2vh 3vw;gap:0;height:100vh}
 html.dia .top,html.dia header,html.dia .strook,html.dia .pijl,html.dia #twv,html.dia .twv{display:none!important}
 html.dia .buhne{background:transparent;border:0;padding:0;height:100%}
-html.dia .prent{height:auto;flex:1;min-height:0}html.dia .prent img{max-height:84vh;transition:opacity .6s}
+html.dia .prent{height:auto;flex:1;min-height:0;position:relative;overflow:hidden}html.dia #img{visibility:hidden;max-height:84vh}
+/* overgangen in de diashow: twee lagen over elkaar die in elkaar overvloeien, met telkens een ander effect en een trage zoom */
+.laag{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 1s ease,transform 4s cubic-bezier(.2,.6,.3,1),filter 1s ease;will-change:opacity,transform}
+.laag.start{transition:none}
+.laag.start.zoom{transform:scale(1.14)}.laag.start.dicht{transform:scale(.86)}.laag.start.rechts{transform:translateX(9%)}.laag.start.links{transform:translateX(-9%)}.laag.start.wazig{filter:blur(14px);transform:scale(1.03)}
+.laag.toon{opacity:1;transform:scale(1.05);filter:none}
+.laag.weg{opacity:0;transform:scale(1.08)}.laag.weg.rechts{transform:translateX(-9%) scale(1.05)}.laag.weg.links{transform:translateX(9%) scale(1.05)}.laag.weg.wazig{filter:blur(14px)}
+html.dia .bij{transition:opacity .5s}html.dia .bij.wissel{opacity:0}
+@media (prefers-reduced-motion:reduce){.laag,.laag.start,.laag.toon,.laag.weg{transform:none!important;filter:none!important}}
 html.dia .bij h2 a,html.dia .bij h2{color:#fff}html.dia .na{color:#aaa}
 html.dia .dian{display:block}.dian{display:none;color:#888;font-size:13px;text-align:center;margin-top:6px}
 @media (max-width:560px){.pijl{position:static;flex:0 0 auto;width:42px;height:42px;box-shadow:none}.prent{height:auto;min-height:180px}.prent img{max-height:58vh}.bij h2{font-size:20px}.mid{flex-direction:column;align-items:flex-start}}
@@ -90,11 +98,21 @@ let x0=null;const pr=$('prent');
 pr.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
 pr.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)toon(nu+(dx<0?1:-1))});
 if(/(^|[?&])diashow/.test(location.search)){
-  // diashow (vanaf de startpagina na 1 minuut niets doen): om de 8 seconden de volgende prent, en na de oudste weer de nieuwste
+  // diashow (vanaf de startpagina na 1 minuut niets doen): om de 3 seconden een willekeurige prent;
+  // elke prent een keer, daarna opnieuw geschud (en nooit twee keer dezelfde na elkaar)
   document.documentElement.classList.add('dia');
   app.querySelector('.buhne').insertAdjacentHTML('beforeend','<p class="dian">Diashow · klik, druk op een toets of beweeg de muis om terug te gaan</p>');
-  toon(0,true);
-  const iv=setInterval(()=>{const v=nu+1<L.length?nu+1:0,im=$('img');im.style.opacity=0;setTimeout(()=>{nu=-1;toon(v,true);im.style.opacity=1},600)},8000);
+  let rij=[];const schud=()=>{const r=L.map((_,i)=>i);for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}if(r.length>1&&r[0]===nu)r.push(r.shift());return r};
+  const volgende=()=>{if(!rij.length)rij=schud();return rij.shift()};
+  const pr=$('prent');pr.insertAdjacentHTML('beforeend','<img class="laag" alt=""><img class="laag" alt="">');
+  const lagen=[...pr.querySelectorAll('.laag')],EFF=['zoom','dicht','rechts','links','wazig'];let cur=0;
+  const wissel=i=>{const x=L[i],nieuw=lagen[1-cur],oud=lagen[cur],e=EFF[Math.floor(Math.random()*EFF.length)];
+    nieuw.onload=()=>{nieuw.className='laag start '+e;void nieuw.offsetWidth;nieuw.className='laag toon '+e;oud.className='laag weg '+e;cur=1-cur;
+      const bij=app.querySelector('.bij');bij.classList.add('wissel');setTimeout(()=>{nu=-1;toon(i,true);bij.classList.remove('wissel')},450)};
+    nieuw.onerror=function(){if(this.src!==new URL(x.i,location.href).href)this.src=x.i};
+    nieuw.alt=x.t;nieuw.src=groot(x.i)};
+  wissel(volgende());
+  const iv=setInterval(()=>wissel(volgende()),3000);
   const t0=Date.now();let weg=false;
   const stop=()=>{if(weg||Date.now()-t0<1500)return;weg=true;clearInterval(iv);location.replace('../index.html')};
   ['click','keydown','wheel','touchstart','mousemove'].forEach(e=>addEventListener(e,stop,{passive:true}));
