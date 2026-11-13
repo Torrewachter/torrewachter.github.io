@@ -21,7 +21,16 @@ function mijn(){var m=null;try{m=JSON.parse(localStorage.getItem(MK)||'null')}ca
 function zetMijn(m){try{if(m)localStorage.setItem(MK,JSON.stringify(m));else localStorage.removeItem(MK)}catch(e){}}
 
 /* ---------- startpagina: meteen naar mijn pagina (een keer per bezoek) ---------- */
-if(isStart&&kan){var m0=mijn();var gezien=false;try{gezien=sessionStorage.getItem('tw-gestart')==='1';sessionStorage.setItem('tw-gestart','1')}catch(e){gezien=true}
+/* de website als app: service worker (sw.js) en manifest in de hoofdmap van de website */
+var twApp=null;
+(function(){if(!/^https?:$/.test(location.protocol))return;var root=(isStart||!/\/(club|elo)\/[^\/]*$/.test(location.pathname))?'':'../';
+  try{if('serviceWorker' in navigator)navigator.serviceWorker.register(root+'sw.js').catch(function(){})}catch(e){}
+  if(!document.querySelector('link[rel="manifest"]')){var h=document.head;[['manifest',root+'manifest.webmanifest'],['apple-touch-icon',root+'app-180.png'],['icon',root+'app-32.png']].forEach(function(x){var l=document.createElement('link');l.rel=x[0];l.href=x[1];h.appendChild(l)});
+    var mt=document.createElement('meta');mt.name='theme-color';mt.content='#2f5d4b';h.appendChild(mt)}
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();twApp=e})})();
+function isApp(){try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}}
+var meeH=/^#tw=/.test(location.hash);
+if(isStart&&kan&&!meeH){var m0=mijn();var gezien=false;try{gezien=sessionStorage.getItem('tw-gestart')==='1';sessionStorage.setItem('tw-gestart','1')}catch(e){gezien=true}
   if(m0&&m0.auto!==false&&!gezien&&location.hash!=='#start'&&norm(m0.u)!==norm(hier())){location.replace(m0.u);return}}
 else{try{sessionStorage.setItem('tw-gestart','1')}catch(e){}}
 if(!kan)return;
@@ -47,7 +56,7 @@ var css='.twv{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align
 +'.twm .eig{display:flex;flex-direction:column;gap:6px;margin:-4px 0 10px;padding:8px;border:1px solid #c9d6cd;border-radius:8px}.twm .eig label{flex-direction:column;gap:2px}.twm .eig input{font:inherit;font-size:13px;padding:5px 7px;border:1px solid #c9d6cd;border-radius:6px;background:#fff;color:#1d2420;width:100%;box-sizing:border-box}.twm .eig .rij2{display:flex;gap:6px}.twm .eig .rij2 button{all:unset;cursor:pointer;font-size:13px;padding:4px 11px;border-radius:99px;border:1px solid #c9d6cd;color:#2f5d4b}.twm .eig .rij2 button[type=submit]{background:#2f5d4b;color:#fff;border-color:#2f5d4b}.twm .eig .fout{font-size:12px;color:#c23b32;min-height:0}'
 +'.twm fieldset{border:0;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:3px}.twm legend{font-size:13px;font-weight:600;margin-bottom:3px;padding:0}'
 +'@media (prefers-color-scheme:dark){.twv{background:#8fc5ad;color:#14201b}.twv button:hover,.twv button:focus-visible{background:rgba(0,0,0,.12)}.twm{background:#1b2220;color:#e7ece8;border-color:#2c3531}.twm p,.twm .twl{color:#97a39b}.twm li{background:#232c29}.twm li a,.twm label{color:#e7ece8}.twm li b,.twm li button,.twm .ft a{color:#8fc5ad}.twm li.nu{outline-color:#8fc5ad}.twm .dt{color:#97a39b}.twm li button:hover{background:#2c3a35}.twm .hoofd{background:#8fc5ad;color:#14201b}.twm .exk button{color:#8fc5ad;border-color:#36443e}.twm .exk button:hover{background:#22302a}.twm .eig{border-color:#36443e}.twm .eig input{background:#141917;color:#e7ece8;border-color:#36443e}.twm .eig .rij2 button{color:#8fc5ad;border-color:#36443e}.twm .eig .rij2 button[type=submit]{background:#8fc5ad;color:#14201b}.twm .eig .fout{color:#f07a70}.twv .sep{background:rgba(0,0,0,.25)}.twp textarea{background:#141917;color:#e7ece8;border-color:#36443e}.twp .rij button{color:#8fc5ad;border-color:#36443e}.twp .rij button:hover{background:#22302a}.twp .rij button.warn{color:#f07a70;border-color:#5a3431}.twp .st{color:#97a39b}.twmed a{color:#8fc5ad}}'
-+'@media print{.twv,.twm{display:none!important}}.twp .lk{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin:6px 0 2px;font-size:14px}.twp .lk a{color:inherit;font-weight:600}.twp .lk>span{opacity:.7;font-size:13px}';
++'@media print{.twv,.twm{display:none!important}}.twp .lk{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin:6px 0 2px;font-size:14px}.twp .lk a{color:inherit;font-weight:600}.twp .lk>span{opacity:.7;font-size:13px}.twp .twqr{display:flex;justify-content:center;margin:6px 0}.twp .twqr svg{width:min(240px,70vw);height:auto;background:#fff;border-radius:6px}.twp .twk{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:6px 0}.twp .twk button,.twp .twk a{font:inherit;font-size:13px;padding:5px 12px;border:1px solid rgba(128,128,128,.45);border-radius:999px;background:none;color:inherit;cursor:pointer;text-decoration:none}';
 var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
 var bar=document.createElement('div');bar.className='twv';bar.setAttribute('role','navigation');bar.setAttribute('aria-label','mijn pagina, mededelingen en notities');
 var menu=document.createElement('div');menu.className='twm';menu.hidden=true;menu.id='twv-menu';
@@ -122,8 +131,42 @@ function tekenMenu(){var m=mijn(),hierM=!!(m&&norm(m.u)===norm(hier()));
   else h+='<button type="button" class="hoofd" data-a="zet">📌 Deze pagina wordt mijn pagina</button>';
   if(m){h+='<label><input type="checkbox" data-a="auto"'+(m.auto!==false?' checked':'')+'> Bij het openen van de site meteen naar mijn pagina gaan</label>';
     h+='<p class="twl" style="margin-top:8px"><button type="button" data-a="wis" style="all:unset;cursor:pointer;text-decoration:underline">Geen pagina meer kiezen</button></p>'}
+  if(/^https?:$/.test(location.protocol)&&!isApp()){var ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    h+=twApp?'<p class="twl" style="margin-top:10px"><button type="button" data-a="app" style="all:unset;cursor:pointer;text-decoration:underline">📱 Installeren als app</button></p>':ios?'<p class="twl" style="margin-top:10px">📱 Als app: tik in Safari op <b>Delen</b> (vierkantje met pijl) en kies <b>Zet op beginscherm</b>.</p>':'<p class="twl" style="margin-top:10px">📱 Als app: kies in het menu van je browser <b>Toevoegen aan startscherm</b> of <b>App installeren</b>.</p>'}
+  h+='<p class="twl" style="margin-top:10px;border-top:1px solid rgba(128,128,128,.3);padding-top:8px"><button type="button" data-a="mee" style="all:unset;cursor:pointer;text-decoration:underline">📲 Naar ander toestel (gsm, tablet, laptop)</button></p>';
   var su=startUrl();h+='<div class="ft">'+(su?'<a href="'+su+'">Startpagina</a>':'<span></span>')+'<button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';
   menu.innerHTML=h}
+/* ---------- naar een ander toestel: mijn pagina, de indeling van de spelerspagina en de notities in een link / QR-code (niets gaat naar een server) ---------- */
+var MEE=['tw-mijn','tw-indeling',NK];
+function b64u(u8){var s='';for(var i=0;i<u8.length;i++)s+=String.fromCharCode(u8[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function ub64(t){var s=atob(t.replace(/-/g,'+').replace(/_/g,'/'));var u=new Uint8Array(s.length);for(var i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u}
+function meePak(){var o={};MEE.forEach(function(k){try{var v=localStorage.getItem(k);if(v!=null&&v!=='')o[k]=v}catch(e){}});
+  var raw=new TextEncoder().encode(JSON.stringify(o));
+  if(window.CompressionStream){return new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer().then(function(b){return 'z'+b64u(new Uint8Array(b))})}
+  return Promise.resolve('j'+b64u(raw))}
+function meeUit(t){return Promise.resolve().then(function(){return meeUit2(t)})}
+function meeUit2(t){var u=ub64(t.slice(1));
+  if(t[0]==='z')return new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text().then(JSON.parse);
+  return Promise.resolve(JSON.parse(new TextDecoder().decode(u)))}
+function meeBasis(){var su=startUrl();return su?new URL(su.replace(/#.*$/,''),location.href).href:location.href.replace(/#.*$/,'')}
+function tekenMee(){var m=mijn(),n='';try{n=localStorage.getItem(NK)||''}catch(e){}
+  pan.innerHTML='<h2>Naar ander toestel</h2><p>Neem <b>mijn pagina</b>'+(m?' ('+esc(m.t)+')':'')+', je <b>indeling</b> van de spelerspagina en je <b>notities</b>'+(n?' ('+n.length+' tekens)':'')+' mee naar je gsm, tablet of laptop. Scan de code met de camera van het andere toestel, of stuur jezelf de link. Er gaat niets naar een server: alles zit in de code zelf. Het is een kopie: pas je later iets aan, doe het dan opnieuw.</p><div class="twqr" aria-live="polite">bezig…</div><div class="twk"></div><div class="ft"><span></span><button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';
+  meePak().then(function(p){var url=meeBasis()+'#tw='+p;pan.dataset.url=url;var q=pan.querySelector('.twqr'),k=pan.querySelector('.twk');if(!q)return;
+    k.innerHTML='<button type="button" data-a="mee-kop">Link kopiëren</button>'+(navigator.share?'<button type="button" data-a="mee-deel">Delen…</button>':'')+'<a href="mailto:?subject='+encodeURIComponent('Torrewachters: mijn instellingen')+'&body='+encodeURIComponent('Open deze link op je andere toestel:\n'+url)+'">Mailen</a>';
+    if(url.length>2200){q.innerHTML='<p class="twl">Je notities zijn te lang voor een QR-code. Gebruik <i>Link kopiëren</i>, <i>Delen</i> of <i>Mailen</i> en open de link op je andere toestel.</p>';return}
+    if(!/^https?:$/.test(location.protocol)){q.innerHTML='<p class="twl">De QR-code werkt alleen op de website zelf (niet lokaal op je pc).</p>';return}
+    var maak=function(){try{var c=qrcode(0,'L');c.addData(url);c.make();q.innerHTML=c.createSvgTag({cellSize:3,margin:2,scalable:true})}catch(e){q.innerHTML='<p class="twl">Geen QR-code mogelijk; gebruik de link.</p>'}};
+    if(window.qrcode)maak();else{var sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';sc.onload=maak;sc.onerror=function(){q.innerHTML='<p class="twl">De QR-code kon niet geladen worden; gebruik de link.</p>'};document.head.appendChild(sc)}})}
+function meeKopie(b){var t=pan.dataset.url||'',ok=function(){var o=b.textContent;b.textContent='gekopieerd ✓';setTimeout(function(){b.textContent=o},2000)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,function(){prompt('Kopieer deze link:',t)});else prompt('Kopieer deze link:',t)}
+/* ontvangen: #tw=... in het adres */
+function meeOntvang(){if(!meeH)return;var t=location.hash.slice(4);try{history.replaceState(null,'',location.href.replace(/#.*$/,''))}catch(e){}
+  meeUit(t).then(function(o){if(!o||typeof o!=='object')throw 0;var m=null;try{m=JSON.parse(o['tw-mijn']||'null')}catch(e){}
+    pan.dataset.k='mee-in';pan._mee=o;pan.hidden=false;
+    pan.innerHTML='<h2>Instellingen overnemen?</h2><p>Van je andere toestel:</p><ul style="margin:0 0 8px;padding-left:20px">'+(m?'<li>mijn pagina: <b>'+esc(m.t||'')+'</b></li>':'')+(o['tw-indeling']?'<li>je indeling van de spelerspagina</li>':'')+(o[NK]?'<li>je notities ('+o[NK].length+' tekens)'+((function(){try{return localStorage.getItem(NK)}catch(e){return ''}})()?' — <b>die vervangen de notities op dit toestel</b>':'')+'</li>':'')+'</ul><button type="button" class="hoofd" data-a="mee-neem">Overnemen</button><div class="ft"><span></span><button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Niet overnemen</button></div>';teken()})
+  .catch(function(){pan.hidden=false;pan.dataset.k='mee-in';pan.innerHTML='<h2>Instellingen overnemen</h2><p>Deze link is onvolledig of beschadigd. Maak op je andere toestel een nieuwe (📌 → Naar ander toestel).</p><div class="ft"><span></span><button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>'})}
+function meeNeem(){var o=pan._mee||{};MEE.forEach(function(k){try{if(o[k]!=null)localStorage.setItem(k,o[k])}catch(e){}});var m=mijn();
+  pan.innerHTML='<h2>Overgenomen ✓</h2><p>'+(m?'De site opent voortaan op <b>'+esc(m.t)+'</b>.':'Je instellingen staan nu ook op dit toestel.')+'</p>'+(m?'<a class="hoofd" href="'+esc(m.u)+'" style="text-decoration:none">Naar mijn pagina</a>':'')+'<div class="ft"><span></span><button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';teken()}
 function startUrl(){/* online: de startpagina staat in de hoofdmap, club/ en elo/ eronder; lokaal is er geen */
   if(!/^https?:$/.test(location.protocol))return '';return (isStart||!/\/(club|elo)\/[^\/]*$/.test(location.pathname)?'index.html':'../index.html')+'#start'}
 document.addEventListener('click',function(e){
@@ -134,6 +177,11 @@ document.addEventListener('click',function(e){
   if(/^n-/.test(a)){notesActie(a,b);return}
   if(a==='menu'){menu.hidden=!menu.hidden;pan.hidden=true;teken();if(!menu.hidden){var f=menu.querySelector('button,a');if(f)f.focus()}}
   else if(a==='sluit'){menu.hidden=true;pan.hidden=true;teken()}
+  else if(a==='app'){if(twApp){twApp.prompt();twApp.userChoice.then(function(){twApp=null;menu.hidden=true;teken()}).catch(function(){})}}
+  else if(a==='mee'){menu.hidden=true;pan.hidden=false;pan.dataset.k='mee';tekenMee();teken()}
+  else if(a==='mee-neem'){meeNeem()}
+  else if(a==='mee-kop'){meeKopie(b)}
+  else if(a==='mee-deel'){try{navigator.share({title:'Torrewachters: mijn instellingen',url:pan.dataset.url}).catch(function(){})}catch(e){}}
   else if(a==='zet'){var m=mijn();zetMijn({u:hier(),t:titel(),auto:m?m.auto!==false:true});menu.hidden=true;teken()}
   else if(a==='wis'){zetMijn(null);try{localStorage.removeItem(KEY)}catch(e){}teken()}});
 document.addEventListener('change',function(e){var t=e.target;if(t.matches&&t.matches('.twm [data-a="auto"]')){var m=mijn();if(m){m.auto=t.checked;zetMijn(m)}}});
@@ -142,5 +190,5 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&(!menu.hidd
 function bij(){var m=mijn();if(m&&norm(m.u)===norm(hier())){var t=titel();if(t&&t!==m.t){m.t=t;zetMijn(m)}}teken()}
 window.addEventListener('hashchange',function(){setTimeout(bij,50)});
 window.addEventListener('storage',function(e){if(e.key===MK)teken()});
-teken();setTimeout(bij,800);
+teken();setTimeout(bij,800);meeOntvang();
 })();
