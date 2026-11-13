@@ -1,0 +1,128 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//De Torrewachters//Agenda//NL
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Schaken · Erik Muller
+X-WR-TIMEZONE:Europe/Brussels
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Brussels
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:byuqjm@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260919T140000
+DTEND;TZID=Europe/Brussels:20260919T180000
+SUMMARY:Clubkampioenschap Reeks 1A\, ronde 1
+DESCRIPTION:met wit tegen Jan Selschotter\nSpelerspagina: https://torrewac
+ hter.github.io/elo/speler.html#Muller_Erik
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:byuqjl@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260926T140000
+DTEND;TZID=Europe/Brussels:20260926T180000
+SUMMARY:Clubkampioenschap Reeks 1A\, ronde 2
+DESCRIPTION:met zwart tegen Didier Dalschaert\nSpelerspagina: https://torr
+ ewachter.github.io/elo/speler.html#Muller_Erik
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:byuqjk@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261003T140000
+DTEND;TZID=Europe/Brussels:20261003T180000
+SUMMARY:Clubkampioenschap Reeks 1A\, ronde 3
+DESCRIPTION:met wit tegen Peter Degrieck\nSpelerspagina: https://torrewach
+ ter.github.io/elo/speler.html#Muller_Erik
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:l9w282@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261018
+TRANSP:TRANSPARENT
+SUMMARY:Rapidtornooi (14u) en kampioenenviering
+DESCRIPTION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare\nSpelersp
+ agina: https://torrewachter.github.io/elo/speler.html#Muller_Erik
+LOCATION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:byuqjr@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261024T140000
+DTEND;TZID=Europe/Brussels:20261024T180000
+SUMMARY:Clubkampioenschap Reeks 1A\, ronde 4
+DESCRIPTION:met zwart tegen Chris Galle\nSpelerspagina: https://torrewacht
+ er.github.io/elo/speler.html#Muller_Erik
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:byuqjq@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261031T140000
+DTEND;TZID=Europe/Brussels:20261031T180000
+SUMMARY:Clubkampioenschap Reeks 1A\, ronde 5
+DESCRIPTION:met wit tegen Diederik Wydooghe\nSpelerspagina: https://torrew
+ achter.github.io/elo/speler.html#Muller_Erik
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:byuqjp@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261107T140000
+DTEND;TZID=Europe/Brussels:20261107T180000
+SUMMARY:Clubkampioenschap Reeks 1A\, ronde 6
+DESCRIPTION:met zwart tegen Victor Chacon Jaime\nSpelerspagina: https://to
+ rrewachter.github.io/elo/speler.html#Muller_Erik
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:byuqjo@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261121T140000
+DTEND;TZID=Europe/Brussels:20261121T180000
+SUMMARY:Clubkampioenschap Reeks 1A\, ronde 7
+DESCRIPTION:met wit tegen Marc Ulenaers\nSpelerspagina: https://torrewacht
+ er.github.io/elo/speler.html#Muller_Erik
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:byuqjv@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261128T140000
+DTEND;TZID=Europe/Brussels:20261128T180000
+SUMMARY:Clubkampioenschap Reeks 1A\, ronde 8
+DESCRIPTION:met zwart tegen Borys Zhusov\nSpelerspagina: https://torrewach
+ ter.github.io/elo/speler.html#Muller_Erik
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:byuqju@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261205T140000
+DTEND;TZID=Europe/Brussels:20261205T180000
+SUMMARY:Clubkampioenschap Reeks 1A\, ronde 9
+DESCRIPTION:met wit tegen Volodymyr Kasianov\nSpelerspagina: https://torre
+ wachter.github.io/elo/speler.html#Muller_Erik
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+END:VCALENDAR

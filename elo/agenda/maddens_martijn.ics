@@ -1,0 +1,154 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//De Torrewachters//Agenda//NL
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Schaken · Martijn Maddens
+X-WR-TIMEZONE:Europe/Brussels
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Brussels
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:oqhx6x@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20260927
+DTEND;VALUE=DATE:20260928
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 1
+DESCRIPTION:uit bij Bredene 1 · bord 1 tegen Maarten Passchyn: remise\nSp
+ elerspagina: https://torrewachter.github.io/elo/speler.html#Maddens_Marti
+ jn
+END:VEVENT
+BEGIN:VEVENT
+UID:oqhx6y@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261011
+DTEND;VALUE=DATE:20261012
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 2
+DESCRIPTION:thuis tegen KGSRL 5 · bord 1 tegen Pieter Devolder: remise\nS
+ pelerspagina: https://torrewachter.github.io/elo/speler.html#Maddens_Mart
+ ijn
+END:VEVENT
+BEGIN:VEVENT
+UID:1feu4vf@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261018
+TRANSP:TRANSPARENT
+SUMMARY:Rapidtornooi (14u) en kampioenenviering
+DESCRIPTION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare\nSpelersp
+ agina: https://torrewachter.github.io/elo/speler.html#Maddens_Martijn
+LOCATION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:oqhx6z@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261116
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 3
+DESCRIPTION:uit bij KSGK 1 · de opstelling is nog niet gekend\nSpelerspag
+ ina: https://torrewachter.github.io/elo/speler.html#Maddens_Martijn
+END:VEVENT
+BEGIN:VEVENT
+UID:oqhx70@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261129
+DTEND;VALUE=DATE:20261130
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 4
+DESCRIPTION:thuis tegen KBSK Brugge 3 · de opstelling is nog niet gekend\
+ nSpelerspagina: https://torrewachter.github.io/elo/speler.html#Maddens_Ma
+ rtijn
+END:VEVENT
+BEGIN:VEVENT
+UID:oqhx71@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261220
+DTEND;VALUE=DATE:20261221
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 5
+DESCRIPTION:uit bij Oudenaarde 1 · de opstelling is nog niet gekend\nSpel
+ erspagina: https://torrewachter.github.io/elo/speler.html#Maddens_Martijn
+END:VEVENT
+BEGIN:VEVENT
+UID:oqhx72@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20270131
+DTEND;VALUE=DATE:20270201
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 6
+DESCRIPTION:thuis tegen Wetteren 3 · de opstelling is nog niet gekend\nSp
+ elerspagina: https://torrewachter.github.io/elo/speler.html#Maddens_Marti
+ jn
+END:VEVENT
+BEGIN:VEVENT
+UID:oqhx73@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20270214
+DTEND;VALUE=DATE:20270215
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 7
+DESCRIPTION:uit bij Tielt 1 · de opstelling is nog niet gekend\nSpelerspa
+ gina: https://torrewachter.github.io/elo/speler.html#Maddens_Martijn
+END:VEVENT
+BEGIN:VEVENT
+UID:oqhx6o@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20270307
+DTEND;VALUE=DATE:20270308
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 8
+DESCRIPTION:uit bij Rapid Aalter 1 · de opstelling is nog niet gekend\nSp
+ elerspagina: https://torrewachter.github.io/elo/speler.html#Maddens_Marti
+ jn
+END:VEVENT
+BEGIN:VEVENT
+UID:oqhx6p@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20270321
+DTEND;VALUE=DATE:20270322
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 9
+DESCRIPTION:thuis tegen KOSK 3 · de opstelling is nog niet gekend\nSpeler
+ spagina: https://torrewachter.github.io/elo/speler.html#Maddens_Martijn
+END:VEVENT
+BEGIN:VEVENT
+UID:yy6tll@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20270411
+DTEND;VALUE=DATE:20270412
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 10
+DESCRIPTION:uit bij Izegem 1 · de opstelling is nog niet gekend\nSpelersp
+ agina: https://torrewachter.github.io/elo/speler.html#Maddens_Martijn
+END:VEVENT
+BEGIN:VEVENT
+UID:yy6tlk@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20270418
+DTEND;VALUE=DATE:20270419
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 11
+DESCRIPTION:thuis tegen de Mercatel 2 · de opstelling is nog niet gekend\
+ nSpelerspagina: https://torrewachter.github.io/elo/speler.html#Maddens_Ma
+ rtijn
+END:VEVENT
+END:VCALENDAR

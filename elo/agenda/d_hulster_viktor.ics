@@ -1,0 +1,121 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//De Torrewachters//Agenda//NL
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Schaken · Viktor D'Hulster
+X-WR-TIMEZONE:Europe/Brussels
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Brussels
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:sur8qk@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260919T140000
+DTEND;TZID=Europe/Brussels:20260919T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 1
+DESCRIPTION:met wit tegen Guido Vancoillie: gewonnen\nSpelerspagina: https
+ ://torrewachter.github.io/elo/speler.html#D_Hulster_Viktor
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:sur8qm@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261003T140000
+DTEND;TZID=Europe/Brussels:20261003T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 3
+DESCRIPTION:met wit tegen Steven Keirse: verloren\nSpelerspagina: https://
+ torrewachter.github.io/elo/speler.html#D_Hulster_Viktor
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:by8h5r@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261018
+TRANSP:TRANSPARENT
+SUMMARY:Rapidtornooi (14u) en kampioenenviering
+DESCRIPTION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare\nSpelersp
+ agina: https://torrewachter.github.io/elo/speler.html#D_Hulster_Viktor
+LOCATION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:sur8qh@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261024T140000
+DTEND;TZID=Europe/Brussels:20261024T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 4
+DESCRIPTION:met zwart tegen Korneel Baert: gewonnen\nSpelerspagina: https:
+ //torrewachter.github.io/elo/speler.html#D_Hulster_Viktor
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:sur8qg@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261031T140000
+DTEND;TZID=Europe/Brussels:20261031T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 5
+DESCRIPTION:met wit tegen Frederique Lievens: remise\nSpelerspagina: https
+ ://torrewachter.github.io/elo/speler.html#D_Hulster_Viktor
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:sur8qj@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261107T140000
+DTEND;TZID=Europe/Brussels:20261107T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 6
+DESCRIPTION:met zwart tegen Jan Feys: gewonnen\nSpelerspagina: https://tor
+ rewachter.github.io/elo/speler.html#D_Hulster_Viktor
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:sur8qi@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261121T140000
+DTEND;TZID=Europe/Brussels:20261121T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 7
+DESCRIPTION:met wit tegen Stijn Herreman (1642) · Café Den Arend\, Polen
+ plein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/
+ elo/speler.html#D_Hulster_Viktor
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:sur8qd@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261128T140000
+DTEND;TZID=Europe/Brussels:20261128T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 8
+DESCRIPTION:met wit tegen Gabriel Vela (1687) · Café Den Arend\, Polenpl
+ ein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/el
+ o/speler.html#D_Hulster_Viktor
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:sur8qc@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261205T140000
+DTEND;TZID=Europe/Brussels:20261205T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 9
+DESCRIPTION:met zwart tegen Frank Bossuyt (1738) · Café Den Arend\, Pole
+ nplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io
+ /elo/speler.html#D_Hulster_Viktor
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+END:VCALENDAR

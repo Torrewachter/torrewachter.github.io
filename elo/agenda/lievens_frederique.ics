@@ -1,0 +1,121 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//De Torrewachters//Agenda//NL
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Schaken · Frederique Lievens
+X-WR-TIMEZONE:Europe/Brussels
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Brussels
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:105c89r@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260919T140000
+DTEND;TZID=Europe/Brussels:20260919T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 1
+DESCRIPTION:met wit tegen Steven Keirse: verloren\nSpelerspagina: https://
+ torrewachter.github.io/elo/speler.html#Lievens_Frederique
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:105c89o@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260926T140000
+DTEND;TZID=Europe/Brussels:20260926T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 2
+DESCRIPTION:met zwart tegen Korneel Baert: remise\nSpelerspagina: https://
+ torrewachter.github.io/elo/speler.html#Lievens_Frederique
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:105c89p@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261003T140000
+DTEND;TZID=Europe/Brussels:20261003T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 3
+DESCRIPTION:met wit tegen Stijn Herreman: verloren\nSpelerspagina: https:/
+ /torrewachter.github.io/elo/speler.html#Lievens_Frederique
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:17digd8@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261018
+TRANSP:TRANSPARENT
+SUMMARY:Rapidtornooi (14u) en kampioenenviering
+DESCRIPTION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare\nSpelersp
+ agina: https://torrewachter.github.io/elo/speler.html#Lievens_Frederique
+LOCATION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:105c89n@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261031T140000
+DTEND;TZID=Europe/Brussels:20261031T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 5
+DESCRIPTION:met zwart tegen Viktor D'Hulster: remise\nSpelerspagina: https
+ ://torrewachter.github.io/elo/speler.html#Lievens_Frederique
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:105c89k@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261107T140000
+DTEND;TZID=Europe/Brussels:20261107T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 6
+DESCRIPTION:met wit tegen Gabriel Vela: gewonnen\nSpelerspagina: https://t
+ orrewachter.github.io/elo/speler.html#Lievens_Frederique
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:105c89l@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261121T140000
+DTEND;TZID=Europe/Brussels:20261121T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 7
+DESCRIPTION:met zwart tegen Frank Bossuyt (1738) · Café Den Arend\, Pole
+ nplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io
+ /elo/speler.html#Lievens_Frederique
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:105c89i@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261128T140000
+DTEND;TZID=Europe/Brussels:20261128T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 8
+DESCRIPTION:met wit tegen Guido Vancoillie (1754) · Café Den Arend\, Pol
+ enplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.i
+ o/elo/speler.html#Lievens_Frederique
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:105c89j@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261205T140000
+DTEND;TZID=Europe/Brussels:20261205T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 9
+DESCRIPTION:met zwart tegen Pauwel Deblauwe (1655) · Café Den Arend\, Po
+ lenplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.
+ io/elo/speler.html#Lievens_Frederique
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+END:VCALENDAR

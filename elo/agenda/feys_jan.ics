@@ -1,0 +1,191 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//De Torrewachters//Agenda//NL
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Schaken · Jan Feys
+X-WR-TIMEZONE:Europe/Brussels
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VTIMEZONE
+TZID:Europe/Brussels
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:usxvx3@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260919T140000
+DTEND;TZID=Europe/Brussels:20260919T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 1
+DESCRIPTION:met wit tegen Pauwel Deblauwe: gewonnen\nSpelerspagina: https:
+ //torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:usxvx0@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260926T140000
+DTEND;TZID=Europe/Brussels:20260926T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 2
+DESCRIPTION:met zwart tegen Steven Keirse: remise\nSpelerspagina: https://
+ torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:usxvx1@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261003T140000
+DTEND;TZID=Europe/Brussels:20261003T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 3
+DESCRIPTION:met wit tegen Korneel Baert: gewonnen\nSpelerspagina: https://
+ torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:v0utlg@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261018
+TRANSP:TRANSPARENT
+SUMMARY:Rapidtornooi (14u) en kampioenenviering
+DESCRIPTION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare\nSpelersp
+ agina: https://torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:1037xnz@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261024T100000
+DTEND;TZID=Europe/Brussels:20261024T140000
+SUMMARY:Ligakampioenschap West-Vlaanderen 2026-27\, ronde 1
+DESCRIPTION:10u · Atheneum Brugge\, Annuntiatenstraat 23\nSpelerspagina: 
+ https://torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Atheneum Brugge\, Annuntiatenstraat 23
+END:VEVENT
+BEGIN:VEVENT
+UID:1037xnw@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261024T150000
+DTEND;TZID=Europe/Brussels:20261024T190000
+SUMMARY:Ligakampioenschap West-Vlaanderen 2026-27\, ronde 2
+DESCRIPTION:15u · Atheneum Brugge\, Annuntiatenstraat 23\nSpelerspagina: 
+ https://torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Atheneum Brugge\, Annuntiatenstraat 23
+END:VEVENT
+BEGIN:VEVENT
+UID:1037xnx@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261025T100000
+DTEND;TZID=Europe/Brussels:20261025T140000
+SUMMARY:Ligakampioenschap West-Vlaanderen 2026-27\, ronde 3
+DESCRIPTION:10u · Atheneum Brugge\, Annuntiatenstraat 23\nSpelerspagina: 
+ https://torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Atheneum Brugge\, Annuntiatenstraat 23
+END:VEVENT
+BEGIN:VEVENT
+UID:1037xnu@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261025T150000
+DTEND;TZID=Europe/Brussels:20261025T190000
+SUMMARY:Ligakampioenschap West-Vlaanderen 2026-27\, ronde 4
+DESCRIPTION:15u · Atheneum Brugge\, Annuntiatenstraat 23\nSpelerspagina: 
+ https://torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Atheneum Brugge\, Annuntiatenstraat 23
+END:VEVENT
+BEGIN:VEVENT
+UID:usxvwz@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261031T140000
+DTEND;TZID=Europe/Brussels:20261031T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 5
+DESCRIPTION:met wit tegen Stijn Herreman: gewonnen\nSpelerspagina: https:/
+ /torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:usxvww@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261107T140000
+DTEND;TZID=Europe/Brussels:20261107T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 6
+DESCRIPTION:met wit tegen Viktor D'Hulster: verloren\nSpelerspagina: https
+ ://torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:usxvwx@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261121T140000
+DTEND;TZID=Europe/Brussels:20261121T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 7
+DESCRIPTION:met zwart tegen Gabriel Vela (1687) · Café Den Arend\, Polen
+ plein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/
+ elo/speler.html#Feys_Jan
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:usxvxa@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261128T140000
+DTEND;TZID=Europe/Brussels:20261128T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 8
+DESCRIPTION:met wit tegen Frank Bossuyt (1738) · Café Den Arend\, Polenp
+ lein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/e
+ lo/speler.html#Feys_Jan
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:usxvxb@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261205T140000
+DTEND;TZID=Europe/Brussels:20261205T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 9
+DESCRIPTION:met zwart tegen Guido Vancoillie (1754) · Café Den Arend\, P
+ olenplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github
+ .io/elo/speler.html#Feys_Jan
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:1037xnv@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20270206T100000
+DTEND;TZID=Europe/Brussels:20270206T140000
+SUMMARY:Ligakampioenschap West-Vlaanderen 2026-27\, ronde 5
+DESCRIPTION:10u · Atheneum Brugge\, Annuntiatenstraat 23\nSpelerspagina: 
+ https://torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Atheneum Brugge\, Annuntiatenstraat 23
+END:VEVENT
+BEGIN:VEVENT
+UID:1037xns@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20270206T150000
+DTEND;TZID=Europe/Brussels:20270206T190000
+SUMMARY:Ligakampioenschap West-Vlaanderen 2026-27\, ronde 6
+DESCRIPTION:15u · Atheneum Brugge\, Annuntiatenstraat 23\nSpelerspagina: 
+ https://torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Atheneum Brugge\, Annuntiatenstraat 23
+END:VEVENT
+BEGIN:VEVENT
+UID:1037xnt@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20270207T150000
+DTEND;TZID=Europe/Brussels:20270207T190000
+SUMMARY:Ligakampioenschap West-Vlaanderen 2026-27\, ronde 7
+DESCRIPTION:15u · Atheneum Brugge\, Annuntiatenstraat 23\nSpelerspagina: 
+ https://torrewachter.github.io/elo/speler.html#Feys_Jan
+LOCATION:Atheneum Brugge\, Annuntiatenstraat 23
+END:VEVENT
+END:VCALENDAR
