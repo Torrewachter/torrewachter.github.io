@@ -137,7 +137,7 @@ function tekenMenu(){var m=mijn(),hierM=!!(m&&norm(m.u)===norm(hier()));
   var su=startUrl();h+='<div class="ft">'+(su?'<a href="'+su+'">Startpagina</a>':'<span></span>')+'<button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';
   menu.innerHTML=h}
 /* ---------- naar een ander toestel: mijn pagina, de indeling van de spelerspagina en de notities in een link / QR-code (niets gaat naar een server) ---------- */
-var MEE=['tw-mijn','tw-indeling',NK];
+var MEE=['tw-mijn','tw-indeling',NK,'tw-bib'];
 function b64u(u8){var s='';for(var i=0;i<u8.length;i++)s+=String.fromCharCode(u8[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function ub64(t){var s=atob(t.replace(/-/g,'+').replace(/_/g,'/'));var u=new Uint8Array(s.length);for(var i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u}
 function meePak(){var o={};MEE.forEach(function(k){try{var v=localStorage.getItem(k);if(v!=null&&v!=='')o[k]=v}catch(e){}});
