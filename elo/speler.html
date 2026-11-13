@@ -50,6 +50,7 @@ details.fold>summary{cursor:pointer;padding:10px 14px;font-weight:700;list-style
 details.fold>summary span{font-weight:400;color:var(--muted);font-size:14px}
 details.fold>.in{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
 details.fold .board{border-radius:6px}
+.nwlijn{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:15px}.nwlijn ul{margin:6px 0 0;padding-left:20px}.nwlijn li{margin:2px 0}.nwlijn.rustig{border-left-color:var(--line);color:var(--muted);font-size:14px;padding:7px 14px}
 details.ond{border-bottom:1px solid var(--line);padding:6px 0}details.ond>summary{cursor:pointer}details.ond>summary span{color:var(--muted);font-size:14px;margin-left:4px}details.ond .board{margin-top:6px}
 .grafiek .lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
 .grafiek .lg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
@@ -90,7 +91,7 @@ html:not(.online) .alleenonline{display:none!important}
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=da4f37e96a"></script>
+<script src="data-elo.js?v=e6f6b63ab4"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
 <script src="../club/data-club.js?v=d76b9d707e"></script>
@@ -345,6 +346,48 @@ function onderlingDeel(s){const T=onderling(s);if(!T.length)return '';const nP=T
   return `<section><details class="fold"><summary>Onderlinge resultaten <span>${nP} partij${nP>1?'en':''} tegen ${T.length} clubgeno${T.length>1?'ten':'ot'}</span></summary><div class="in">${T.map(rij).join('')}
 <p class="na small">Klik op een naam voor de partijen. Score vanuit ${esc(nice(s.n).split(' ')[0])}: +gewonnen =remise −verloren. Het clubkampioenschap van dit seizoen, de partijen die nog op geen FIDE-lijst staan en alle FIDE-partijen sinds ${M.length?mlab(M[0]):'het begin'} (toernooien, ligakampioenschap ...). Oudere clubkampioenschappen staan er alleen in als ze voor FIDE telden.</p></div></details></section>`}
 
+/* ---------- wat is nieuw voor een speler (dezelfde tekst als in de berichten via ntfy; ook gebruikt door meldingen.js) ---------- */
+window.TW_VERSCHIL=function(v,n){const R=[],MNL=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+  const half=x=>String(x).replace('.5','½').replace(/^0½$/,'½'),uit=x=>x==='1'||x===1?'winst':x==='0'||x===0?'verlies':x==='½'||x===0.5?'remise':x==='F'?'forfait':x==='ff'?'winst (forfait)':String(x),kort=t=>String(t).replace(/\s+r\d+$/,'');
+  const dg=d=>{if(!d)return '';const t=new Date(d+'T12:00:00Z');return WD[t.getUTCDay()]+' '+t.getUTCDate()+' '+MN[t.getUTCMonth()]};
+  for(const c of n.club){const o=(v.club||[]).find(x=>x.k===c.k);const oud=new Map((o?o.games:[]).map(g=>[g[0],g[2]]));
+    const nw=c.games.filter(g=>g[2]!=='-'&&g[2]!=='F'&&g[1]!=='bye'&&(oud.get(g[0])||'-')==='-');
+    for(const g of nw)R.push(`Clubkampioenschap ${c.label.replace(/^Reeks/,'reeks')}, ronde ${g[0]}: ${uit(g[2])} tegen ${nice(g[1])}${g[4]?' ('+g[4]+')':''}.`);
+    if(nw.length||(o&&(o.pts!==c.pts||o.rank!==c.rank))){const k=c.kans[0];let kt='';
+      if(k)kt=k.zeker==='sure'?(k.t==='zakken'?' Zeker gered.':` ${k.lab.replace(/^kans op (de |een )?/,'Zeker ').replace(/^Zeker titel$/,'Zeker kampioen')}!`):k.zeker==='out'&&k.t!=='zakken'?'':` ${k.lab[0].toUpperCase()+k.lab.slice(1)}: ${k.pct}.`;
+      R.push(`Nu ${half(c.pts)} uit ${c.gesp}, ${c.rank}e van ${c.of}.${kt}`)}}
+  const icOud=new Set((v.ic||[]).map(g=>g[0]+'|'+g[1]));
+  for(const g of n.ic)if(!icOud.has(g[0]+'|'+g[1]))R.push(`Interclub ronde ${g[0]}: ${uit(g[3]==='ff'?'ff':+g[3])} tegen ${nice(g[1])}${g[2]?' ('+g[2]+')':''}.`);
+  if(n.elo){const pOud=new Set(((v.elo&&v.elo.pend)||[]).map(x=>x[0]+'|'+x[1]+'|'+x[2]));
+    for(const x of n.elo.pend){if(/^(Clubkampioenschap|Interclub)/i.test(x[1])||pOud.has(x[0]+'|'+x[1]+'|'+x[2]))continue;const rn=(/\sr(\d+)$/.exec(x[1])||[])[1];
+      R.push(`${kort(x[1])}${rn?', ronde '+rn:''}: ${uit(x[4])} tegen ${nice(x[2])}${x[3]?' ('+x[3]+')':''}${x[5]!=null?', Elo '+(x[5]>0?'+':x[5]<0?'−':'±')+Math.abs(x[5]).toFixed(1).replace('.',','):''}.`)}
+    if(v.elo&&v.elo.lijst&&n.elo.lijst!==v.elo.lijst&&n.elo.std){const d=v.elo.std?n.elo.std-v.elo.std:null;R.push(`Nieuwe FIDE-lijst ${MNL[+n.elo.lijst.slice(5,7)-1]}: ${n.elo.std}${d!=null?' ('+(d>0?'+':d<0?'−':'±')+Math.abs(d)+')':''}.`)}}
+  const vOud=new Set((v.volg||[]).map(x=>x.tour+'|'+x.rn));
+  for(const x of n.volg)if(!vOud.has(x.tour+'|'+x.rn))R.push(`Volgende partij: ${x.tour}, ronde ${x.rn} (${dg(x.dt)}): met ${x.c==='w'?'wit':'zwart'} tegen ${nice(x.o)}${x.or?' ('+x.or+')':''}${x.bo?', bord '+x.bo:''}.`);
+  return R};
+/* statuslijn bovenaan "mijn pagina" (📌 in het balkje links onderaan): wat er nieuw is sinds het vorige bezoek */
+function nieuwLijn(s){let m=null;try{m=JSON.parse(localStorage.getItem('tw-mijn')||'null')}catch(e){return ''}
+  let h='';try{h=decodeURIComponent(String(m&&m.u||'').split('#')[1]||'')}catch(e){}if(!m||h!==tok(s.n))return '';
+  const K='tw-gezien-'+tok(s.n);let R=null;try{R=JSON.parse(sessionStorage.getItem(K)||'null')}catch(e){}
+  if(!R){let oud=null;try{oud=JSON.parse(localStorage.getItem(K)||'null')}catch(e){}
+    const nu=window.TW_SAMENVATTING(s.n),N=window.TW_IN_NIEUWS(s.n);if(!nu)return '';
+    R={eerst:!oud,d:oud&&oud.d||'',L:[]};
+    if(oud&&oud.s){try{R.L=window.TW_VERSCHIL(oud.s,nu)}catch(e){}for(const a of N)if(!(oud.nws||[]).includes(a.u))R.L.push(`In het nieuws: ${a.t}${/[.!?…]$/.test(a.t)?'':'.'}`)}
+    try{localStorage.setItem(K,JSON.stringify({d:new Date().toISOString().slice(0,10),s:nu,nws:N.map(a=>a.u)}));sessionStorage.setItem(K,JSON.stringify(R))}catch(e){return ''}}
+  window.__twNw=R;return '<div id="nwlijn"></div>'}
+/* tekent de statuslijn; een nieuwe mededeling van de club (mededelingen.js, wordt door vast.js ingeladen) komt erbij zodra die binnen is */
+function nwTeken(){const d=$('nwlijn'),R=window.__twNw;if(!d||!R)return;const L=R.L.slice();
+  const M=window.TW_MED;let g='';try{g=localStorage.getItem('tw-vast-med')||''}catch(e){}
+  if(M&&M.tekst&&g!==M.id){const t=(String(M.tekst).split(/\r?\n/).map(r=>r.replace(/^!+\s*/,'').replace(/\*\*|__|\+\+|(^|\s)_|_(\s|$)/g,'$1$2').trim()).find(Boolean)||'').slice(0,90);L.unshift({med:t})}
+  const wanneer=R.d?(R.d===new Date().toISOString().slice(0,10)?'eerder vandaag':dlong(R.d)):'';
+  const x='<button type="button" onclick="this.parentNode.remove()" aria-label="sluiten" style="all:unset;cursor:pointer;float:right;padding:0 4px;color:var(--muted)">✕</button>';
+  const li=t=>t.med!=null?`<li>📢 Nieuwe mededeling van de club: <a href="#" data-med="1">${esc(t.med||'lezen')}</a></li>`:`<li>${esc(t)}</li>`;
+  let h;if(R.eerst&&!L.length)h=`<div class="nwlijn">${x}📌 Dit is je pagina. Vanaf je volgende bezoek staat hier wat er sindsdien nieuw is.</div>`;
+  else if(!L.length)h=`<div class="nwlijn rustig">${x}Niets nieuws sinds je vorige bezoek${wanneer?' ('+wanneer+')':''}.</div>`;
+  else h=`<div class="nwlijn">${x}<b>${R.eerst?'Nieuw':'Nieuw sinds je vorige bezoek'+(wanneer?' ('+wanneer+')':'')}</b><ul>${L.map(li).join('')}</ul></div>`;
+  d.innerHTML=h;const a=d.querySelector('[data-med]');if(a)a.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const b=document.querySelector('.twv [data-a="med"]');if(b)b.click();a.closest('li').remove()})}
+function nwVul(){if(!$('nwlijn'))return;nwTeken();let n=0;const t=setInterval(()=>{if(window.TW_MED||++n>20){clearInterval(t);nwTeken()}},300)}
+
 /* ---------- lijst van alle spelers ---------- */
 const ALLE=[...SP.values()].sort((a,b)=>a.n.localeCompare(b.n,'nl'));
 const wat=s=>[s.club.length?'reeks '+s.club.slice().reverse()[0]:'',s.ic?(IC&&IC.team)||'interclub':''].filter(Boolean).join(' · ');
@@ -412,9 +455,9 @@ function pagina(s){document.title=nice(s.n)+' · Torrewachters';
   const opts=ALLE.map(x=>`<option value="${esc(tok(x.n))}"${x===s?' selected':''}>${esc(nice(x.n))}</option>`).join('');
   $('app').innerHTML=`<header><span class="eyebrow">Speler · De Torrewachters</span><h1>${esc(nice(s.n))}</h1><p class="sub">${[wat(s)?wat(s).replace(/^reeks/,'clubkampioenschap reeks'):'',s.m&&s.m.tit?s.m.tit:''].filter(Boolean).map(esc).join(' · ')||'&nbsp;'}</p></header>
 <div class="pick"><label class="na" for="ander">Andere speler</label><select id="ander">${opts}</select></div>
-${nieuwBoven(s)}${meldDeel(s)}${ag}${ck}${el.html}${ic}${onderlingDeel(s)}${nieuwsDeel(s)}`;
+${nieuwLijn(s)}${nieuwBoven(s)}${meldDeel(s)}${ag}${ck}${el.html}${ic}${onderlingDeel(s)}${nieuwsDeel(s)}`;
   $('ander').addEventListener('change',e=>{location.hash=e.target.value});
-  meldKoppel(s);agKoppel(s);window.scrollTo(0,0)}
+  meldKoppel(s);agKoppel(s);nwVul();window.scrollTo(0,0)}
 
 /* ---------- samenvatting per speler, voor de meldingen na het automatisch bijwerken (meldingen.js op GitHub) ---------- */
 window.TW_SPELERS=()=>ALLE.map(s=>s.n);
