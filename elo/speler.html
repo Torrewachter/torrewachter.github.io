@@ -104,7 +104,7 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=6df2a565ad"></script>
+<script src="data-elo.js?v=451045c0d4"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
 <script src="../club/data-club.js?v=d76b9d707e"></script>
@@ -537,6 +537,7 @@ ${rij('📊','Uitslagen en Elo',`Na elke update als er voor ${vn} iets nieuw is:
 ${rij('⏰','Herinnering de avond ervoor',`De avond voor een partij: wanneer, waar, tegen wie, met welke kleur.`,K.morgen,true)}
 ${rij('♟','Mijn partijen en het nieuws',`Je partij staat in de lichess-studie of is besproken op YouTube, of je wordt vermeld in een artikel op torrewachters.be.`,K.media,true)}
 ${rij('📰','Clubnieuws (voor iedereen)','Een nieuwe partij in de lichess-studie, een nieuw filmpje op het YouTube-kanaal, een nieuwe mededeling van de club.',kn,false)}
+${/^(ja|yes|1)$/i.test(String(I['pers zichtbaar']||'').trim())?rij('🗞','Schaken in de pers (voor iedereen)','Nieuwe artikels over schaken in de kranten (hoogstens één bericht per update, met de titels).',kn.replace(/-nieuws$/,'-pers'),false):''}
 </ul><div class="na small" id="proefst" aria-live="polite"></div>
 <p class="na small" style="margin:0">Tip: in ntfy kun je per kanaal ook het geluid uitzetten of een stil uur instellen. Wie de naam van een kanaal kent, kan meelezen; er staat alleen in wat ook op deze website staat.</p></div></details>`}
 function meldKoppel(s){const d=$('melden');if(!d)return;
