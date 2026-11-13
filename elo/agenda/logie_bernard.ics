@@ -59,16 +59,16 @@ LOCATION:Altea (Spanje)
 URL:https://s3.chess-results.com/tnr1383655.aspx?lan=1
 END:VEVENT
 BEGIN:VEVENT
-UID:8pa3aw@torrewachters
+UID:8pa3ax@torrewachters
 DTSTAMP:20260101T000000Z
-DTSTART;VALUE=DATE:20261113
-DTEND;VALUE=DATE:20261114
+DTSTART;VALUE=DATE:20261114
+DTEND;VALUE=DATE:20261115
 TRANSP:TRANSPARENT
 SUMMARY:IV INTERNACIONAL CHESS OPEN HOTEL CAP NEGRET 65 Mayores de 65 año
- s\, ronde 8
-DESCRIPTION:met zwart tegen Federico Lopez Orellana (1697) · bord 41\nUit
- slagen: https://chess-results.com/tnr1383655.aspx?lan=1\nSpelerspagina: h
- ttps://torrewachter.github.io/elo/speler.html#Logie_Bernard
+ s\, ronde 9
+DESCRIPTION:met wit tegen Jose Morata Perez (1559) · bord 44\nUitslagen: 
+ https://chess-results.com/tnr1383655.aspx?lan=1\nSpelerspagina: https://t
+ orrewachter.github.io/elo/speler.html#Logie_Bernard
 URL:https://chess-results.com/tnr1383655.aspx?lan=1
 END:VEVENT
 BEGIN:VEVENT
