@@ -106,6 +106,7 @@ table.res tr.kind td{text-align:left;font-family:var(--display);font-size:16px;p
 @media print{.pnt,.pnsp{display:none}}
 .pdfmenu{position:fixed;right:16px;bottom:62px;z-index:11;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.18);padding:10px;display:flex;flex-direction:column;gap:2px;min-width:240px;font-size:14px}
 .pdfmenu[hidden]{display:none}
+@page{size:A4}
 .pdfmenu button{all:unset;cursor:pointer;padding:6px 8px;border-radius:6px}
 .pdfmenu button:hover,.pdfmenu button:focus-visible{background:var(--accent-soft)}
 .pdfmenu small{color:var(--muted);padding:4px 8px 0;max-width:230px}
@@ -174,7 +175,7 @@ a.spn{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}a
   <small>De lijst komt in de PDF zoals ze nu op het scherm staat (periode, tempo, filters, opengeklapte spelers). Kies in het afdrukvenster <i>Opslaan als PDF</i>.</small>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=2fd68f10b7"></script>
+<script src="data-elo.js?v=08079fe75f"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
 <script>
@@ -397,7 +398,9 @@ render();
    document.body.classList.add('pdf-'+k);document.title=t0+(k==='gegevens'?' - lijst':k==='uitleg'?' - uitleg':'');
    if(k!=='gegevens'){tnvOpen=$('tnv').open;$('tnv').open=true}
    setTimeout(()=>window.print(),60)});
- window.addEventListener('afterprint',()=>setTimeout(herstel,50));}
+ window.addEventListener('afterprint',()=>setTimeout(herstel,50));
+ // elo.html?pdf=lijst: meteen de opmaak van "Opslaan als PDF > lijst" (voor de maandelijkse PDF die Website bijwerken.bat maakt)
+ if(/(^|[?&])pdf=(lijst|gegevens)\b/.test(location.search)){document.body.classList.add('pdf-gegevens');document.title=t0+' - lijst'}}
 })();
 </script>
 <script>(function(){if(window.ONLINE)return;var x=document.createElement('script');x.src='../Partijen-naspelen/data-partijen.js';
