@@ -34,7 +34,7 @@ h1{font-family:var(--display);font-size:clamp(32px,7vw,50px);line-height:1;margi
 .vrij,.betaal{display:inline-block;font-size:11px;font-weight:700;padding:0 6px;border-radius:4px}.vrij{background:#e3f1e8;color:#1f6b3f}.betaal{background:#fbeedd;color:#8a5a12}
 .talen{display:flex;flex-wrap:wrap;gap:6px}.talen button{font:inherit;font-size:13px;padding:4px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg);cursor:pointer}.talen button[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
 .taal{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;padding:0 6px;border:1px solid var(--line);border-radius:4px;color:var(--muted);text-transform:uppercase}
-.bibk{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 16px}.bibk summary{cursor:pointer;font-size:14px}.kb{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:0;border-radius:8px;background:var(--accent);color:var(--surface);cursor:pointer}.kb2{all:unset;cursor:pointer;text-decoration:underline;color:var(--accent)}
+.bibk{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 16px}.bibk summary{cursor:pointer;font-size:14px}.kb{font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border:0;border-radius:8px;background:var(--accent);color:var(--surface);cursor:pointer}.lijst .m .prk{font-weight:600}.kb2{all:unset;cursor:pointer;text-decoration:underline;color:var(--accent)}
 .leeg{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
 </style>
 <script>if(/^https?:$/.test(location.protocol))document.documentElement.classList.add('online')</script>
@@ -44,14 +44,15 @@ h1{font-family:var(--display);font-size:clamp(32px,7vw,50px);line-height:1;margi
 <div class="wrap">
 <nav class="top"><a class="alleenonline" href="../index.html">← Startpagina</a><a href="speler.html">Spelers</a><a href="cartoons.html">Cartoons</a></nav>
 <header><span class="eyebrow">De Torrewachters</span><h1>Schaken in de pers</h1>
-<p class="na small" style="margin:6px 0 0">Artikels over schaken in kranten en tijdschriften, in het Nederlands, Frans, Engels en Duits, de nieuwste eerst. Is een artikel <b>gratis</b>, dan opent een klik op de titel het artikel. Is het <b>betalend</b> en staat de krant in het krantenarchief van de bib, dan kopieert een klik de titel en lees je het gratis met je bibaccount: plak de titel daar in het zoekvak. Het archief bevat alleen artikels ouder dan twee dagen, dus daar staat <i>via de bib vanaf …</i>. Buitenlandse kranten (behalve Trouw en de Volkskrant) staan er niet in.</p></header>
+<p class="na small" style="margin:6px 0 0">Artikels over schaken in kranten en tijdschriften, in het Nederlands, Frans, Engels en Duits, de nieuwste eerst. Is een artikel <b>gratis</b>, dan opent een klik op de titel het artikel. Is het <b>betalend</b> en staat de krant in het krantenarchief van de bib, dan kopieert een klik de titel en lees je het gratis met je bibaccount: plak de titel daar in het zoekvak. Het archief bevat alleen artikels ouder dan twee dagen, dus daar staat <i>via de bib vanaf …</i>. Buitenlandse kranten (behalve Trouw en de Volkskrant) staan er niet in; wie PressReader kan gebruiken (bv. via de bib van Gent), vindt ze daar.</p></header>
 <div class="zoek"><input type="search" id="q" placeholder="Zoeken in de titels…" aria-label="Zoeken in de titels"><span class="na small" id="aantal"></span></div>
 <div class="talen" id="talen" role="group" aria-label="taal"></div>
 <details class="bibk" id="bibk"><summary>Jouw bibliotheek: <b id="bibnaam">nog niet gekozen</b></summary>
 <p class="na small" style="margin:6px 0">Betaalartikels lees je gratis met je bibaccount in de krantendienst van <i>jouw</i> bib. Elke bib heeft een eigen adres; dat onthoudt deze browser.</p>
 <div class="zoek"><label for="bibgem" class="small">Gemeente</label><input id="bibgem" placeholder="bv. tielt" style="flex:0 1 160px" autocomplete="off"><span class="na small">.bibliotheek.be/krantenarchief</span><button type="button" id="bibzet" class="kb">Gebruiken</button></div>
 <div class="zoek" style="margin-top:6px"><label for="biburl" class="small">of het volledige adres</label><input id="biburl" type="url" placeholder="https://…"><button type="button" id="bibzet2" class="kb">Gebruiken</button></div>
-<p class="na small" style="margin:6px 0 0">Niet elke bib werkt met dat adres (in Roeselare bijvoorbeeld zit de bib in ARhus). Zoek dan op de site van je bib naar <i>kranten</i> of <i>krantenarchief</i> en plak dat adres hierboven. <button type="button" id="bibtest" class="kb2">Openen om te testen</button> <button type="button" id="bibwis" class="kb2">Wissen</button></p></details>
+<p class="na small" style="margin:6px 0 0">Niet elke bib werkt met dat adres (in Roeselare bijvoorbeeld zit de bib in ARhus). Zoek dan op de site van je bib naar <i>kranten</i> of <i>krantenarchief</i> en plak dat adres hierboven. <button type="button" id="bibtest" class="kb2">Openen om te testen</button> <button type="button" id="bibwis" class="kb2">Wissen</button></p>
+<label class="small" style="display:block;margin-top:10px;border-top:1px solid var(--line);padding-top:8px"><input type="checkbox" id="prk"> Ik kan <b>PressReader</b> gebruiken (bv. via de bib van Gent: 7.000 kranten en tijdschriften uit de hele wereld, ook van vandaag). Dan verschijnt <i>zoeken in PressReader</i> bij betaalartikels die niet (of nog niet) in het krantenarchief staan.</label></details>
 <div id="lijst"></div>
 <p class="na small" id="bron"></p>
 </div>
@@ -63,11 +64,13 @@ const P=window.TW_PERS||{items:[]},$=id=>document.getElementById(id);
 /* de bib van de bezoeker (eigen keuze, in deze browser), anders die van de club (instellingen.txt: bib kranten) */
 const bibLees=()=>{try{return localStorage.getItem('tw-bib')||''}catch(e){return ''}};
 const bibUrl=()=>bibLees()||P.bib||'';
+const prAan=()=>{try{return localStorage.getItem('tw-pressreader')==='1'}catch(e){return false}};
+const prUrl=a=>'https://www.pressreader.com/search?query='+encodeURIComponent(a.t);
 /* wat in het krantenarchief van de bib staat (volgens de bibliotheken: de grote Belgische kranten en tijdschriften, en Trouw en de Volkskrant), en pas na twee dagen */
 const ARCHIEF=/(de ?morgen|hln|het laatste nieuws|nieuwsblad|de ?standaard|standaard\.be|de ?tijd|tijd\.be|gazet van antwerpen|gva|belang van limburg|hbvl|trends|knack|tendances|le ?vif|levif|krant van west|kw\.be|humo|mo\*|mo\.be|le ?soir|lesoir|la ?libre|lalibre|trouw|volkskrant|de ?zondag|streekkrant|deze ?week)/i;
 const inArchief=a=>{let h='';try{h=a.u?new URL(a.u).hostname:''}catch(e){}return ARCHIEF.test((a.b||'')+' '+(/news\.google\./.test(h)?'':h))};
 const bibVanaf=a=>{const d=new Date(a.d+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+3);return d.toISOString().slice(0,10)};
-function bibToon(){const u=bibUrl();let n='nog niet gekozen';try{if(u){const h=new URL(u).hostname.replace(/^www\./,'');n=h.replace(/\.bibliotheek\.be$/,'')+(bibLees()?'':' (van de club)')}}catch(e){}$('bibnaam').textContent=n;$('biburl').value=bibLees()}
+function bibToon(){const u=bibUrl();let n='nog niet gekozen';try{if(u){const h=new URL(u).hostname.replace(/^www\./,'');n=h.replace(/\.bibliotheek\.be$/,'')+(bibLees()?'':' (van de club)')}}catch(e){}$('bibnaam').textContent=n+(prAan()?' · PressReader':'');$('biburl').value=bibLees();$('prk').checked=prAan()}
 function bibZet(u){u=String(u||'').trim();if(u&&!/^https?:\/\//i.test(u))u='https://'+u;try{if(u){new URL(u);localStorage.setItem('tw-bib',u)}else localStorage.removeItem('tw-bib')}catch(e){alert('Dat adres klopt niet.');return}bibToon()}
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -82,10 +85,11 @@ function teken(){const q=plat($('q').value.trim());const L=(P.items||[]).filter(
   $('aantal').textContent=(P.items||[]).length?L.length+' artikel'+(L.length===1?'':'s'):'';
   if(!(P.items||[]).length){$('lijst').innerHTML='<div class="leeg na">'+(location.protocol.startsWith('http')?'Nog geen artikels: de lijst wordt bij het volgende automatisch bijwerken gemaakt.':'De artikels staan alleen op de website zelf.')+'</div>';return}
   const rij=a=>{const n=(P.items||[]).indexOf(a),ar=inArchief(a),vanaf=bibVanaf(a),nu=new Date().toISOString().slice(0,10),klaar=ar&&vanaf<=nu;
-    const bib=!ar?(a.p===1?'<span class="na">niet in het krantenarchief van de bib</span>':''):!klaar?`<span class="na" title="Het krantenarchief van de bib bevat alleen artikels ouder dan twee dagen">via de bib vanaf ${esc(dlab(vanaf))}</span>`:`<button type="button" data-i="${n}"${a.p===1?' class="hoofd"':''}>${a.p===1?'lezen via de bib':'via de bib'}</button>`;
+    const pr=prAan()&&a.p!==0&&(!ar||!klaar)?`<a href="${esc(prUrl(a))}" target="_blank" rel="noopener" class="prk">zoeken in PressReader</a>`:'';
+    const bib=!ar?(a.p===1&&!pr?'<span class="na">niet in het krantenarchief van de bib</span>':''):!klaar?`<span class="na" title="Het krantenarchief van de bib bevat alleen artikels ouder dan twee dagen">via de bib vanaf ${esc(dlab(vanaf))}</span>`:`<button type="button" data-i="${n}"${a.p===1?' class="hoofd"':''}>${a.p===1?'lezen via de bib':'via de bib'}</button>`;
     const titel=a.p===1&&klaar?`<button type="button" class="tb" data-i="${n}">${esc(a.t)}</button>`:a.u?`<a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a>`:esc(a.t);
     const lab=a.p===0?'<span class="vrij">gratis</span>':a.p===1?'<span class="betaal">betalend</span>':'';
-    return `<li><span class="t">${titel}</span><span class="m">${a.l?`<span class="taal">${esc(a.l)}</span>`:''}${lab}<span>${esc(dlab(a.d))}${a.b?' · '+esc(a.b):''}</span>${a.p===0?'':bib}${a.p===1&&a.u&&klaar?`<a href="${esc(a.u)}" target="_blank" rel="noopener" class="kl">op de site van de krant</a>`:''}</span></li>`};
+    return `<li><span class="t">${titel}</span><span class="m">${a.l?`<span class="taal">${esc(a.l)}</span>`:''}${lab}<span>${esc(dlab(a.d))}${a.b?' · '+esc(a.b):''}</span>${a.p===0?'':bib}${pr}${a.p===1&&a.u&&klaar?`<a href="${esc(a.u)}" target="_blank" rel="noopener" class="kl">op de site van de krant</a>`:''}</span></li>`};
   $('lijst').innerHTML=L.length?'<ul class="lijst">'+L.map(rij).join('')+'</ul>':'<div class="leeg na">Niets gevonden.</div>';
   $('bron').innerHTML='Gevonden via Google Nieuws (kranten en tijdschriften)'+(P.tijd?', bijgewerkt '+esc(P.tijd):'')+'. Ontbreekt er een artikel (bv. uit de papieren krant)? Laat het de beheerder weten.'}
 $('lijst').addEventListener('click',e=>{const b=e.target.closest('button[data-i]');if(!b)return;const a=(P.items||[])[+b.dataset.i];if(!a)return;
@@ -98,8 +102,9 @@ $('bibzet').addEventListener('click',()=>{const g=$('bibgem').value.trim().toLow
 $('bibzet2').addEventListener('click',()=>bibZet($('biburl').value));
 $('bibtest').addEventListener('click',()=>{const u=bibUrl();if(u)window.open(u,'_blank','noopener')});
 $('bibwis').addEventListener('click',()=>{bibZet('');$('bibgem').value=''});
+$('prk').addEventListener('change',e=>{try{if(e.target.checked)localStorage.setItem('tw-pressreader','1');else localStorage.removeItem('tw-pressreader')}catch(x){}bibToon();teken()});
 })();
 </script>
-<script src="vast.js?v=189fe712f8"></script>
+<script src="vast.js?v=3f1831802a"></script>
 </body>
 </html>
