@@ -67,8 +67,8 @@ tr.top td:first-child{color:var(--gold);font-weight:700}tr.zak td{color:var(--mu
 </div>
 <button type="button" class="pdfbtn" id="pdfbtn" title="Opent het afdrukvenster; kies daar Opslaan als PDF">Opslaan als PDF</button>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-club.js?v=77f043418b"></script>
-<script src="data-interclub.js?v=6eba1f518a"></script>
+<script src="data-club.js?v=d76b9d707e"></script>
+<script src="data-interclub.js?v=5fe60899e4"></script>
 <script src="verwerk.js?v=ef349255c3"></script>
 <script>
 'use strict';
@@ -142,9 +142,9 @@ function eloDeel(){const E=window.ELO;if(!E||!E.leden)return;
 <div><h3>Meeste partijen</h3>${top([...R].sort((a,b)=>b.n-a.n),x=>[esc(nice(x.p.n))+` <span class="na">${x.t.size} toernooi${x.t.size>1?'en':''}</span>`,x.n])}</div>
 <div><h3>Beste prestatie (minstens 5 partijen)</h3>${top(R.filter(x=>x.pr).sort((a,b)=>b.pr-a.pr),x=>[esc(nice(x.p.n))+` <span class="na">${half(x.pt)}/${x.n}</span>`,x.pr])}</div>
 <div><h3>Meeste Elo gewonnen</h3>${top(R.filter(x=>x.kc>0).sort((a,b)=>b.kc-a.kc),x=>[esc(nice(x.p.n)),'+'+Math.round(x.kc)])}</div></div>`}
-(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=08079fe75f';
+(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=215a482f60';
 a.onload=function(){var b=document.createElement('script');b.src='../elo/elo-verwerk.js?v=b570857bb2';b.onload=function(){try{eloDeel()}catch(e){}};document.head.appendChild(b)};document.head.appendChild(a)})();
 </script>
-<script src="../elo/vast.js?v=e4649d55f0"></script>
+<script src="../elo/vast.js?v=a2f5f46521"></script>
 </body>
 </html>
