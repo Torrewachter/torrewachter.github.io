@@ -142,7 +142,7 @@ function eloDeel(){const E=window.ELO;if(!E||!E.leden)return;
 <div><h3>Meeste partijen</h3>${top([...R].sort((a,b)=>b.n-a.n),x=>[esc(nice(x.p.n))+` <span class="na">${x.t.size} toernooi${x.t.size>1?'en':''}</span>`,x.n])}</div>
 <div><h3>Beste prestatie (minstens 5 partijen)</h3>${top(R.filter(x=>x.pr).sort((a,b)=>b.pr-a.pr),x=>[esc(nice(x.p.n))+` <span class="na">${half(x.pt)}/${x.n}</span>`,x.pr])}</div>
 <div><h3>Meeste Elo gewonnen</h3>${top(R.filter(x=>x.kc>0).sort((a,b)=>b.kc-a.kc),x=>[esc(nice(x.p.n)),'+'+Math.round(x.kc)])}</div></div>`}
-(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=247c6bd0d5';
+(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=4168878828';
 a.onload=function(){var b=document.createElement('script');b.src='../elo/elo-verwerk.js?v=b570857bb2';b.onload=function(){try{eloDeel()}catch(e){}};document.head.appendChild(b)};document.head.appendChild(a)})();
 </script>
 <script src="../elo/vast.js?v=3f1831802a"></script>
