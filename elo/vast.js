@@ -30,7 +30,7 @@ if(!kan)return;
 var css='.twv{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align-items:center;gap:2px;font:600 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;background:#2f5d4b;color:#fff;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.22);padding:3px}'
 +'.twv button{all:unset;cursor:pointer;padding:7px 10px;border-radius:999px;white-space:nowrap}.twv button:hover,.twv button:focus-visible{background:rgba(255,255,255,.18)}.twv button[disabled]{opacity:.4;cursor:default;background:none}'
 +'.twv .nr{font-variant-numeric:tabular-nums}'
-+'.twm{position:fixed;left:16px;bottom:64px;z-index:61;width:min(380px,calc(100vw - 32px));max-height:calc(100vh - 90px);overflow:auto;background:#fff;color:#1d2420;border:1px solid #d5dcd6;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.22);padding:14px;font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}'
++'.twm{position:fixed;left:16px;bottom:64px;z-index:61;width:min(380px,calc(100vw - 32px));box-sizing:border-box;max-height:calc(100vh - 90px);overflow:auto;background:#fff;color:#1d2420;border:1px solid #d5dcd6;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.22);padding:14px;font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}'
 +'.twm[hidden]{display:none}.twm h2{font-size:16px;margin:0 0 2px}.twm p{margin:0 0 10px;color:#5d6862;font-size:13px}'
 +'.twm ol{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:4px}.twm li{display:flex;align-items:center;gap:6px;background:#f2f5f2;border-radius:8px;padding:6px 8px}'
 +'.twm li.nu{outline:2px solid #2f5d4b}.twm li b{font-variant-numeric:tabular-nums;color:#2f5d4b;min-width:1.2em}.twm li a{flex:1;min-width:0;color:#1d2420;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.twm li a:hover{text-decoration:underline}'
@@ -47,7 +47,7 @@ var css='.twv{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align
 +'.twm .eig{display:flex;flex-direction:column;gap:6px;margin:-4px 0 10px;padding:8px;border:1px solid #c9d6cd;border-radius:8px}.twm .eig label{flex-direction:column;gap:2px}.twm .eig input{font:inherit;font-size:13px;padding:5px 7px;border:1px solid #c9d6cd;border-radius:6px;background:#fff;color:#1d2420;width:100%;box-sizing:border-box}.twm .eig .rij2{display:flex;gap:6px}.twm .eig .rij2 button{all:unset;cursor:pointer;font-size:13px;padding:4px 11px;border-radius:99px;border:1px solid #c9d6cd;color:#2f5d4b}.twm .eig .rij2 button[type=submit]{background:#2f5d4b;color:#fff;border-color:#2f5d4b}.twm .eig .fout{font-size:12px;color:#c23b32;min-height:0}'
 +'.twm fieldset{border:0;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:3px}.twm legend{font-size:13px;font-weight:600;margin-bottom:3px;padding:0}'
 +'@media (prefers-color-scheme:dark){.twv{background:#8fc5ad;color:#14201b}.twv button:hover,.twv button:focus-visible{background:rgba(0,0,0,.12)}.twm{background:#1b2220;color:#e7ece8;border-color:#2c3531}.twm p,.twm .twl{color:#97a39b}.twm li{background:#232c29}.twm li a,.twm label{color:#e7ece8}.twm li b,.twm li button,.twm .ft a{color:#8fc5ad}.twm li.nu{outline-color:#8fc5ad}.twm .dt{color:#97a39b}.twm li button:hover{background:#2c3a35}.twm .hoofd{background:#8fc5ad;color:#14201b}.twm .exk button{color:#8fc5ad;border-color:#36443e}.twm .exk button:hover{background:#22302a}.twm .eig{border-color:#36443e}.twm .eig input{background:#141917;color:#e7ece8;border-color:#36443e}.twm .eig .rij2 button{color:#8fc5ad;border-color:#36443e}.twm .eig .rij2 button[type=submit]{background:#8fc5ad;color:#14201b}.twm .eig .fout{color:#f07a70}.twv .sep{background:rgba(0,0,0,.25)}.twp textarea{background:#141917;color:#e7ece8;border-color:#36443e}.twp .rij button{color:#8fc5ad;border-color:#36443e}.twp .rij button:hover{background:#22302a}.twp .rij button.warn{color:#f07a70;border-color:#5a3431}.twp .st{color:#97a39b}.twmed a{color:#8fc5ad}}'
-+'@media print{.twv,.twm{display:none!important}}';
++'@media print{.twv,.twm{display:none!important}}.twp .lk{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin:6px 0 2px;font-size:14px}.twp .lk a{color:inherit;font-weight:600}.twp .lk>span{opacity:.7;font-size:13px}';
 var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
 var bar=document.createElement('div');bar.className='twv';bar.setAttribute('role','navigation');bar.setAttribute('aria-label','mijn pagina, mededelingen en notities');
 var menu=document.createElement('div');menu.className='twm';menu.hidden=true;menu.id='twv-menu';
@@ -81,13 +81,19 @@ function medStart(){var d=document.getElementById('twmed');if(!d)return;var t=me
 /* ---------- mijn notities: alleen voor deze bezoeker, in deze browser; als .txt te bewaren en in te laden (Kladblok) ---------- */
 var NK=KEY+'-notities',vorigeNotes=null;
 function notes(){try{return localStorage.getItem(NK)||''}catch(e){return ''}}
-function notesBewaar(t){try{localStorage.setItem(NK,t);return true}catch(e){return false}}
+function notesBewaar(t){tekenLinks(t);try{localStorage.setItem(NK,t);return true}catch(e){return false}}
+/* adressen in de notities (https://..., www....) worden onder het kladblok klikbare links; de tekst ervoor op dezelfde regel is de naam */
+function tekenLinks(t){var d=pan.querySelector('.lk');if(!d)return;var L=[],gez={};
+  String(t||'').split('\n').forEach(function(r){var re=/(https?:\/\/[^\s<>"]+|www\.[^\s<>"]+)/gi,m,voor=0;while((m=re.exec(r))){var u=m[1].replace(/[.,;:!?)\]]+$/,'');var h=/^https?:/i.test(u)?u:'https://'+u;
+    var nm=r.slice(voor,m.index).replace(/[\s:=\-–>|·]+$/,'').replace(/^[\s\-–*•·]+/,'').trim();voor=m.index+m[1].length;
+    if(!nm){try{nm=new URL(h).hostname.replace(/^www\./,'')}catch(e){nm=u}}if(!gez[h]){gez[h]=1;L.push([h,nm])}}});
+  d.innerHTML=L.length?'<b>Links</b>'+L.map(function(x){return '<a href="'+esc(x[0])+'" target="_blank" rel="noopener">'+esc(x[1])+' ↗</a>'}).join(''):'<span>Tip: plak een adres (https://…) in je notities, dan kun je het hier aanklikken. Zet er een naam voor op dezelfde regel, bv. <i>Toernooi Gent: https://…</i></span>'}
 function nst(t){var e=pan.querySelector('.st');if(e)e.textContent=t}
 function tekenNotes(){pan.innerHTML='<h2>Mijn notities</h2><p>Alleen voor jou, in deze browser; wordt vanzelf bewaard. Bewaar ze als .txt om ze in Kladblok te openen of op een ander toestel in te laden.</p>'
-  +'<textarea aria-label="mijn notities" spellcheck="true" placeholder="Bv. wanneer ik niet kan spelen, mijn openingen, wat ik nog wil nakijken…"></textarea>'
+  +'<textarea aria-label="mijn notities" spellcheck="true" placeholder="Bv. wanneer ik niet kan spelen, mijn openingen, wat ik nog wil nakijken…"></textarea>'+'<div class="lk"></div>'
   +'<div class="rij"><button type="button" data-a="n-txt">Bewaren als .txt</button><button type="button" data-a="n-in">Inladen uit .txt</button><button type="button" data-a="n-wis" class="warn">Wissen</button></div>'
   +'<input type="file" accept=".txt,text/plain" hidden><div class="st" aria-live="polite"></div><div class="ft"><span></span><button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';
-  var ta=pan.querySelector('textarea');ta.value=notes();
+  var ta=pan.querySelector('textarea');ta.value=notes();tekenLinks(ta.value);
   ta.addEventListener('input',function(){if(notesBewaar(ta.value))nst('bewaard');else nst('kon niet bewaren in deze browser')});
   pan.querySelector('input[type=file]').addEventListener('change',function(e){var f=e.target.files&&e.target.files[0];if(!f)return;
     var lees2=function(enc,klaar){var r=new FileReader();r.onload=function(){klaar(String(r.result||''))};r.readAsText(f,enc)};

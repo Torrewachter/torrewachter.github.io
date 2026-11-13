@@ -50,6 +50,7 @@ details.fold>summary{cursor:pointer;padding:10px 14px;font-weight:700;list-style
 details.fold>summary span{font-weight:400;color:var(--muted);font-size:14px}
 details.fold>.in{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
 details.fold .board{border-radius:6px}
+details.ond{border-bottom:1px solid var(--line);padding:6px 0}details.ond>summary{cursor:pointer}details.ond>summary span{color:var(--muted);font-size:14px;margin-left:4px}details.ond .board{margin-top:6px}
 .grafiek .lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
 .grafiek .lg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
 .grafiek svg{display:block;max-width:100%;height:auto}
@@ -89,7 +90,7 @@ html:not(.online) .alleenonline{display:none!important}
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=215a482f60"></script>
+<script src="data-elo.js?v=da4f37e96a"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
 <script src="../club/data-club.js?v=d76b9d707e"></script>
@@ -270,27 +271,79 @@ function icDeel(s){if(!IC)return '';const G=(IC.ind||[]).filter(g=>nrm(g.speler)
 <div class="board"><table><thead><tr><th>R</th><th class="l">Datum</th><th>Bord</th><th class="l hm">Match</th><th class="l">Tegenstander</th><th>Elo</th><th>Uitslag</th></tr></thead><tbody>${G.map(g=>{const x=mt(g.ronde);return `<tr><td>${g.ronde}</td><td class="l nw">${dkort(D[g.ronde]||'')}</td><td>${g.bord}</td><td class="l na hm">${x?(x.thuis?'thuis tegen ':'uit bij ')+esc(x.opp)+' · '+fmt(x.voor)+'–'+fmt(x.tegen):''}</td><td class="l">${esc(nice(g.tegen))}</td><td>${g.elo_t||'<span class="na">–</span>'}</td><td>${rs(g.score==='ff'?'ff':+g.score)}${plk(stPartij(s.n,g.tegen,true))}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="na">Nog geen partij gespeeld dit seizoen.</p>'}
 <p class="na small"><a href="../club/interclub.html">Stand en alle uitslagen van de interclub</a></p></div></section>`}
 
-function agendaDeel(s){const A=[],AG=(V&&V.agenda)||{};
-  for(const k of RK.filter(k=>s.club.includes(k))){const per=PER(k),R=RAW[k].rondes||RDAT,lab=(V.club.labels&&V.club.labels[k])||'reeks '+k;RAW[k].r.forEach((row,i)=>{const [a,ea,res,b,eb]=row.split('|');if(res!=='-'&&b!=='Bye')return;if(nrm(a)!==nrm(s.n)&&nrm(b)!==nrm(s.n))return;const rd=Math.floor(i/per)+1;const d=R[rd]||'';if(b==='Bye'){if(rd>PLD(k)&&d>=TODAY)A.push({d,what:`Clubkampioenschap ${lab}, ronde ${rd}`,detail:'bye (vrij, 1 punt)'});return}
-    const wit=nrm(a)===nrm(s.n),o=wit?b:a,oe=NUOF(o,+(wit?eb:ea)||0);const past=d&&d<TODAY;A.push({d:past?'':d,what:`Clubkampioenschap ${lab}, ronde ${rd}`,detail:`${wit?'met wit':'met zwart'} tegen ${nice(o)}${oe?' ('+oe+')':''}${AG.club&&AG.club.plaats&&!past?' · '+AG.club.plaats+(AG.club.uur?', '+AG.club.uur:''):''}`,warn:past?'nog in te halen (oorspronkelijk '+dkort(d)+')'+(()=>{const ih=((AG.inhaal)||[]).filter(x=>x>=TODAY).sort()[0];return ih?' · volgende inhaaldag '+dlong(ih):''})():''})})}
+/* alles wat in de agenda van een speler komt; alles=true: ook wat dit seizoen al voorbij is (voor de agenda op de gsm) */
+function agendaItems(s,alles){const A=[],AG=(V&&V.agenda)||{},OK=d=>alles||d>=TODAY;
+  for(const k of RK.filter(k=>s.club.includes(k))){const per=PER(k),R=RAW[k].rondes||RDAT,lab=(V.club.labels&&V.club.labels[k])||'reeks '+k;RAW[k].r.forEach((row,i)=>{const [a,ea,res,b,eb]=row.split('|');if(nrm(a)!==nrm(s.n)&&nrm(b)!==nrm(s.n))return;const rd=Math.floor(i/per)+1;const d=R[rd]||'';const pl=AG.club&&AG.club.plaats||'',uur=AG.club&&AG.club.uur||'';
+    if(res!=='-'&&b!=='Bye'){if(alles&&d){const wit=nrm(a)===nrm(s.n),o=wit?b:a,sa={'1-0':1,'0-1':0,'½-½':.5}[res];const v=sa==null?null:wit?sa:1-sa;A.push({d,uur,plaats:pl,what:`Clubkampioenschap ${lab}, ronde ${rd}`,detail:`${wit?'met wit':'met zwart'} tegen ${nice(o)}${v==null?'':': '+(v===1?'gewonnen':v===0?'verloren':'remise')}`})}return}
+    if(b==='Bye'){if((rd>PLD(k)||alles)&&OK(d))A.push({d,uur,plaats:pl,what:`Clubkampioenschap ${lab}, ronde ${rd}`,detail:'bye (vrij, 1 punt)'});return}
+    const wit=nrm(a)===nrm(s.n),o=wit?b:a,oe=NUOF(o,+(wit?eb:ea)||0);const past=d&&d<TODAY;if(past&&alles)return;A.push({d:past?'':d,uur:past?'':uur,plaats:past?'':pl,what:`Clubkampioenschap ${lab}, ronde ${rd}`,detail:`${wit?'met wit':'met zwart'} tegen ${nice(o)}${oe?' ('+oe+')':''}${AG.club&&AG.club.plaats&&!past?' · '+AG.club.plaats+(AG.club.uur?', '+AG.club.uur:''):''}`,warn:past?'nog in te halen (oorspronkelijk '+dkort(d)+')'+(()=>{const ih=((AG.inhaal)||[]).filter(x=>x>=TODAY).sort()[0];return ih?' · volgende inhaaldag '+dlong(ih):''})():''})})}
   if(IC&&(IC.spelers||[]).some(n=>nrm(n)===nrm(s.n)))for(const g of IC.kalender||[])if(g.d>=TODAY)A.push({d:g.d,what:`Interclub ${IC.team}, ronde ${g.r}`,detail:`${g.thuis?'thuis tegen':'uit bij'} ${g.opp} · de opstelling is nog niet gekend`});
-  if(AG.liga&&(AG.liga.spelers||[]).some(n=>nrm(n)===nrm(s.n)))for(const [d,u,r] of AG.liga.rondes||[])if(d>=TODAY)A.push({d,what:`${AG.liga.naam}, ${r}`,detail:`${u}${AG.liga.plaats?' · '+AG.liga.plaats:''}`});
+  if(IC&&alles)for(const g of (IC.ind||[]).filter(g=>nrm(g.speler)===nrm(s.n))){const d=(IC.series&&IC.series.dates||{})[g.ronde]||'';if(!d||d>=TODAY)continue;const x=(IC.gespeeld||[]).find(y=>y.r===g.ronde);const v=g.score==='ff'?1:+g.score;
+    A.push({d,what:`Interclub ${IC.team}, ronde ${g.ronde}`,detail:`${x?(x.thuis?'thuis tegen ':'uit bij ')+x.opp+' · ':''}bord ${g.bord} tegen ${nice(g.tegen)}: ${v===1?'gewonnen':v===0?'verloren':'remise'}`})}
+  if(AG.liga&&(AG.liga.spelers||[]).some(n=>nrm(n)===nrm(s.n)))for(const [d,u,r] of AG.liga.rondes||[])if(OK(d))A.push({d,uur:u,plaats:AG.liga.plaats||'',what:`${AG.liga.naam}, ${r}`,detail:`${u}${AG.liga.plaats?' · '+AG.liga.plaats:''}`});
   /* lopende toernooien: de volgende partij (al gepaard, nog geen uitslag) met tegenstander, kleur en bord */
   const ul=u=>String(u||'').replace(/^https?:\/\/(s\d+\.|www\.)?/,'').split(/[?#]/)[0].replace(/\/$/,'').toLowerCase();
   const VG=((E&&E.volgend)||{})[s.n]||[];const VU=new Set(VG.map(v=>ul(v.url)).filter(Boolean)),VT=new Set(VG.map(v=>v.tour));
   for(const v of VG){const nu=v.dt<=TODAY;A.push({d:nu?TODAY:v.dt,lab:v.dt===TODAY?'vandaag':nu?'nu bezig':'',what:`${v.tour}, ronde ${v.rn}`,detail:`${v.c==='w'?'met wit':'met zwart'} tegen ${nice(v.o)}${v.or?' ('+v.or+')':''}${v.bo?' · bord '+v.bo:''}`,link:v.url})}
-  for(const [n,L] of Object.entries(AG.andere||{}))if(nrm(n)===nrm(s.n))for(const t of L)if((t.tot||t.van)>=TODAY&&!(t.link&&VU.has(ul(t.link))))A.push({d:t.van<TODAY?TODAY:t.van,what:t.t,detail:`${t.van&&t.tot&&t.tot!==t.van?dkort(t.van)+' tot '+dkort(t.tot):''}${t.plaats?' · '+t.plaats:''}`,link:t.link,bezig:t.van<=TODAY});
-  for(const t of (E&&E.toernooien)||[])if(!VT.has(t.naam)&&!VU.has(ul(t.url))&&(t.spelers||[]).some(n=>nrm(n)===nrm(s.n))&&t.laatste&&t.laatste>=dag(TODAY,-3)&&!A.some(a=>a.link&&t.url&&a.link.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]===t.url.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]))A.push({d:t.laatste,what:t.naam,detail:`bezig · ${t.rondes} ronde${t.rondes>1?'s':''} gespeeld`,link:t.url,bezig:true});
+  for(const [n,L] of Object.entries(AG.andere||{}))if(nrm(n)===nrm(s.n))for(const t of L)if(OK(t.tot||t.van)&&!(t.link&&VU.has(ul(t.link))&&!alles))A.push({d:t.van<TODAY&&!alles?TODAY:t.van,van:t.van,tot:t.tot||t.van,plaats:t.plaats||'',what:t.t,detail:`${t.van&&t.tot&&t.tot!==t.van?dkort(t.van)+' tot '+dkort(t.tot):''}${t.plaats?' · '+t.plaats:''}`,link:t.link,bezig:t.van<=TODAY});
+  if(!alles)for(const t of (E&&E.toernooien)||[])if(!VT.has(t.naam)&&!VU.has(ul(t.url))&&(t.spelers||[]).some(n=>nrm(n)===nrm(s.n))&&t.laatste&&t.laatste>=dag(TODAY,-3)&&!A.some(a=>a.link&&t.url&&a.link.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]===t.url.replace(/^https?:\/\/(s\d\.)?/,'').split('?')[0]))A.push({d:t.laatste,what:t.naam,detail:`bezig · ${t.rondes} ronde${t.rondes>1?'s':''} gespeeld`,link:t.url,bezig:true});
   /* clubactiviteiten en inhaaldagen (agenda.txt); een inhaaldag alleen voor wie in het clubkampioenschap speelt */
   const teHalen=A.some(a=>a.warn&&/in te halen/.test(a.warn)),volgIh=((AG.inhaal)||[]).filter(x=>x>=TODAY).sort()[0];
-  for(const e of AG.events||[]){const ih=(AG.inhaal||[]).includes(e.d);if(e.d>=TODAY&&(!ih||(teHalen&&e.d===volgIh)))A.push({d:e.d,what:e.t,detail:e.plaats||''})}
-  A.sort((a,b)=>(a.d||'0').localeCompare(b.d||'0'));
+  for(const e of AG.events||[]){const ih=(AG.inhaal||[]).includes(e.d);if(OK(e.d)&&(!ih||(teHalen&&e.d===volgIh)))A.push({d:e.d,what:e.t,detail:e.plaats||'',plaats:e.plaats||''})}
+  A.sort((a,b)=>(a.d||'0').localeCompare(b.d||'0'));return A}
+function agendaDeel(s){const A=agendaItems(s,false);
   const li=a=>`<li><span class="when">${a.lab?a.lab:a.bezig?'nu bezig':a.d?dlong(a.d):'<span class="warn">in te halen</span>'}</span><span class="what"><b>${esc(a.what)}</b><span>${esc(a.detail)}${a.link?` · <a href="${esc(a.link)}" target="_blank" rel="noopener">uitslagen</a>`:''}</span>${a.warn?`<em>${esc(a.warn)}</em>`:''}</span></li>`;
   const N=5,kom=A.length?`<ul class="agenda">${A.slice(0,N).map(li).join('')}</ul>${A.length>N?`<details><summary class="na" style="cursor:pointer">nog ${A.length-N} later</summary><ul class="agenda">${A.slice(N).map(li).join('')}</ul></details>`:''}`:'<p class="na">Geen geplande partijen bekend.</p>';
   /* gekoppelde toernooien waarin hij speelde */
   const T=((E&&E.toernooien)||[]).filter(t=>(t.spelers||[]).some(n=>nrm(n)===nrm(s.n)));
   const tt=T.length?`<div class="board"><table><thead><tr><th class="l">Toernooi</th><th class="l">Site</th><th>Rondes</th><th class="l">Laatste ronde</th><th class="l">Op een FIDE-lijst</th></tr></thead><tbody>${T.map(t=>`<tr><td class="l tw">${t.url?`<a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.naam)}</a>`:esc(t.naam)}</td><td class="l na">${esc(t.soort)}</td><td>${t.rondes||'–'}</td><td class="l">${t.laatste?dkort(t.laatste):''}</td><td class="l">${t.verwerkt?(t.verwerkt>=t.partijen?'ja':t.verwerkt+' van '+t.partijen+' partijen'):'<span class="na">nog niet</span>'}</td></tr>`).join('')}</tbody></table></div>`:'';
-  return `<section><h2>Volgende partijen en toernooien</h2><div class="card">${kom}</div>${tt?`<h3>Gekoppelde toernooien</h3>${tt}`:''}</section>`}
+  return `<section><h2>Volgende partijen en toernooien</h2><div class="card">${kom}${agKnop(s)}</div>${tt?`<h3>Gekoppelde toernooien</h3>${tt}`:''}</section>`}
+
+/* ---------- agenda op de gsm: een agenda (.ics) per speler; meldingen.js zet die na elk bijwerken op de website (elo/agenda/...) ---------- */
+const icsE=t=>String(t||'').replace(/\\/g,'\\\\').replace(/;/g,'\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
+const icsF=l=>{const o=[];let r=l;while(new TextEncoder().encode(r).length>74){let n=74;while(new TextEncoder().encode(r.slice(0,n)).length>74)n--;o.push(r.slice(0,n));r=' '+r.slice(n)}o.push(r);return o.join('\r\n')};
+const icsH=t=>{let h=5381;for(const c of String(t))h=((h*33)^c.codePointAt(0))>>>0;return h.toString(36)};
+window.TW_ICS=n=>{const s=spOf(n);if(!s)return '';const site=(window.ONLINE?location.href.replace(/[?#].*$/,''):'https://torrewachter.github.io/elo/speler.html')+'#'+tok(s.n);
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//De Torrewachters//Agenda//NL','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Schaken · '+icsE(nice(s.n)),'X-WR-TIMEZONE:Europe/Brussels','REFRESH-INTERVAL;VALUE=DURATION:PT6H','X-PUBLISHED-TTL:PT6H',
+    'BEGIN:VTIMEZONE','TZID:Europe/Brussels','BEGIN:DAYLIGHT','TZOFFSETFROM:+0100','TZOFFSETTO:+0200','TZNAME:CEST','DTSTART:19700329T020000','RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU','END:DAYLIGHT','BEGIN:STANDARD','TZOFFSETFROM:+0200','TZOFFSETTO:+0100','TZNAME:CET','DTSTART:19701025T030000','RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU','END:STANDARD','END:VTIMEZONE'];
+  const gezien=new Set();
+  for(const a of agendaItems(s,true)){if(!/^\d{4}-\d\d-\d\d$/.test(a.d||''))continue;let uid=icsH(tok(s.n)+'|'+a.what+(a.van||/^(Clubkampioenschap|Interclub|Liga)/.test(a.what)||/, ronde \d/.test(a.what)?'':'|'+a.d));while(gezien.has(uid))uid+='x';gezien.add(uid);
+    const D=x=>x.replace(/-/g,''),m=/^(\d{1,2})(?:\s*[u:h.]\s*(\d\d))?/i.exec(String(a.uur||'').trim());
+    L.push('BEGIN:VEVENT','UID:'+uid+'@torrewachters','DTSTAMP:20260101T000000Z');
+    if(m&&+m[1]<24){const h=+m[1],mi=+(m[2]||0),e=Math.min(23,h+4);L.push(`DTSTART;TZID=Europe/Brussels:${D(a.d)}T${String(h).padStart(2,'0')}${String(mi).padStart(2,'0')}00`,`DTEND;TZID=Europe/Brussels:${D(a.d)}T${String(e).padStart(2,'0')}${String(e===23?59:mi).padStart(2,'0')}00`)}
+    else{const tot=a.tot&&a.tot>=a.d?a.tot:a.d;L.push('DTSTART;VALUE=DATE:'+D(a.van&&a.van<=a.d?a.van:a.d),'DTEND;VALUE=DATE:'+D(dag(tot,1)),'TRANSP:TRANSPARENT')}
+    L.push('SUMMARY:'+icsE(a.what),'DESCRIPTION:'+icsE([a.detail,a.link?'Uitslagen: '+a.link:'','Spelerspagina: '+site].filter(Boolean).join('\n')));
+    if(a.plaats)L.push('LOCATION:'+icsE(a.plaats));if(a.link)L.push('URL:'+a.link);L.push('END:VEVENT')}
+  L.push('END:VCALENDAR');return L.map(icsF).join('\r\n')+'\r\n'};
+const agUrl=s=>new URL('agenda/'+tok(s.n).toLowerCase()+'.ics',location.href).href;
+function agKnop(s){const knop='display:inline-block;text-decoration:none;font-weight:700;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--soft);color:var(--accent);cursor:pointer;font:inherit;font-weight:700;font-size:14px';
+  const on=window.ONLINE,u=on?agUrl(s):'',wc=u.replace(/^https?:/,'webcal:');
+  return `<details style="margin-top:10px"><summary class="na" style="cursor:pointer">📅 In mijn agenda op gsm of computer</summary><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+${on?`<p class="na small" style="margin:0">Abonneer je één keer: al je partijen van dit seizoen (clubkampioenschap, interclub, ligakampioenschap, toernooien) komen in je eigen agenda, en wijzigingen (een nieuwe ronde, een uitgestelde partij) volgen vanzelf, na enkele uren.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><a style="${knop}" href="https://calendar.google.com/calendar/r?cid=${encodeURIComponent(wc)}" target="_blank" rel="noopener">Google Agenda</a><a style="${knop}" href="${esc(wc)}">iPhone, Mac of Outlook</a><button type="button" style="${knop}" id="agkop">Adres kopiëren</button></div>
+<p class="na small" style="margin:0">Andere agenda: kies daar <i>abonneren via URL</i> (of <i>agenda toevoegen van internet</i>) en plak het adres. <span id="agadres" style="user-select:all;word-break:break-all">${esc(u)}</span></p>`:''}
+<p class="na small" style="margin:0">${on?'Of eenmalig, zonder abonnement (wijzigingen volgen dan niet): ':''}<button type="button" style="all:unset;cursor:pointer;text-decoration:underline" id="agdown">agenda downloaden (.ics)</button></p></div></details>`}
+function agKoppel(s){const d=$('agdown');if(d)d.addEventListener('click',()=>{const b=new Blob([window.TW_ICS(s.n)],{type:'text/calendar'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='schaken-'+tok(s.n).toLowerCase()+'.ics';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)});
+  const k=$('agkop');if(k)k.addEventListener('click',()=>{const t=agUrl(s),ok=()=>{const o=k.textContent;k.textContent='gekopieerd ✓';setTimeout(()=>k.textContent=o,2000)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(ok,()=>{});else{const r=document.createRange();r.selectNodeContents($('agadres'));const se=getSelection();se.removeAllRanges();se.addRange(r)}})}
+
+/* ---------- onderlinge resultaten tegen clubgenoten (FIDE-partijen, nog te verwerken partijen en het clubkampioenschap van dit seizoen) ---------- */
+function clubgenoot(n,ik){let s=spOf(n);if(!s){const a=anm(n),f=nrm(String(n).split(', ')[1]||'')[0];const L=ALLE.filter(x=>anm(x.n)===a&&a&&nrm(String(x.n).split(', ')[1]||'')[0]===f);if(L.length===1)s=L[0]}return s&&nrm(s.n)!==nrm(ik.n)?s:null}
+function onderling(s){const P=[];const m=s.m;
+  if(m){for(const t of [0,1,2])for(const x of m.games[t]){const o=clubgenoot(x.o,s);if(o)P.push({o,d:x.d1||'',ym:x.ym,d2:x.d2||'',tour:x.tour,t,c:x.c,r:x.r})}
+    for(const x of m.pend||[]){const o=clubgenoot(x.o,s);if(o){const r=(x.tour.match(/ r(\d+)$/)||[])[1];P.push({o,d:x.dt,tour:x.tour.replace(/ r\d+$/,'')+(r?', ronde '+r:''),t:0,c:x.c||'',r:x.r})}}}
+  /* clubkampioenschap van dit seizoen (ook partijen die niet voor FIDE tellen) */
+  for(const k of RK.filter(k=>s.club.includes(k))){const per=PER(k),R=RAW[k].rondes||RDAT,lab=(V.club.labels&&V.club.labels[k])||'reeks '+k;
+    RAW[k].r.forEach((row,i)=>{const [a,,res,b]=row.split('|');if(b==='Bye'||!(res in {'1-0':1,'0-1':1,'½-½':1}))return;const wit=nrm(a)===nrm(s.n);if(!wit&&nrm(b)!==nrm(s.n))return;
+      const o=clubgenoot(wit?b:a,s);if(!o)return;const rd=Math.floor(i/per)+1,d=R[rd]||'';
+      const dub=P.find(x=>x.o===o&&/clubkamp/i.test(x.tour)&&(x.d===d||(x.d&&x.d2&&x.d<=d&&d<=x.d2)||(!x.d&&x.ym&&d&&x.ym>=d.slice(0,7)&&x.ym<=dag(d,100).slice(0,7))));
+      if(dub){if(!dub.c)dub.c=wit?'w':'b'}else{const sa={'1-0':1,'0-1':0,'½-½':.5}[res];P.push({o,d,tour:`Clubkampioenschap ${lab}, ronde ${rd}`,t:0,c:wit?'w':'b',r:wit?sa:1-sa})}})}
+  const G=new Map();for(const x of P){if(!G.has(x.o))G.set(x.o,[]);G.get(x.o).push(x)}
+  return [...G.entries()].map(([o,L])=>({o,L:L.sort((a,b)=>(b.d||b.ym||'').localeCompare(a.d||a.ym||''))})).sort((a,b)=>b.L.length-a.L.length||a.o.n.localeCompare(b.o.n,'nl'))}
+function onderlingDeel(s){const T=onderling(s);if(!T.length)return '';const nP=T.reduce((a,x)=>a+x.L.length,0);
+  const sc=L=>{const w=L.filter(x=>x.r===1).length,r=L.filter(x=>x.r===.5).length,v=L.filter(x=>x.r===0).length;return {p:w+r/2,w,r,v}};
+  const rij=({o,L})=>{const S=sc(L);return `<details class="ond"><summary><b>${esc(nice(o.n))}</b> <span>${fmt(S.p)} uit ${L.length} · +${S.w} =${S.r} −${S.v}</span></summary><div class="board"><table><tbody>${L.map(x=>`<tr><td class="l nw">${x.d?dkort(x.d)+" '"+x.d.slice(2,4):mkort(x.ym)}</td><td class="l tw">${esc(x.tour)}${x.t?` <span class="chip">${TN[x.t]}</span>`:''}</td><td>${x.c==='w'?'⚪':x.c==='b'||x.c==='z'?'⚫':''}</td><td>${rs(x.r)}</td></tr>`).join('')}</tbody></table></div><p class="na small" style="margin:4px 0 0">${spLink(o.n,'Naar de pagina van '+nice(o.n))}</p></details>`};
+  return `<section><details class="fold"><summary>Onderlinge resultaten <span>${nP} partij${nP>1?'en':''} tegen ${T.length} clubgeno${T.length>1?'ten':'ot'}</span></summary><div class="in">${T.map(rij).join('')}
+<p class="na small">Klik op een naam voor de partijen. Score vanuit ${esc(nice(s.n).split(' ')[0])}: +gewonnen =remise −verloren. Het clubkampioenschap van dit seizoen, de partijen die nog op geen FIDE-lijst staan en alle FIDE-partijen sinds ${M.length?mlab(M[0]):'het begin'} (toernooien, ligakampioenschap ...). Oudere clubkampioenschappen staan er alleen in als ze voor FIDE telden.</p></div></details></section>`}
 
 /* ---------- lijst van alle spelers ---------- */
 const ALLE=[...SP.values()].sort((a,b)=>a.n.localeCompare(b.n,'nl'));
@@ -359,9 +412,9 @@ function pagina(s){document.title=nice(s.n)+' · Torrewachters';
   const opts=ALLE.map(x=>`<option value="${esc(tok(x.n))}"${x===s?' selected':''}>${esc(nice(x.n))}</option>`).join('');
   $('app').innerHTML=`<header><span class="eyebrow">Speler · De Torrewachters</span><h1>${esc(nice(s.n))}</h1><p class="sub">${[wat(s)?wat(s).replace(/^reeks/,'clubkampioenschap reeks'):'',s.m&&s.m.tit?s.m.tit:''].filter(Boolean).map(esc).join(' · ')||'&nbsp;'}</p></header>
 <div class="pick"><label class="na" for="ander">Andere speler</label><select id="ander">${opts}</select></div>
-${nieuwBoven(s)}${meldDeel(s)}${ag}${ck}${el.html}${ic}${nieuwsDeel(s)}`;
+${nieuwBoven(s)}${meldDeel(s)}${ag}${ck}${el.html}${ic}${onderlingDeel(s)}${nieuwsDeel(s)}`;
   $('ander').addEventListener('change',e=>{location.hash=e.target.value});
-  meldKoppel(s);window.scrollTo(0,0)}
+  meldKoppel(s);agKoppel(s);window.scrollTo(0,0)}
 
 /* ---------- samenvatting per speler, voor de meldingen na het automatisch bijwerken (meldingen.js op GitHub) ---------- */
 window.TW_SPELERS=()=>ALLE.map(s=>s.n);
@@ -381,6 +434,6 @@ window.addEventListener('hashchange',route);route();
 {const t=(E&&E.tijd)||(V&&V.tijd)||'';$('notes').innerHTML=`<p>${window.ONLINE?'Bijgewerkt op ':'Gegevens van '}${t?(+t.slice(8,10))+'/'+(+t.slice(5,7))+'/'+t.slice(0,4)+' om '+t.slice(11):'?'}. FIDE-ratings van de maandlijsten van de FIDE, het clubkampioenschap uit SWAR, de interclub van de KBSB, toernooien van chess-results, OpenResults en de Franse bond.</p><p>Een fout gezien? Laat het weten aan de verantwoordelijke van de website.</p>`}
 })();
 </script>
-<script src="vast.js?v=a2f5f46521"></script>
+<script src="vast.js?v=18b6f502b8"></script>
 </body>
 </html>
