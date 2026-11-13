@@ -90,12 +90,12 @@ tbody tr:hover td{background:var(--accent-soft)}
 <div class="legend">
   <p><b>Periode</b>: een seizoen loopt van 1 juli tot 30 juni; de datum is de begindatum van het toernooi. <b>Score</b>: punten gedeeld door het aantal partijen. <b>Prestatie</b>: gemiddelde rating van de tegenstanders plus het verschil dat bij de score hoort volgens de FIDE-formule (100% en 0% tellen als ±800). Tegenstanders zonder rating tellen niet mee voor het gemiddelde en de prestatie.</p>
   <p><b>Elo uit partijen</b>: de som van de winst en het verlies per partij zoals FIDE ze berekende (K × (score − verwachting)); voor nog niet verwerkte partijen een schatting met dezelfde formule. <b>Rating ±</b>: verschil tussen de eerste en de laatste FIDE-lijst van de periode (of de laatste lijst ervoor).</p>
-  <p>Een ranglijst met een percentage of prestatie telt alleen spelers met minstens <b>5 partijen</b> in de periode (met zwart of wit: minstens 3).</p>
+  <p>Een ranglijst met een percentage of prestatie telt alleen spelers met minstens <b>5 partijen</b> in de periode (met zwart of wit: minstens 3). <b>Prestatie wit</b> en <b>Prestatie zwart</b>: hetzelfde, alleen voor de partijen met die kleur, bij minstens 5 partijen met die kleur tegen spelers met rating (anders –). Met zo weinig partijen schommelt een prestatie snel; kies een langere periode voor een betrouwbaarder beeld. Alle gegevens zijn van na de aanpassing van de FIDE-ratings in maart 2024 (spelers onder 2000 kregen er toen punten bij), dus ze zijn onderling vergelijkbaar.</p>
 </div>
 </div>
 <button type="button" class="pdfbtn" id="pdfbtn" title="Opent het afdrukvenster; kies daar Opslaan als PDF">Opslaan als PDF</button>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=c777204595"></script>
+<script src="data-elo.js?v=c00a0542ad"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
 <script>
@@ -141,15 +141,15 @@ function render(){
   const G=ALLE.filter(g=>g.d>=P.van&&g.d<=P.tot&&(T===9||g.t===T)&&(NV||!g.nv)).sort((a,b)=>a.d.localeCompare(b.d));
   // ---- per speler ----
   const SP=new Map();
-  for(const g of G){let s=SP.get(g.p);if(!s){s={p:g.p,n:0,w:0,rr:0,v:0,pt:0,wn:0,wp:0,zn:0,zp:0,on:0,os:0,ops:0,kc:0,tours:new Set(),buiten:new Set(),reeks:0,best:0,games:[]};SP.set(g.p,s)}
+  for(const g of G){let s=SP.get(g.p);if(!s){s={p:g.p,n:0,w:0,rr:0,v:0,pt:0,wn:0,wp:0,zn:0,zp:0,on:0,os:0,ops:0,won:0,wos:0,wops:0,zon:0,zos:0,zops:0,kc:0,tours:new Set(),buiten:new Set(),reeks:0,best:0,games:[]};SP.set(g.p,s)}
     s.n++;s.pt+=g.r;if(g.r===1)s.w++;else if(g.r===0)s.v++;else s.rr++;
     if(g.c==='w'){s.wn++;s.wp+=g.r}else if(g.c==='b'){s.zn++;s.zp+=g.r}
-    if(g.or){s.on++;s.os+=g.or;s.ops+=g.r}
+    if(g.or){s.on++;s.os+=g.or;s.ops+=g.r;if(g.c==='w'){s.won++;s.wos+=g.or;s.wops+=g.r}else if(g.c==='b'){s.zon++;s.zos+=g.or;s.zops+=g.r}}
     s.kc+=g.kc||0;s.tours.add(g.ev);if(g.land&&g.land!=='BEL')s.buiten.add(g.land);
     if(g.r>0){s.reeks++;s.best=Math.max(s.best,s.reeks)}else s.reeks=0;s.games.push(g)}
   const vanYm=P.van.slice(0,7),totYm=P.tot>nu?E.laatste:P.tot.slice(0,7);
   const rows=[...SP.values()].map(s=>{const r1=ratingOp(s.p,T,vanYm<E.maanden[0]?E.maanden[0]:vanYm),r2=ratingOp(s.p,T,totYm);
-    const gem=s.on?Math.round(s.os/s.on):0;return {...s,sc:s.pt/s.n,gem,pr:s.on?gem+dp(s.ops/s.on):0,r1,r2,dr:(r1&&r2)?r2-r1:null}});
+    const gem=s.on?Math.round(s.os/s.on):0;return {...s,sc:s.pt/s.n,gem,pr:s.on?gem+dp(s.ops/s.on):0,pw:s.won>=5?Math.round(s.wos/s.won)+dp(s.wops/s.won):null,pz:s.zon>=5?Math.round(s.zos/s.zon)+dp(s.zops/s.zon):null,r1,r2,dr:(r1&&r2)?r2-r1:null}});
   // ---- kaarten ----
   const tours=new Set(G.map(g=>g.ev));const landen=new Set(G.filter(g=>g.land).map(g=>g.land));
   const club=G.reduce((a,g)=>a+g.r,0);const kc=G.reduce((a,g)=>a+(g.kc||0),0);
@@ -185,10 +185,10 @@ function render(){
       if(M.length<=24||i%2===0)s+=`<text x="${x+bw/2}" y="${H-6}" font-size="11" text-anchor="middle" fill="var(--muted)">${MND[+k.slice(5)-1]}${k.slice(5)==='01'||i===0?' '+k.slice(2,4):''}</text>`});
     $('grafiek').innerHTML=s+'</svg>'}}
   // ---- tabel spelers ----
-  const COLS=[['n','Speler','l'],['r2','Rating'],['dr','Rating ±'],['n_','Partijen'],['wrv','W-R-V'],['sc','Score'],['wit','Met wit'],['zw','Met zwart'],['gem','Gem. tegenstander'],['pr','Prestatie'],['kc','Elo uit partijen'],['tours','Toernooien']];
+  const COLS=[['n','Speler','l'],['r2','Rating'],['dr','Rating ±'],['n_','Partijen'],['wrv','W-R-V'],['sc','Score'],['wit','Met wit'],['zw','Met zwart'],['gem','Gem. tegenstander'],['pr','Prestatie'],['pw','Prestatie wit'],['pz','Prestatie zwart'],['kc','Elo uit partijen'],['tours','Toernooien']];
   const val=(r,k)=>k==='n'?r.p.n:k==='n_'?r.n:k==='wrv'?r.w:k==='wit'?(r.wn?r.wp/r.wn:-1):k==='zw'?(r.zn?r.zp/r.zn:-1):k==='tours'?r.tours.size:k==='dr'?(r.dr??-9999):(r[k]??-9999);
   rows.sort((a,b)=>{const x=val(a,SORT.k),y=val(b,SORT.k);return (typeof x==='string'?x.localeCompare(y,'nl'):(y-x))*(SORT.k==='n'?-SORT.d:SORT.d)});
-  $('tab').innerHTML=`<thead><tr>${COLS.map(([k,t,c])=>`<th class="${k==='n'?'name':c||''}"${SORT.k===k?' aria-sort="'+(SORT.d>0?'descending':'ascending')+'"':''}><button data-k="${k}">${t}${SORT.k===k?(SORT.d>0?' ▼':' ▲'):''}</button></th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr><td class="name">${esc(nice(r.p.n))}</td><td>${r.r2||'<span class="na">–</span>'}</td><td class="${cls(r.dr||0)}">${r.dr==null?'<span class="na">–</span>':r.dr?(r.dr>0?'+':'−')+Math.abs(r.dr):'0'}</td><td>${r.n}</td><td>${r.w}-${r.rr}-${r.v}</td><td>${pct(r.sc)}</td><td>${r.wn?half(r.wp)+'/'+r.wn:'<span class="na">–</span>'}</td><td>${r.zn?half(r.zp)+'/'+r.zn:'<span class="na">–</span>'}</td><td>${r.gem||'<span class="na">–</span>'}</td><td>${r.pr||'<span class="na">–</span>'}</td><td class="${cls(r.kc)}">${sgn(r.kc)}</td><td>${r.tours.size}</td></tr>`).join('')||'<tr><td class="l" colspan="12">Geen partijen in deze periode.</td></tr>'}</tbody>`;
+  $('tab').innerHTML=`<thead><tr>${COLS.map(([k,t,c])=>`<th class="${k==='n'?'name':c||''}"${SORT.k===k?' aria-sort="'+(SORT.d>0?'descending':'ascending')+'"':''}><button data-k="${k}">${t}${SORT.k===k?(SORT.d>0?' ▼':' ▲'):''}</button></th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr><td class="name">${esc(nice(r.p.n))}</td><td>${r.r2||'<span class="na">–</span>'}</td><td class="${cls(r.dr||0)}">${r.dr==null?'<span class="na">–</span>':r.dr?(r.dr>0?'+':'−')+Math.abs(r.dr):'0'}</td><td>${r.n}</td><td>${r.w}-${r.rr}-${r.v}</td><td>${pct(r.sc)}</td><td>${r.wn?half(r.wp)+'/'+r.wn:'<span class="na">–</span>'}</td><td>${r.zn?half(r.zp)+'/'+r.zn:'<span class="na">–</span>'}</td><td>${r.gem||'<span class="na">–</span>'}</td><td>${r.pr||'<span class="na">–</span>'}</td><td title="${r.won} partijen met wit tegen spelers met rating">${r.pw??'<span class="na">–</span>'}</td><td title="${r.zon} partijen met zwart tegen spelers met rating">${r.pz??'<span class="na">–</span>'}</td><td class="${cls(r.kc)}">${sgn(r.kc)}</td><td>${r.tours.size}</td></tr>`).join('')||'<tr><td class="l" colspan="14">Geen partijen in deze periode.</td></tr>'}</tbody>`;
   $('tab').querySelectorAll('th button').forEach(b=>b.onclick=()=>{const k=b.dataset.k;SORT=SORT.k===k?{k,d:-SORT.d}:{k,d:1};render()});
   // ---- toernooien ----
   const TO=new Map();for(const g of G){let t=TO.get(g.ev);if(!t){t={n:g.tour,pl:g.pl,d:g.d,e:g.d,sp:new Map(),g:0,pt:0,nv:g.nv};TO.set(g.ev,t)}t.g++;t.pt+=g.r;if(g.d<t.d)t.d=g.d;if(g.d>t.e)t.e=g.d;const q=t.sp.get(g.p)||{pt:0,n:0};q.pt+=g.r;q.n++;t.sp.set(g.p,q)}

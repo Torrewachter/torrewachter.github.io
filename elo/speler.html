@@ -91,7 +91,7 @@ html:not(.online) .alleenonline{display:none!important}
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=c777204595"></script>
+<script src="data-elo.js?v=c00a0542ad"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
 <script src="../club/data-club.js?v=d76b9d707e"></script>
@@ -236,7 +236,7 @@ function eloDeel(s){const m=s.m;if(!m)return {nums:'',html:`<section><h2>Elo</h2
   let nums=`<div class="num"><b>${cur??'–'}</b><span>FIDE standaard${m.tit?' · '+esc(m.tit):''}<br>lijst ${mlab(M[last])}</span></div>`;
   if(d12!=null)nums+=`<div class="num"><b class="${d12>0?'up':d12<0?'down':''}">${d12>0?'+':d12<0?'−':'±'}${Math.abs(d12)}</b><span>tegenover ${mlab(M[y12])}</span></div>`;
   if(pd!=null)nums+=`<div class="num"><b class="${pd>0?'up':pd<0?'down':''}">${f1(pd)}</b><span>nog te verwerken (${P.length} partij${P.length>1?'en':''})${est!=null?'<br>verwacht: '+est:''}</span></div>`;
-  let h=`<section><h2>Elo</h2><div class="card"><div class="nums">${nums}${hi!=null&&hi!==cur?`<div class="num"><b>${hi}</b><span>hoogste sinds ${mlab(M[0]).replace(/^\w+ /,'')}<br>${mlab(hiM)}</span></div>`:''}${m.s[1][last]!=null?`<div class="num"><b>${m.s[1][last]}</b><span>rapid</span></div>`:''}${m.s[2][last]!=null?`<div class="num"><b>${m.s[2][last]}</b><span>blitz</span></div>`:''}${pmin!=null?`<div class="num"><b class="sm">${pmin}–${pmax}</b><span>prognose na het clubkampioenschap (alles verloren tot alles gewonnen)</span></div>`:''}</div>
+  let h=`<section><h2>Elo</h2><div class="card"><div class="nums">${nums}${hi!=null&&hi!==cur?`<div class="num"><b>${hi}</b><span>hoogste sinds ${mlab(M[0]).replace(/^\w+ /,'')}<br>${mlab(hiM)}</span></div>`:''}${m.s[1][last]!=null?`<div class="num"><b>${m.s[1][last]}</b><span>rapid</span></div>`:''}${m.s[2][last]!=null?`<div class="num"><b>${m.s[2][last]}</b><span>blitz</span></div>`:''}${pmin!=null?`<div class="num"><b class="sm">${pmin}–${pmax}</b><span>prognose na het clubkampioenschap (alles verloren tot alles gewonnen)</span></div>`:''}</div>${prestKleur(m)}
 ${grafiek(m)}
 <p class="na small">${m.fide?`FIDE-id <a href="https://ratings.fide.com/profile/${m.fide}" target="_blank" rel="noopener">${m.fide}</a>`:'Geen FIDE-id bekend'}${K?` · K-factor ${K}`:''}${m.id?` · stamnummer ${m.id}`:''} · <a href="elo.html#${tok(m.n)}">in de Elo-lijst</a></p></div>`;
   if(P.length){let lt='',sub='';h+=`<details class="fold" open><summary>Nog te verwerken <span>${P.length} partij${P.length>1?'en':''} · ${f1(pd)} · nog niet op een FIDE-lijst</span></summary><div class="in"><div class="board"><table><thead><tr><th class="l">Datum</th><th class="l">Toernooi</th><th class="l">Tegenstander</th><th>Elo</th><th>Uitslag</th><th>Elo ±</th></tr></thead><tbody>${P.map(x=>{const t=x.tour.replace(/ r(\d+)$/,'');const r=(x.tour.match(/ r(\d+)$/)||[])[1];const g=fpZoek(m,x.o,dag(x.dt,-1),dag(x.dt,1))||(/clubkampioenschap|interclub/i.test(x.tour)?stPartij(m.n,x.o,/interclub/i.test(x.tour)):null);return `<tr><td class="l nw">${dkort(x.dt)}</td><td class="l tw">${esc(t)}${r?' <span class="na">r'+r+'</span>':''}</td><td class="l">${spLink(x.o)}</td><td>${x.or||'<span class="na">–</span>'}</td><td>${rs(x.r)}${plk(g)}</td><td class="${x.chg>0?'up':x.chg<0?'down':''}">${x.chg!=null?f1(x.chg):''}</td></tr>`}).join('')}<tr class="tot"><td class="l" colspan="5">Samen (K ${P[0].K})</td><td>${f1(pd)}</td></tr></tbody></table></div><p class="na small">Gespeelde partijen van het clubkampioenschap, de interclub en de gekoppelde toernooien die nog op geen enkele FIDE-lijst staan. De winst of het verlies is berekend met de FIDE-formule.</p></div></details>`}
@@ -327,6 +327,13 @@ ${on?`<p class="na small" style="margin:0">Abonneer je één keer: al je partije
 function agKoppel(s){const d=$('agdown');if(d)d.addEventListener('click',()=>{const b=new Blob([window.TW_ICS(s.n)],{type:'text/calendar'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='schaken-'+tok(s.n).toLowerCase()+'.ics';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)});
   const k=$('agkop');if(k)k.addEventListener('click',()=>{const t=agUrl(s),ok=()=>{const o=k.textContent;k.textContent='gekopieerd ✓';setTimeout(()=>k.textContent=o,2000)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(ok,()=>{});else{const r=document.createRange();r.selectNodeContents($('agadres'));const se=getSelection();se.removeAllRanges();se.addRange(r)}})}
 
+/* prestatie (TPR) met wit en met zwart: alle standaardpartijen tegen spelers met rating sinds het begin van de gegevens (na de FIDE-aanpassing van maart 2024) */
+function prestKleur(m){const dpk=p=>p>=1?800:p<=0?-800:Math.max(-800,Math.min(800,Math.round(-400*Math.log10(1/p-1))));
+  const L=[...(m.games[0]||[]),...(m.pend||[]).filter(x=>!/rapid|blitz/i.test(x.tour))].filter(x=>x.or&&(x.c==='w'||x.c==='b')&&typeof x.r==='number');
+  const k=c=>{const G=L.filter(x=>x.c===c);if(G.length<5)return null;const gem=Math.round(G.reduce((a,x)=>a+x.or,0)/G.length),sc=G.reduce((a,x)=>a+x.r,0);return {n:G.length,v:gem+dpk(sc/G.length),sc}};
+  const w=k('w'),z=k('b');if(!w&&!z)return '';const van=L.map(x=>x.ym).filter(Boolean).sort()[0];
+  const t=(x,lab)=>x?`${lab} <b>${x.v}</b> <span class="na">(${fmt(x.sc)} uit ${x.n})</span>`:`${lab} <span class="na">– (minder dan 5 partijen)</span>`;
+  return `<p style="margin:10px 0 0">Prestatie ${t(w,'met wit')} · ${t(z,'met zwart')} <span class="na small" title="Standaardpartijen tegen spelers met rating, sinds de aanpassing van de FIDE-ratings in maart 2024 (spelers onder 2000 kregen er toen punten bij). Meer per periode op de pagina Statistieken.">· standaard, sinds ${van?mlab(van):'maart 2024'} ⓘ</span></p>`}
 /* ---------- onderlinge resultaten tegen clubgenoten (FIDE-partijen, nog te verwerken partijen en het clubkampioenschap van dit seizoen) ---------- */
 function clubgenoot(n,ik){let s=spOf(n);if(!s){const a=anm(n),f=nrm(String(n).split(', ')[1]||'')[0];const L=ALLE.filter(x=>anm(x.n)===a&&a&&nrm(String(x.n).split(', ')[1]||'')[0]===f);if(L.length===1)s=L[0]}return s&&nrm(s.n)!==nrm(ik.n)?s:null}
 function onderling(s){const P=[];const m=s.m;
