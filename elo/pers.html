@@ -86,13 +86,13 @@ $('talen').innerHTML=Object.keys(TL).filter(k=>!k||aanwezig.has(k)).map(k=>`<but
 $('talen').addEventListener('click',e=>{const b=e.target.closest('button[data-l]');if(!b)return;taal=b.dataset.l;try{localStorage.setItem('tw-pers-taal',taal)}catch(x){}$('talen').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));teken()});
 /* filter: hoe kan ik het lezen? gratis, via de bib (krantenarchief, nu al of binnenkort), of zoeken in PressReader */
 const SRT={'':'Alles',rubriek:'Rubrieken',gratis:'Gratis',bib:'Via de bib',pr:'PressReader'};
-/* een vaste schaakrubriek of -column: zo genoemd in de titel, een schaakrubriek in het adres, of uit een grote krant zonder schaakwoord in de titel
-   (gevonden op de tekst van het artikel: meestal de wekelijkse rubriek, met een titel over een partij of een speler) */
-const SCHAAKW=/scha(ak|ken|ker)|[ée]checs|schach|chess|grootmeester|grand ma[iî]tre|gro(ß|ss)meister|carlsen|gukesh|firouzja/i;
-const isRubriek=a=>{if(a.r===1)return true;const t=plat(a.t);if(/rubriek|column|chronique|kolumne|schaakprobleem|schachaufgabe|probleme d.echecs|schaakpuzzel|studie van de week/.test(t))return true;
-  let pth='';try{pth=a.u?new URL(a.u).pathname.toLowerCase():''}catch(e){}if(/(column|rubriek|chronique|kolumne)/.test(pth)&&SCHAAKW.test(pth+' '+a.t))return true;
+/* een vaste schaakrubriek of -column: de krantenrubrieken op Schaaksite, zo genoemd in de titel, of een rubriek in het adres van de krant */
+const SCHAAKW=/scha(ak|ken|ker)|[ée]checs|schach|chess|grootmeester|grand ma[iî]tre|gro(ß|ss)meister|carlsen|gukesh|firouzja|nepomniachtchi|caruana|nakamura|ding liren|giri/i;
+const isRubriek=a=>{if(a.r===1)return true;const t=plat(a.t);if(/schaakrubriek|schaakcolumn|chess column|chronique (d.)?echecs|schachkolumne|schaakprobleem|schachaufgabe|probleme d.echecs|schaakpuzzel|studie van de week/.test(t))return true;
+  if(/rubriek|column|chronique|kolumne/.test(t)&&SCHAAKW.test(a.t))return true;
+  let pth='';try{pth=a.u?new URL(a.u).pathname.toLowerCase():''}catch(e){}if(/(column|rubriek|chronique|kolumne)/.test(pth)&&SCHAAKW.test(pth+' '+a.t))return true;   /* rubriek op de site van de krant, en het gaat over schaken */
   if(/guardian/i.test(a.b||'')&&/^chess:/i.test(a.t))return true;   /* de wekelijkse schaakrubriek van The Guardian */
-  return a.k===1&&!SCHAAKW.test(a.t)};let soort='';try{soort=localStorage.getItem('tw-pers-soort')||''}catch(e){}if(!SRT[soort])soort='';
+  return false};let soort='';try{soort=localStorage.getItem('tw-pers-soort')||''}catch(e){}if(!SRT[soort])soort='';
 /* PressReader alleen als filter wie het kan gebruiken (vinkje bij Jouw bibliotheek) */
 const soortOk=()=>{if(soort==='pr'&&!prAan()){soort='';try{localStorage.removeItem('tw-pers-soort')}catch(e){}}};soortOk();
 const isSoort=a=>{if(!soort)return true;if(soort==='rubriek')return isRubriek(a);if(soort==='gratis')return a.p===0;const ar=inArchief(a);if(soort==='bib')return ar&&a.p!==0;return a.p!==0&&!(ar&&bibVanaf(a)<=new Date().toISOString().slice(0,10))};
