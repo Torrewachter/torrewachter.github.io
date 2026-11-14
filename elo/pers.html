@@ -66,7 +66,13 @@ const P=window.TW_PERS||{items:[]},$=id=>document.getElementById(id);
 const bibLees=()=>{try{return localStorage.getItem('tw-bib')||''}catch(e){return ''}};
 const bibUrl=()=>bibLees()||P.bib||'';
 const prAan=()=>{try{return localStorage.getItem('tw-pressreader')==='1'}catch(e){return false}};
-const prUrl=a=>'https://www.pressreader.com/search?query='+encodeURIComponent(a.t);
+const prUrl=a=>'https://www.pressreader.com/search?query='+encodeURIComponent(zoekW(a.t));
+/* zoekwoorden uit een titel: de volledige titel vindt vaak niets (in de papieren krant staat een andere titel of andere leestekens);
+   namen en de langste woorden, hoogstens 4 */
+const STOPW=new Set('de het een en van in op te met voor aan bij door over uit tot als om naar dat die dit wat wie is zijn was werd wordt heeft hebben niet ook nog maar dan of al er we wij je jij ik hij zij ze mijn zijn haar ons onze hun le la les un une des du de et en au aux dans sur pour par avec est sont qui que ce cette il elle ils the a an and of to in on for with at by from is are was der die das ein eine und von zu mit auf für im ist nicht'.split(' '));
+const zoekW=t=>{const w=String(t||'').replace(/[“”"‘’'«»():;!?,.|…–-]+/g,' ').split(/\s+/).filter(x=>x&&!/^\d+$/.test(x)&&!STOPW.has(x.toLowerCase()));
+  const naam=w.filter((x,i)=>i>0&&/^\p{Lu}/u.test(x)&&x.length>2),rest=w.filter(x=>!naam.includes(x)).sort((a,b)=>b.length-a.length);
+  return [...new Set([...naam,...rest])].slice(0,4).join(' ')||String(t||'')};
 /* wat in het krantenarchief van de bib staat (volgens de bibliotheken: de grote Belgische kranten en tijdschriften, en Trouw en de Volkskrant), en pas na twee dagen */
 const ARCHIEF=/(de ?morgen|hln|het laatste nieuws|nieuwsblad|de ?standaard|standaard\.be|de ?tijd|tijd\.be|gazet van antwerpen|gva|belang van limburg|hbvl|trends|knack|tendances|le ?vif|levif|krant van west|kw\.be|humo|mo\*|mo\.be|le ?soir|lesoir|la ?libre|lalibre|trouw|volkskrant|de ?zondag|streekkrant|deze ?week)/i;
 const inArchief=a=>{let h='';try{h=a.u?new URL(a.u).hostname:''}catch(e){}return ARCHIEF.test((a.b||'')+' '+(/news\.google\./.test(h)?'':h))};
@@ -87,7 +93,7 @@ $('talen').addEventListener('click',e=>{const b=e.target.closest('button[data-l]
 /* filter: hoe kan ik het lezen? gratis, via de bib (krantenarchief, nu al of binnenkort), of zoeken in PressReader */
 const SRT={'':'Alles',rubriek:'Rubrieken',gratis:'Gratis',bib:'Via de bib',pr:'PressReader'};
 /* een vaste schaakrubriek of -column: de krantenrubrieken op Schaaksite, zo genoemd in de titel, of een rubriek in het adres van de krant */
-const SCHAAKW=/scha(ak|ken|ker)|[ée]checs|schach|chess|grootmeester|grand ma[iî]tre|gro(ß|ss)meister|carlsen|gukesh|firouzja|nepomniachtchi|caruana|nakamura|ding liren|giri/i;
+const SCHAAKW=/scha(ak|ken|ker)|[ée]checs|schach|chess|grootmeester|grand ma[iî]tre|gro(ß|ss)meister|polgar|kasparov|karpov|kramnik|anand|topalov|niemann|praggnanandhaa|erigaisi|abdusattorov|sindarov|hou yifan|ju wenjun|nepomniachtchi|caruana|nakamura|ding liren|giri|gukesh|carlsen|firouzja|vachier/i;
 const isRubriek=a=>{if(a.r===1)return true;const t=plat(a.t);if(/schaakrubriek|schaakcolumn|chess column|chronique (d.)?echecs|schachkolumne|schaakprobleem|schachaufgabe|probleme d.echecs|schaakpuzzel|studie van de week/.test(t))return true;
   if(/rubriek|column|chronique|kolumne/.test(t)&&SCHAAKW.test(a.t))return true;
   let pth='';try{pth=a.u?new URL(a.u).pathname.toLowerCase():''}catch(e){}if(/(column|rubriek|chronique|kolumne)/.test(pth)&&SCHAAKW.test(pth+' '+a.t))return true;   /* rubriek op de site van de krant, en het gaat over schaken */
@@ -110,7 +116,7 @@ function teken(){const q=plat($('q').value.trim());const L=(P.items||[]).filter(
   $('lijst').innerHTML=L.length?'<ul class="lijst">'+L.map(rij).join('')+'</ul>':'<div class="leeg na">Niets gevonden.</div>';
   $('bron').innerHTML='Gevonden via Google Nieuws (kranten en tijdschriften)'+(P.tijd?', bijgewerkt '+esc(P.tijd):'')+'. Ontbreekt er een artikel (bv. uit de papieren krant)? Laat het de beheerder weten.'}
 $('lijst').addEventListener('click',e=>{const b=e.target.closest('button[data-i]');if(!b)return;const a=(P.items||[])[+b.dataset.i];if(!a)return;
-  const oud=b.innerHTML,klaar=()=>{if(!b.classList.contains('tb')){b.textContent='titel gekopieerd ✓';setTimeout(()=>b.innerHTML=oud,2500)}else{const m=b.closest('li').querySelector('.m');let t=m.querySelector('.gek');if(!t){t=document.createElement('span');t.className='gek';m.appendChild(t)}t.textContent=!bibUrl()?'titel gekopieerd: kies hierboven eerst je bib':bibZoek('x')!==bibUrl()?'de bib zoekt op de titel (ook gekopieerd, mocht het niet meteen lukken)':'titel gekopieerd: plak ze in het zoekvak van de bib';setTimeout(()=>t.remove(),6000)}if(bibUrl())window.open(bibZoek(a.t),'_blank','noopener');else{$('bibk').open=true;$('bibk').scrollIntoView({block:'center'})}};
+  const oud=b.innerHTML,klaar=()=>{if(!b.classList.contains('tb')){b.textContent='titel gekopieerd ✓';setTimeout(()=>b.innerHTML=oud,2500)}else{const m=b.closest('li').querySelector('.m');let t=m.querySelector('.gek');if(!t){t=document.createElement('span');t.className='gek';m.appendChild(t)}t.textContent=!bibUrl()?'titel gekopieerd: kies hierboven eerst je bib':bibZoek('x')!==bibUrl()?'de bib zoekt op de titel (ook gekopieerd, mocht het niet meteen lukken)':'titel gekopieerd: plak ze in het zoekvak van de bib';setTimeout(()=>t.remove(),6000)}if(bibUrl())window.open(bibZoek(zoekW(a.t)),'_blank','noopener');else{$('bibk').open=true;$('bibk').scrollIntoView({block:'center'})}};
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(a.t).then(klaar,klaar);else klaar();
   });
 $('q').addEventListener('input',teken);teken();
