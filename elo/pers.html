@@ -38,7 +38,8 @@ h1{font-family:var(--display);font-size:clamp(32px,7vw,50px);line-height:1;margi
 .leeg{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
 </style>
 <script>if(/^https?:$/.test(location.protocol))document.documentElement.classList.add('online')</script>
-<style>html:not(.online) .alleenonline{display:none!important}</style>
+<style>html:not(.online) .alleenonline{display:none!important}.bibzk{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin:8px 0}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -48,12 +49,12 @@ h1{font-family:var(--display);font-size:clamp(32px,7vw,50px);line-height:1;margi
 <div class="zoek"><input type="search" id="q" placeholder="Zoeken in de titels…" aria-label="Zoeken in de titels"><span class="na small" id="aantal"></span></div>
 <div class="talen" id="talen" role="group" aria-label="taal"></div>
 <div class="talen" id="soorten" role="group" aria-label="hoe lezen"></div>
+<div class="bibzk small" id="bibzk"><b>Zoeken in de bib:</b> <button type="button" id="biballe" class="kb2">alle schaakartikels</button><span id="bibaut"></span> <div id="bibspr" hidden style="display:inline-flex;gap:6px;align-items:center"><label for="bibsp" class="small na">topspeler:</label><select id="bibsp" style="min-width:12em;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface)"><option value="">kies een speler…</option></select></div></div>
 <details class="bibk" id="bibk"><summary>Jouw bibliotheek: <b id="bibnaam">nog niet gekozen</b></summary>
 <p class="na small" style="margin:6px 0">Betaalartikels lees je gratis met je bibaccount in de krantendienst van <i>jouw</i> bib. Elke bib heeft een eigen adres; dat onthoudt deze browser.</p>
 <div class="zoek"><label for="bibgem" class="small">Gemeente</label><input id="bibgem" placeholder="bv. tielt" style="flex:0 1 160px" autocomplete="off"><span class="na small">.bibliotheek.be/krantenarchief</span><button type="button" id="bibzet" class="kb">Gebruiken</button></div>
 <div class="zoek" style="margin-top:6px"><label for="biburl" class="small">of het volledige adres</label><input id="biburl" type="url" placeholder="https://…"><button type="button" id="bibzet2" class="kb">Gebruiken</button></div>
-<p class="na small" style="margin:6px 0 0">Niet elke bib werkt met dat adres (in Roeselare bijvoorbeeld zit de bib in ARhus). Zoek dan op de site van je bib naar <i>kranten</i> of <i>krantenarchief</i> en plak dat adres hierboven. <button type="button" id="bibtest" class="kb2">Openen om te testen</button> <button type="button" id="biballe" class="kb2">Alle schaakartikels in de bib</button><span id="bibaut"></span> <button type="button" id="bibwis" class="kb2">Wissen</button></p>
-<div class="zoek" id="bibspr" style="margin-top:6px" hidden><label for="bibsp" class="small">Topspeler zoeken in de bib</label><select id="bibsp" style="flex:1;min-width:12em;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface)"><option value="">kies een speler…</option></select></div>
+<p class="na small" style="margin:6px 0 0">Niet elke bib werkt met dat adres (in Roeselare bijvoorbeeld zit de bib in ARhus). Zoek dan op de site van je bib naar <i>kranten</i> of <i>krantenarchief</i> en plak dat adres hierboven. <button type="button" id="bibtest" class="kb2">Openen om te testen</button> <button type="button" id="bibwis" class="kb2">Wissen</button></p>
 <label class="small" style="display:block;margin-top:10px;border-top:1px solid var(--line);padding-top:8px"><input type="checkbox" id="prk"> Ik kan <b>PressReader</b> gebruiken (veel bibs bieden het gratis aan, bv. Tielt en Gent: kijk op de site van je bib bij <i>e-kranten</i> of <i>PressReader</i>; 7.000 kranten en tijdschriften uit de hele wereld, ook van vandaag). Dan verschijnt <i>zoeken in PressReader</i> bij betaalartikels die niet (of nog niet) in het krantenarchief staan.</label></details>
 <div id="lijst"></div>
 <p class="na small" id="bron"></p>
@@ -130,9 +131,9 @@ $('bibzet').addEventListener('click',()=>{const g=$('bibgem').value.trim().toLow
 $('bibzet2').addEventListener('click',()=>bibZet($('biburl').value));
 $('bibtest').addEventListener('click',()=>{const u=bibUrl();if(u)window.open(u,'_blank','noopener')});
 /* de schaakmedewerkers van de kranten (pers auteurs): al hun artikels in het krantenarchief van de bib (zoeken op author:"...") */
-$('bibaut').innerHTML=(P.auteurs||[]).map(n=>` <button type="button" class="kb2" data-aut="${esc(n)}">Alle artikels van ${esc(n)} in de bib</button>`).join('');
+$('bibaut').innerHTML=(P.auteurs||[]).map(n=>` <button type="button" class="kb2" data-aut="${esc(n)}">artikels van ${esc(n)}</button>`).join('');
 /* topspelers (de lijst die ook de perszoektocht gebruikt): alle artikels over hen in het krantenarchief van de bib */
-if((P.spelers||[]).length){const sel=$('bibsp');$('bibspr').hidden=false;sel.insertAdjacentHTML('beforeend',P.spelers.slice().sort((a,b)=>a.localeCompare(b,'nl')).map(n=>`<option>${esc(n)}</option>`).join(''));
+if((P.spelers||[]).length){const sel=$('bibsp');$('bibspr').hidden=false;$('bibspr').style.display='inline-flex';sel.insertAdjacentHTML('beforeend',P.spelers.slice().sort((a,b)=>a.localeCompare(b,'nl')).map(n=>`<option>${esc(n)}</option>`).join(''));
   sel.addEventListener('change',()=>{const n=sel.value;sel.value='';if(!n)return;if(bibUrl())window.open(bibZoek('"'+n+'"'),'_blank','noopener');else{$('bibk').open=true;$('bibgem').focus()}})}
 $('bibaut').addEventListener('click',e=>{const b=e.target.closest('button[data-aut]');if(!b)return;if(bibUrl())window.open(bibZoek('author:"'+b.dataset.aut+'"'),'_blank','noopener');else{$('bibk').open=true;$('bibgem').focus()}});
 $('biballe').addEventListener('click',()=>{const u=bibUrl();if(u)window.open(bibZoek('schaken'),'_blank','noopener');else{$('bibk').open=true;$('bibgem').focus()}});
