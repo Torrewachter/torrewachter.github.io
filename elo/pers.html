@@ -89,7 +89,7 @@ const SRT={'':'Alles',rubriek:'Rubrieken',gratis:'Gratis',bib:'Via de bib',pr:'P
 /* een vaste schaakrubriek of -column: zo genoemd in de titel, een schaakrubriek in het adres, of uit een grote krant zonder schaakwoord in de titel
    (gevonden op de tekst van het artikel: meestal de wekelijkse rubriek, met een titel over een partij of een speler) */
 const SCHAAKW=/scha(ak|ken|ker)|[ée]checs|schach|chess|grootmeester|grand ma[iî]tre|gro(ß|ss)meister|carlsen|gukesh|firouzja/i;
-const isRubriek=a=>{const t=plat(a.t);if(/rubriek|column|chronique|kolumne|schaakprobleem|schachaufgabe|probleme d.echecs|schaakpuzzel|studie van de week/.test(t))return true;
+const isRubriek=a=>{if(a.r===1)return true;const t=plat(a.t);if(/rubriek|column|chronique|kolumne|schaakprobleem|schachaufgabe|probleme d.echecs|schaakpuzzel|studie van de week/.test(t))return true;
   let pth='';try{pth=a.u?new URL(a.u).pathname.toLowerCase():''}catch(e){}if(/(column|rubriek|chronique|kolumne)/.test(pth)&&SCHAAKW.test(pth+' '+a.t))return true;
   if(/guardian/i.test(a.b||'')&&/^chess:/i.test(a.t))return true;   /* de wekelijkse schaakrubriek van The Guardian */
   return a.k===1&&!SCHAAKW.test(a.t)};let soort='';try{soort=localStorage.getItem('tw-pers-soort')||''}catch(e){}if(!SRT[soort])soort='';
