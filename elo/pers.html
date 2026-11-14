@@ -95,7 +95,7 @@ $('talen').addEventListener('click',e=>{const b=e.target.closest('button[data-l]
 /* filter: hoe kan ik het lezen? gratis, via de bib (krantenarchief, nu al of binnenkort), of zoeken in PressReader */
 const SRT={'':'Alles',rubriek:'Rubrieken',gratis:'Gratis',bib:'Via de bib',pr:'PressReader'};
 /* een vaste schaakrubriek of -column: de krantenrubrieken op Schaaksite, zo genoemd in de titel, of een rubriek in het adres van de krant */
-const SCHAAKW=/scha(ak|ken|ker)|[ée]checs|schach|chess|grootmeester|grand ma[iî]tre|gro(ß|ss)meister|polgar|kasparov|karpov|kramnik|anand|topalov|niemann|praggnanandhaa|erigaisi|abdusattorov|sindarov|hou yifan|ju wenjun|nepomniachtchi|caruana|nakamura|ding liren|giri|gukesh|carlsen|firouzja|vachier/i;
+const SCHAAKW=/scha(ak|ken|ker)|[ée]checs|schach|chess|grootmeester|grand ma[iî]tre|gro(ß|ss)meister|polgar|kasparov|karpov|kramnik|topalov|praggnanandhaa|erigaisi|abdusattorov|sindarov|hou yifan|ju wenjun|nepomniachtchi|caruana|nakamura|ding liren|gukesh|carlsen|firouzja|vachier/i;
 const isRubriek=a=>{if(a.r===1)return true;const t=plat(a.t);if(/schaakrubriek|schaakcolumn|chess column|chronique (d.)?echecs|schachkolumne|schaakprobleem|schachaufgabe|probleme d.echecs|schaakpuzzel|studie van de week/.test(t))return true;
   if(/rubriek|column|chronique|kolumne/.test(t)&&SCHAAKW.test(a.t))return true;
   let pth='';try{pth=a.u?new URL(a.u).pathname.toLowerCase():''}catch(e){}if(/(column|rubriek|chronique|kolumne)/.test(pth)&&SCHAAKW.test(pth+' '+a.t))return true;   /* rubriek op de site van de krant, en het gaat over schaken */
