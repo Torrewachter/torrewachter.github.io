@@ -118,9 +118,9 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <script src="data-elo.js?v=6d855b986d"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=0f9f453a2c"></script>
-<script src="../club/data-club.js?v=e8440caae8"></script>
+<script src="../club/data-club.js?v=4de346971c"></script>
 <script src="../club/data-interclub.js?v=15434390b5"></script>
-<script src="../club/data-partijen.js?v=e595ec2727"></script>
+<script src="../club/data-partijen.js?v=3f16d39bb2"></script>
 <script src="../club/verwerk.js?v=ef349255c3"></script>
 <script src="clubsite.js?v=418e518780"></script>
 <script>if(window.ONLINE)document.write('<script src="filmpjes.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
@@ -490,10 +490,10 @@ function volgSpelers(s){const o=volgLees(),uit=new Map();for(const k of o.sp){co
 /* spelers die geen clublid zijn: de lijst van de club (instellingen.txt, met FIDE-gegevens) en wie je zelf toevoegt met een FIDE-nummer */
 const EXT=()=>(E&&E.extern)||[];
 /* volledig volgen van een speler met een FIDE-nummer: het nummer (en niets anders) gaat naar het clubkanaal <voorvoegsel>-volg op ntfy;
-   GitHub haalt dan zijn gegevens op. Zolang je hem volgt, een seintje per week; zonder seintje valt hij na 30 dagen van de lijst. */
+   GitHub haalt dan zijn gegevens op. Zolang hij nog niet op de lijst staat, elke dag (bij een bezoek) een seintje, daarna een per week; zonder seintje valt hij na 30 dagen van de lijst. */
 function volgPing(nu){if(!/^https:$/.test(location.protocol)||typeof window.TW_NIEUWS!=='function')return;let P={};try{P=JSON.parse(localStorage.getItem('tw-volg-ping')||'{}')||{}}catch(e){}
   const top=window.TW_NIEUWS().replace(/-nieuws$/,'')+'-volg',X=volgLees().x,F=X.map(q=>String(q.f)).filter(f=>/^\d{4,10}$/.test(f)),grens=dag(TODAY,-6);let ver=false;
-  for(const f of F){if(!nu&&(P[f]||'')>grens)continue;if(nu&&nu!==f)continue;P[f]=TODAY;ver=true;try{fetch('https://ntfy.sh/'+top,{method:'POST',body:f+'|'+String((X.find(q=>String(q.f)===f)||{}).n||'').slice(0,60),mode:'no-cors'}).catch(()=>{})}catch(e){}}
+  for(const f of F){/* nog niet op de lijst: elke dag opnieuw (ntfy bewaart het maar 12 uur); erop: een keer per week */if(!nu&&(P[f]||'')>(extVan(f)?grens:dag(TODAY,-1)))continue;if(nu&&nu!==f)continue;P[f]=TODAY;ver=true;try{fetch('https://ntfy.sh/'+top,{method:'POST',body:f+'|'+String((X.find(q=>String(q.f)===f)||{}).n||'').slice(0,60),mode:'no-cors'}).catch(()=>{})}catch(e){}}
   for(const f of Object.keys(P))if(!F.includes(f))delete P[f];
   if(ver||Object.keys(P).length!==F.length)try{localStorage.setItem('tw-volg-ping',JSON.stringify(P))}catch(e){}}
 const extVan=f=>EXT().find(z=>String(z.fide)===String(f))||null;
