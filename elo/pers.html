@@ -47,6 +47,7 @@ h1{font-family:var(--display);font-size:clamp(32px,7vw,50px);line-height:1;margi
 <p class="na small" style="margin:6px 0 0">Artikels over schaken in kranten en tijdschriften, in het Nederlands, Frans, Engels en Duits, de nieuwste eerst. Is een artikel <b>gratis</b>, dan opent een klik op de titel het artikel. Is het <b>betalend</b> en staat de krant in het krantenarchief van de bib, dan zoekt een klik het artikel op in het krantenarchief van je bib en lees je het gratis met je bibaccount (de titel wordt ook gekopieerd, voor een bib die niet meteen zoekt). Het archief bevat alleen artikels ouder dan twee dagen, dus daar staat <i>via de bib vanaf …</i>. Buitenlandse kranten (behalve Trouw en de Volkskrant) staan er niet in; wie PressReader kan gebruiken (bv. via de bib van Gent), vindt ze daar.</p></header>
 <div class="zoek"><input type="search" id="q" placeholder="Zoeken in de titels…" aria-label="Zoeken in de titels"><span class="na small" id="aantal"></span></div>
 <div class="talen" id="talen" role="group" aria-label="taal"></div>
+<div class="talen" id="soorten" role="group" aria-label="hoe lezen"></div>
 <details class="bibk" id="bibk"><summary>Jouw bibliotheek: <b id="bibnaam">nog niet gekozen</b></summary>
 <p class="na small" style="margin:6px 0">Betaalartikels lees je gratis met je bibaccount in de krantendienst van <i>jouw</i> bib. Elke bib heeft een eigen adres; dat onthoudt deze browser.</p>
 <div class="zoek"><label for="bibgem" class="small">Gemeente</label><input id="bibgem" placeholder="bv. tielt" style="flex:0 1 160px" autocomplete="off"><span class="na small">.bibliotheek.be/krantenarchief</span><button type="button" id="bibzet" class="kb">Gebruiken</button></div>
@@ -83,7 +84,12 @@ const TL={'':'Alle talen',nl:'Nederlands',fr:'Frans',en:'Engels',de:'Duits'};let
 const aanwezig=new Set((P.items||[]).map(a=>a.l||''));if(taal&&!aanwezig.has(taal))taal='';
 $('talen').innerHTML=Object.keys(TL).filter(k=>!k||aanwezig.has(k)).map(k=>`<button type="button" data-l="${k}" aria-pressed="${k===taal}">${TL[k]}</button>`).join('');
 $('talen').addEventListener('click',e=>{const b=e.target.closest('button[data-l]');if(!b)return;taal=b.dataset.l;try{localStorage.setItem('tw-pers-taal',taal)}catch(x){}$('talen').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));teken()});
-function teken(){const q=plat($('q').value.trim());const L=(P.items||[]).filter(a=>(!taal||(a.l||'')===taal)&&(!q||plat(a.t+' '+a.b).includes(q)));
+/* filter: hoe kan ik het lezen? gratis, via de bib (krantenarchief, nu al of binnenkort), of zoeken in PressReader */
+const SRT={'':'Alles',gratis:'Gratis',bib:'Via de bib',pr:'PressReader'};let soort='';try{soort=localStorage.getItem('tw-pers-soort')||''}catch(e){}if(!SRT[soort])soort='';
+const isSoort=a=>{if(!soort)return true;if(soort==='gratis')return a.p===0;const ar=inArchief(a);if(soort==='bib')return ar&&a.p!==0;return a.p!==0&&!(ar&&bibVanaf(a)<=new Date().toISOString().slice(0,10))};
+const soortKnop=()=>{$('soorten').innerHTML=Object.keys(SRT).map(k=>`<button type="button" data-s="${k}" aria-pressed="${k===soort}" title="${k==='bib'?'artikels uit het krantenarchief van de bib (betalend of nog niet nagekeken)':k==='pr'?'betaalartikels die (nog) niet via de bib te lezen zijn: zoeken in PressReader'+(prAan()?'':' (zet PressReader aan bij Jouw bibliotheek)'):k==='gratis'?'vrij te lezen op de site van de krant':''}">${SRT[k]}</button>`).join('')};soortKnop();
+$('soorten').addEventListener('click',e=>{const b=e.target.closest('button[data-s]');if(!b)return;soort=b.dataset.s;try{localStorage.setItem('tw-pers-soort',soort)}catch(x){}soortKnop();teken()});
+function teken(){const q=plat($('q').value.trim());const L=(P.items||[]).filter(a=>(!taal||(a.l||'')===taal)&&isSoort(a)&&(!q||plat(a.t+' '+a.b).includes(q)));
   $('aantal').textContent=(P.items||[]).length?L.length+' artikel'+(L.length===1?'':'s'):'';
   if(!(P.items||[]).length){$('lijst').innerHTML='<div class="leeg na">'+(location.protocol.startsWith('http')?'Nog geen artikels: de lijst wordt bij het volgende automatisch bijwerken gemaakt.':'De artikels staan alleen op de website zelf.')+'</div>';return}
   const rij=a=>{const n=(P.items||[]).indexOf(a),ar=inArchief(a),vanaf=bibVanaf(a),nu=new Date().toISOString().slice(0,10),klaar=ar&&vanaf<=nu;
