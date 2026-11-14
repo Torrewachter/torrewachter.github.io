@@ -163,7 +163,7 @@ a.spn{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}a
   <p><b>Correctie maart 2024</b>: op 1 maart 2024 verhoogde FIDE alle ratings onder 2000 met 0,4 × (2000 − rating). Getoond wordt de stijging van de lijst februari naar maart 2024, zonder de partijen die op de lijst van maart verwerkt werden.</p>
   <p><b>Te verwerken</b>: Elo-winst of -verlies uit gespeelde partijen van het clubkampioenschap, de interclub en de gekoppelde toernooien die nog niet op een FIDE-lijst staan (per partij nagekeken: staat ze in de FIDE-berekening van een latere maandlijst, tegen dezelfde tegenstander met dezelfde uitslag, dan is ze verwerkt), berekend met de FIDE-formule en met de ratings van de laatste FIDE-lijst, want daarmee worden ze verwerkt (SWAR en de andere uitslagensites tonen de rating van bij de start van het toernooi) (K uit de laatste FIDE-berekening van de speler, anders 40 voor wie dit jaar 18 of jonger wordt, 20, of 10 vanaf 2400). Forfaits en partijen tegen spelers zonder rating tellen niet. <b>Geschat</b> = huidig plus dat verschil; <span class="ishi">groen</span> als dat hoger of gelijk is aan de hoogste rating van de periode, <span class="islo">rood</span> als het lager of gelijk is aan de laagste. Andere toernooien zitten er niet in.</p>
   <p><b>Prognose</b>: de rating na de nog te spelen partijen van het clubkampioenschap, van alles verloren tot alles gewonnen: huidige rating + te verwerken + het bereik van die partijen (FIDE-formule, ratings uit SWAR). Klap een speler open voor het bereik per partij (ga met de muis erop voor de waarde bij remise). Interclubpartijen tellen niet mee, want de tegenstander is nog niet bekend.</p>
-  <p><b>Partijen, W-R-V, score, gemiddelde tegenstander, prestatie, Elo uit partijen</b>: FIDE-partijen van het gekozen tempo, verwerkt op de lijsten ná <i>Van</i> tot en met <i>tot</i> (dezelfde periode als ± periode). <b>Prestatie</b> = gemiddelde tegenstander + het FIDE-verschil dat bij de score hoort (vanaf 3 partijen). <b>Elo-verschil</b> bij winst, verlies en remise = rating van de tegenstander min je eigen rating op dat moment.</p>
+  <p><b>Partijen, W-R-V, score, gemiddelde tegenstander, prestatie, Elo uit partijen</b>: FIDE-partijen van het gekozen tempo, verwerkt op de lijsten ná <i>Van</i> tot en met <i>tot</i> (dezelfde periode als ± periode). <b>Prestatie</b> = gemiddelde tegenstander + het FIDE-verschil dat bij de score hoort (vanaf 3 partijen). <b>Prestatie wit</b> en <b>Prestatie zwart</b>: hetzelfde voor de partijen met die kleur (vanaf 5 partijen met die kleur tegen spelers met rating; met weinig partijen schommelt het snel). <b>Elo-verschil</b> bij winst, verlies en remise = rating van de tegenstander min je eigen rating op dat moment.</p>
   <p><b>*</b> achter de naam: speelde in de periode minstens één FIDE-toernooi in het buitenland. <b>Maandlijsten</b>: één kolom per FIDE-lijst; vet = er werden partijen verwerkt. <b class="plk">♟</b> in de details: de partij met zetten werd gevonden; klik om ze na te spelen op lichess. Is de periode precies 12 maanden, dan wordt <b>± periode</b> niet getoond, want dan is dat hetzelfde als <b>± 12 maanden</b>. Klopt een link niet, of wil je de partijen van een toernooi niet tonen? Klik in de details naast de naam van het toernooi op <b>♟ aan</b>: dan wordt het <b>♟ uit</b> en verdwijnen de links van dat toernooi, voor alle spelers. Bovenaan de details van een speler zet <b>♟ aan / uit</b> alle links van die speler aan of uit. Nog eens klikken zet ze terug; bovenaan de tabel staat welke toernooien uit staan. <b>♟ links naar partijen</b> bovenaan zet alle links in een keer uit.</p>
 </div>
 </div>
@@ -175,9 +175,9 @@ a.spn{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}a
   <small>De lijst komt in de PDF zoals ze nu op het scherm staat (periode, tempo, filters, opengeklapte spelers). Kies in het afdrukvenster <i>Opslaan als PDF</i>.</small>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=d672733bf0"></script>
+<script src="data-elo.js?v=a14674085e"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
-<script src="elo-verwerk.js?v=b570857bb2"></script>
+<script src="elo-verwerk.js?v=0f9f453a2c"></script>
 <script>
 (function(){
 'use strict';
@@ -224,6 +224,8 @@ function bereken(){const t=+$('tempo').value;let van=$('van').value,tot=$('tot')
        Alleen als hij op die lijst ook partijen verwerkt kreeg, is het een nieuwe rating (anders ontbreken gewoon de oudere FIDE-gegevens). */
     let wijz=false;if(cur!=null){if(beg!=null)wijz=cur!==beg;else{let f=-1;for(let i=i0;i<=i1;i++)if(s[i]!=null){f=i;break}if(f>=0)wijz=g[f]>0||cur!==s[f]}}
     const tpr=n>=3&&avg?avg+dp(sc):null;
+    /* prestatie met wit en met zwart: vanaf 5 partijen met die kleur tegen spelers met rating */
+    const kl=c=>{const K=G.filter(x=>x.c===c&&x.or);if(K.length<5)return null;return Math.round(K.reduce((a,x)=>a+x.or,0)/K.length)+dp(K.reduce((a,x)=>a+x.r,0)/K.length)},tw=kl('w'),tz=kl('b');
     const P=t===0?p.pend:[];const pd=P.length?Math.round(P.reduce((a,x)=>a+(x.chg||0),0)*10)/10:null;
     const cur0=p.s[0][M.length-1];const est=t===0&&P.length&&cur0!=null?Math.round(cur0+pd):null;
     /* prognose: huidig + te verwerken + bereik van de nog te spelen clubpartijen (alles verliezen .. alles winnen) */
@@ -234,7 +236,7 @@ function bereken(){const t=+$('tempo').value;let van=$('van').value,tot=$('tot')
     if(t===0&&iF>=0&&iM>=0&&p.s[0][iF]!=null&&p.s[0][iM]!=null){const kM=p.games[0].filter(x=>x.ym==='2024-03').reduce((a,x)=>a+(x.kc||0),0);cor=Math.round(p.s[0][iM]-p.s[0][iF]-kM)}
     const Ks=p.games[t].length?p.games[t][p.games[t].length-1].K:null;
     const toer=new Set(G.map(x=>x.ym+'|'+x.tour)).size;
-    const r={...p,t,i0,i1,cur,beg,begM,dlt:(cur!=null&&beg!=null)?cur-beg:null,d12:(cur!=null&&yr>=0&&s[yr]!=null)?cur-s[yr]:null,hi,hiM,lo,loM,G,W,D,L,sc,avg,tpr,kc:n?Math.round(kc*10)/10:null,w,l,d,
+    const r={...p,t,i0,i1,cur,beg,begM,dlt:(cur!=null&&beg!=null)?cur-beg:null,d12:(cur!=null&&yr>=0&&s[yr]!=null)?cur-s[yr]:null,hi,hiM,lo,loM,G,W,D,L,sc,avg,tpr,tw,tz,kc:n?Math.round(kc*10)/10:null,w,l,d,
       wd:w?w.d:null,ld:l?l.d:null,dd:d?d.d:null,fx:[...land].join(', '),P,pd,est,RS,pmin,pmax,cor,K:Ks,toer:n?toer:null,age:p.by?E.seizoen-p.by:null,
       rap:p.s[1][i1],bli:p.s[2][i1],std:p.s[0][i1],
       ng:G.length,heeft:s.some(v=>v!=null),wijz};
@@ -271,7 +273,9 @@ const COLS=[
  {k:'sc',lab:'W-R-V',f:r=>r.ng?`${r.W}-${r.D}-${r.L}<span class="when">${Math.round(r.sc*100)}%</span>`:na},
  {k:'avg',lab:'Gem. tegenstander',f:r=>r.avg??na},
  {k:'tpr',lab:'Prestatie',f:r=>r.tpr==null?na:`<span class="${r.cur!=null&&r.tpr>r.cur?'up':r.cur!=null&&r.tpr<r.cur?'down':''}">${r.tpr}</span>`},
- {k:'kc',lab:'Elo uit partijen',uit:true,f:r=>fmtP(r.kc)},
+ {k:'tw',lab:'Prestatie wit',f:r=>r.tw==null?na:`<span class="${r.cur!=null&&r.tw>r.cur?'up':r.cur!=null&&r.tw<r.cur?'down':''}">${r.tw}</span>`},
+  {k:'tz',lab:'Prestatie zwart',f:r=>r.tz==null?na:`<span class="${r.cur!=null&&r.tz>r.cur?'up':r.cur!=null&&r.tz<r.cur?'down':''}">${r.tz}</span>`},
+  {k:'kc',lab:'Elo uit partijen',uit:true,f:r=>fmtP(r.kc)},
  {k:'K',lab:'K',uit:true,f:r=>r.K??na},
  {k:'std',lab:'Standaard',tip:'verborgen bij Tempo standaard: dan is dit Huidig',uit:true,f:r=>r.std??na},
  {k:'rap',lab:'Rapid',tip:'verborgen bij Tempo rapid: dan is dit Huidig',f:r=>r.rap??na},
@@ -282,7 +286,7 @@ const COLS=[
  {k:'maanden',lab:'Maandlijsten (één kolom per maand)',groep:true,uit:true}
 ];
 // standaard: deze kolommen aan, in deze volgorde; de rest uit
-const STDAAN=['n','fide','cur','pd','est','prog','dlt','d12','hi','lo','n_g','kc','rap','bli'];
+const STDAAN=['n','fide','cur','pd','est','prog','dlt','d12','hi','lo','n_g','tpr','tw','tz','kc','rap','bli'];
 const STD=[...STDAAN.map(k=>({k,on:true})),...COLS.filter(c=>!STDAAN.includes(c.k)).map(c=>({k:c.k,on:false}))];
 let KOL=LS.get('kol2',null);
 function kolNorm(){if(!Array.isArray(KOL))KOL=STD.map(x=>({...x}));KOL=KOL.filter(x=>COLS.some(c=>c.k===x.k));for(const x of STD)if(!KOL.some(y=>y.k===x.k))KOL.push({...x});const n=KOL.find(x=>x.k==='n');n.on=true}

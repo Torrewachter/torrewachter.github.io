@@ -60,11 +60,13 @@ ul.agenda .tk-in span{display:inline}.tk-in>div{display:flex;justify-content:spa
 ul.studie{list-style:none;margin:0;padding:0}ul.studie li{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line)}ul.studie li:last-child{border-bottom:0}ul.studie li>span:nth-child(2){flex:1;min-width:160px}
 table.vglt{width:100%}table.vglt td,table.vglt th{white-space:nowrap}table.vglt td.l{white-space:normal;min-width:110px}table.vglt th{white-space:normal;font-size:13px}ul.agenda .tk-in .tk-r{color:#fff}table.vglt td.vb{font-weight:700}.vglk{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
 ul.mkl{list-style:none;margin:0;padding:0}li.mk{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line)}li.mk>div:first-child{flex:1 1 220px}li.mk>div:first-child span{display:block;margin-top:2px}.mk-k{flex:0 1 auto}
-.indz{display:flex;flex-direction:column;gap:8px;margin:0 0 20px}.inda+.indz{margin:20px 0 0}.indw .indz{margin:0}.inda>.ind+.ind{margin-top:0}.indz.naast{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+/* ruimte tussen de delen van de spelerspagina */
+#app>.ind,#app>.indz,#app>.inda,#app>.indw{margin-top:30px}#app>.ind:first-of-type{margin-top:16px}.indw>.inda>.ind:first-child,.inda>.ind{margin-top:0}
+.indz{display:flex;flex-direction:column;gap:8px}.indw .indz{margin:0}.inda>.ind+.ind{margin-top:0}.indz.naast{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 details.indt{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-width:0}details.indt>summary{cursor:pointer;padding:10px 14px;font-weight:700;color:var(--accent);list-style:none;display:flex;justify-content:space-between;gap:8px}details.indt>summary::-webkit-details-marker{display:none}details.indt>summary::after{content:'▸';color:var(--muted)}details.indt[open]>summary::after{content:'▾'}
 details.indt[open]{grid-column:1/-1}.indt-in{padding:0 12px 12px}.indt-in>section>h2:first-child{display:none}
-.inda{display:flex;flex-direction:column;gap:22px;min-width:0}.indw{display:grid;gap:22px;align-items:start}.indw.links{grid-template-columns:minmax(220px,300px) 1fr}.indw.rechts{grid-template-columns:1fr minmax(220px,300px)}.indw .indz.naast{grid-template-columns:1fr}
-@media (max-width:760px){.indw.links,.indw.rechts{grid-template-columns:1fr}.indw.rechts .indz{order:2}}
+.inda{display:flex;flex-direction:column;gap:30px;min-width:0}.indw{display:grid;gap:22px;align-items:start}.indw.links{grid-template-columns:minmax(220px,300px) 1fr}.indw.rechts{grid-template-columns:1fr minmax(220px,300px)}.indw .indz.naast{grid-template-columns:1fr}
+@media (max-width:760px){.indw.links,.indw.rechts{grid-template-columns:1fr}.indw.rechts .indz{order:2}.indw .indz.naast{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
 .indp .indx{min-width:96px}.indp .indx[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}.indo{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:8px 0}.indkz{display:inline-flex;flex-wrap:wrap;gap:4px}.indkz button{font:inherit;font-size:13px;padding:3px 10px;border:1px solid var(--line);border-radius:999px;background:var(--soft);color:inherit;cursor:pointer}.indkz button[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
 .vkl{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}.vk{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}.vk.vt{grid-column:1/-1}.vk-k{display:flex;align-items:baseline;gap:8px}.vk-k b{flex:1;min-width:0}.vk-x{all:unset;cursor:pointer;color:var(--muted);padding:0 4px}.vk-x:hover{color:var(--down)}
 #volgK[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}#volgK+.indk{margin-left:6px}
@@ -113,12 +115,12 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=d672733bf0"></script>
+<script src="data-elo.js?v=a14674085e"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
-<script src="elo-verwerk.js?v=b570857bb2"></script>
-<script src="../club/data-club.js?v=00325cfb70"></script>
+<script src="elo-verwerk.js?v=0f9f453a2c"></script>
+<script src="../club/data-club.js?v=5f52bfb36a"></script>
 <script src="../club/data-interclub.js?v=15434390b5"></script>
-<script src="../club/data-partijen.js?v=ee80dcfa12"></script>
+<script src="../club/data-partijen.js?v=9af2fabbb4"></script>
 <script src="../club/verwerk.js?v=ef349255c3"></script>
 <script src="clubsite.js?v=418e518780"></script>
 <script>if(window.ONLINE)document.write('<script src="filmpjes.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
@@ -387,7 +389,7 @@ function indPaneel(){const o=indLees(),nm=Object.fromEntries(IND);
   return `<h2>Indeling van de spelerspagina</h2><p class="na small">Vink aan wat je wilt zien, zet het met ▲ ▼ in je eigen volgorde, en kies per deel of het <b>open</b> staat of <b>ingeklapt</b> (dan zie je alleen de titel en klik je erop om het te openen). Geldt voor alle spelerspagina's, alleen in deze browser.</p><ol>${o.v.map((k,i)=>`<li><label><input type="checkbox" data-k="${k}"${o.uit.includes(k)?'':' checked'}> ${esc(nm[k])}</label><span><button type="button" class="indx" data-dk="${k}" aria-pressed="${o.dicht.includes(k)}" title="open of ingeklapt"${o.uit.includes(k)?' disabled':''}>${o.dicht.includes(k)?'▸ ingeklapt':'▾ open'}</button><button type="button" data-op="${i}" aria-label="hoger"${i?'':' disabled'}>▲</button><button type="button" data-neer="${i}" aria-label="lager"${i<o.v.length-1?'':' disabled'}>▼</button></span></li>`).join('')}</ol>
 <div class="indo"><span class="small"><b>Ingeklapte delen</b> tonen:</span><span class="indkz" role="group" aria-label="plaats">${Object.entries(IND_PLAATS).map(([k,l])=>`<button type="button" data-pl="${k}" aria-pressed="${o.plaats===k}">${l}</button>`).join('')}</span>
 <span class="indkz" role="group" aria-label="schikking"><button type="button" data-na="1" aria-pressed="${o.naast}">naast elkaar</button><button type="button" data-na="0" aria-pressed="${!o.naast}">onder elkaar</button></span></div>
-<p class="na small">Links of rechts ernaast: op een smal scherm (gsm) komen ze toch boven of onder de rest. 📝 <b>Mijn notities</b> is je eigen kladblok (knopje links onderaan): wat je daar typt, staat dan meteen op de pagina; adressen (https://… of www.…) worden links. Het verschijnt op <i>mijn pagina</i> (📌), of op elke spelerspagina als je geen eigen pagina koos.</p>
+<p class="na small">Op een gsm is er geen plaats ernaast: <i>links</i> zet de ingeklapte delen dan <b>bovenaan</b>, <i>rechts</i> <b>onderaan</b> de pagina. Je ziet ze pas als je minstens één deel op <b>▸ ingeklapt</b> zet. 📝 <b>Mijn notities</b> is je eigen kladblok (knopje links onderaan): wat je daar typt, staat dan meteen op de pagina; adressen (https://… of www.…) worden links. Het verschijnt op <i>mijn pagina</i> (📌), of op elke spelerspagina als je geen eigen pagina koos.</p>
 <div class="indv"><button type="button" data-std>Standaard</button><button type="button" data-klaar class="hoofd">Klaar</button></div>`}
 let IND_OPEN=false;
 function indKoppel(s){const k=$('indK'),P=$('indP');if(!k)return;
@@ -474,7 +476,7 @@ function vglGrafiek(a,b){const S=[a.m.s[0],b.m.s[0]];let i0=0;const i1=M.length-
   return `<div class="grafiek"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="FIDE-rating van ${esc(nice(a.n))} en ${esc(nice(b.n))}">${g}${lijn(S[1],'--l1')}${lijn(S[0],'--l0')}</svg></div>`}
 
 /* ---------- volgen: spelers en toernooien die je volgt, op je eigen pagina (alleen in deze browser) ---------- */
-function volgLees(){let o=null;try{o=JSON.parse(localStorage.getItem('tw-volgen')||'null')}catch(e){}return {sp:o&&Array.isArray(o.sp)?o.sp:[],t:o&&Array.isArray(o.t)?o.t:[],auto:!!(o&&o.auto)}}
+function volgLees(){let o=null;try{o=JSON.parse(localStorage.getItem('tw-volgen')||'null')}catch(e){}return {sp:o&&Array.isArray(o.sp)?o.sp:[],t:o&&Array.isArray(o.t)?o.t:[],x:o&&Array.isArray(o.x)?o.x.filter(q=>q&&q.f):[],auto:!!(o&&o.auto)}}
 function volgBewaar(o){try{localStorage.setItem('tw-volgen',JSON.stringify(o))}catch(e){}}
 function mijnTok(){let m=null;try{m=JSON.parse(localStorage.getItem('tw-mijn')||'null')}catch(e){}if(!m||!m.u||!/speler\.html/.test(m.u))return '';try{return decodeURIComponent(String(m.u).split('#')[1]||'')}catch(e){return ''}}
 const TRN=()=>((E&&E.toernooien)||[]).filter(t=>t&&t.naam&&(t.spelers||[]).length);
@@ -485,6 +487,20 @@ const volgT=o=>{const T=o.t.map(n=>TRN().find(z=>z.naam===n)).filter(Boolean);if
 /* alle spelers die je volgt: zelf gekozen, en de clubleden in de toernooien die je volgt (zonder jezelf) */
 function volgSpelers(s){const o=volgLees(),uit=new Map();for(const k of o.sp){const x=ALLE.find(y=>tok(y.n)===k);if(x&&x!==s)uit.set(x.n,x)}
   for(const t of volgT(o)){for(const n of t.spelers||[]){const x=spOf(n);if(x&&x!==s)uit.set(x.n,x)}}return [...uit.values()]}
+/* spelers die geen clublid zijn: de lijst van de club (instellingen.txt, met FIDE-gegevens) en wie je zelf toevoegt met een FIDE-nummer */
+const EXT=()=>(E&&E.extern)||[];
+/* volledig volgen van een speler met een FIDE-nummer: het nummer (en niets anders) gaat naar het clubkanaal <voorvoegsel>-volg op ntfy;
+   GitHub haalt dan zijn gegevens op. Zolang je hem volgt, een seintje per week; zonder seintje valt hij na 30 dagen van de lijst. */
+function volgPing(nu){if(!/^https:$/.test(location.protocol)||typeof window.TW_NIEUWS!=='function')return;let P={};try{P=JSON.parse(localStorage.getItem('tw-volg-ping')||'{}')||{}}catch(e){}
+  const top=window.TW_NIEUWS().replace(/-nieuws$/,'')+'-volg',X=volgLees().x,F=X.map(q=>String(q.f)).filter(f=>/^\d{4,10}$/.test(f)),grens=dag(TODAY,-6);let ver=false;
+  for(const f of F){if(!nu&&(P[f]||'')>grens)continue;if(nu&&nu!==f)continue;P[f]=TODAY;ver=true;try{fetch('https://ntfy.sh/'+top,{method:'POST',body:f+'|'+String((X.find(q=>String(q.f)===f)||{}).n||'').slice(0,60),mode:'no-cors'}).catch(()=>{})}catch(e){}}
+  for(const f of Object.keys(P))if(!F.includes(f))delete P[f];
+  if(ver||Object.keys(P).length!==F.length)try{localStorage.setItem('tw-volg-ping',JSON.stringify(P))}catch(e){}}
+const extVan=f=>EXT().find(z=>String(z.fide)===String(f))||null;
+/* partijen van clubleden tegen deze speler (op naam: familienaam en voorletter) */
+function tegenClub(n){const a=anm(n),v=nrm(String(n).split(',')[1]||'').charAt(0),L=[];if(!a)return L;
+  for(const x of ALLE){if(!x.m&&!x.club.length)continue;for(const g of partijenVan(x)){if(anm(g.o)!==a)continue;const gv=nrm(String(g.o).split(',')[1]||'').charAt(0);if(v&&gv&&gv!==v)continue;L.push({x,g})}}
+  return L.sort((p,q)=>(q.g.d||q.g.ym||'').localeCompare(p.g.d||p.g.ym||''))}
 function volgKnop(s){const mt=mijnTok();if(mt&&mt===tok(s.n))return '';const v=volgLees().sp.includes(tok(s.n));
   return `<button type="button" id="volgK" class="indk" aria-pressed="${v}" title="${v?'Je volgt deze speler: wat er bij hem nieuw is, staat op je eigen pagina':'Volg deze speler: wat er bij hem nieuw is, komt op je eigen pagina'}">${v?'★ Je volgt':'☆ Volgen'}</button>`}
 function volgDeel(s){const mt=mijnTok();if(mt&&mt!==tok(s.n))return '';const o=volgLees();
@@ -498,19 +514,35 @@ ${A?`<div class="small"><span class="na">volgende:</span> ${A.d===TODAY?'vandaag
       return `<tr><td class="l">${spLink(x.n)}</td><td>${G.length?fmt(pt)+' / '+G.length:'<span class="na">–</span>'}</td><td class="l small">${l?res(l)+' tegen '+esc(nice(l.o)):''}</td><td class="l small">${v?`ronde ${v.rn}: ${v.c==='w'?'⚪':'⚫'} ${esc(nice(v.o))}${v.or?' ('+v.or+')':''}`:''}</td></tr>`};
     return `<div class="vk vt"><div class="vk-k"><b>${t.url?`<a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.naam)}</a>`:esc(t.naam)}</b>${t.auto?'<span class="na small" title="automatisch gevolgd: een lopend toernooi met clubleden">automatisch</span>':`<button type="button" class="vk-x" data-vt="${esc(t.naam)}" title="niet meer volgen" aria-label="niet meer volgen">✕</button>`}</div>
 <div class="board"><table><thead><tr><th class="l">Clublid</th><th>Punten</th><th class="l">Laatste ronde</th><th class="l">Volgende</th></tr></thead><tbody>${(t.spelers||[]).map(rij).join('')}</tbody></table></div></div>`};
-  const sp=o.sp.map(k=>ALLE.find(y=>tok(y.n)===k)).filter(x=>x&&x!==s),T=volgT(o);
+  const ext=q=>{const fn=/^\d+$/.test(q.f),m=fn?extVan(q.f):EXT().find(z=>nrm(z.n)===nrm(q.n))||null,n=m?m.n:(q.n||'FIDE '+q.f),fl=fn?q.f:m?String(m.fide):'',x={n,m,club:[]},P=m?partijenVan(x):[],g=P[0],cur=m&&m.s&&m.s[0]?m.s[0][M.length-1]:null;
+    const v=(((E&&E.volgend)||{})[n]||[])[0],TC=tegenClub(n),tc=TC[0];
+    return `<div class="vk"><div class="vk-k"><b>${esc(nice(n))}</b>${cur?` <span class="na">${cur}</span>`:''}<span class="na small" title="geen clublid">extern</span><button type="button" class="vk-x" data-vx="${esc(q.f)}" title="niet meer volgen" aria-label="niet meer volgen">✕</button></div>
+${g?`<div class="small"><span class="na">laatst:</span> ${esc(g.tour)} · ${res(g)} tegen ${esc(nice(g.o))}${g.d?` <span class="na">(${dkort(g.d)})</span>`:''}</div>`:''}
+${v?`<div class="small"><span class="na">volgende:</span> ${esc(v.tour)}, ronde ${v.rn}: ${v.c==='w'?'⚪':'⚫'} ${esc(nice(v.o))}${v.or?' ('+v.or+')':''}</div>`:''}
+${tc?`<div class="small"><span class="na">tegen clubleden:</span> ${TC.length} ${TC.length===1?'partij':'partijen'} · laatst ${res({r:tc.g.r==null?null:1-tc.g.r})} tegen ${spLink(tc.x.n)}${tc.g.d?` <span class="na">(${dkort(tc.g.d)})</span>`:''}</div>`:''}
+${fn&&!m?'<div class="small na">⏳ Volledig volgen aangevraagd: rating, toernooien en volgende partij verschijnen na een volgende update (meestal binnen een dag).</div>':!m&&!tc?'<div class="small na">Nog niets op de site over deze speler.</div>':''}
+${fl?`<div class="small"><a href="https://ratings.fide.com/profile/${encodeURIComponent(fl)}" target="_blank" rel="noopener">FIDE-profiel ↗</a> · <a href="https://ratings.fide.com/profile/${encodeURIComponent(fl)}/calculations" target="_blank" rel="noopener">partijen ↗</a></div>`:''}</div>`};
+  const sp=o.sp.map(k=>ALLE.find(y=>tok(y.n)===k)).filter(x=>x&&x!==s),T=volgT(o),XS=o.x,nogX=EXT().filter(m=>!XS.some(q=>String(q.f)===String(m.fide)||nrm(q.n)===nrm(m.n)));
+  /* namen van tegenstanders van clubleden, als hulp bij het typen */
+  const TGN=[...new Set(ALLE.flatMap(x=>partijenVan(x).map(g=>String(g.o||''))).filter(n=>n.includes(',')&&!spOf(n)))].sort((a,b)=>a.localeCompare(b,'nl'));
   const nogT=TRN().filter(t=>!T.some(z=>z.naam===t.naam)),nogS=ALLE.filter(x=>x!==s&&!o.sp.includes(tok(x.n)));
-  return `<section><h2>⭐ Wie ik volg</h2>${!sp.length&&!T.length?'<p class="na small" style="margin:0">Volg clubgenoten of een toernooi: wat er bij hen nieuw is, staat hier en in de lijn <i>Nieuw sinds je vorige bezoek</i>. Op de pagina van een speler kan het ook met <b>☆ Volgen</b>. Of vink hieronder <i>Automatisch volgen</i> aan.</p>':''}
-<div class="vkl">${sp.map(kaart).join('')}${T.map(toernooi).join('')}</div>
+  return `<section><h2>⭐ Wie ik volg</h2>${!sp.length&&!T.length&&!XS.length?'<p class="na small" style="margin:0">Volg clubgenoten of een toernooi: wat er bij hen nieuw is, staat hier en in de lijn <i>Nieuw sinds je vorige bezoek</i>. Op de pagina van een speler kan het ook met <b>☆ Volgen</b>. Of vink hieronder <i>Automatisch volgen</i> aan.</p>':''}
+<div class="vkl">${sp.map(kaart).join('')}${XS.map(ext).join('')}${T.map(toernooi).join('')}</div>
 <label class="small" style="display:block"><input type="checkbox" id="volgA"${o.auto?' checked':''}> <b>Automatisch volgen</b>: alle clubleden die een extern toernooi spelen (zolang het toernooi loopt)</label>
-<div class="pick" style="flex-wrap:wrap">${nogS.length?`<select id="volgS" aria-label="speler volgen"><option value="">+ speler volgen…</option>${nogS.map(x=>`<option value="${esc(tok(x.n))}">${esc(nice(x.n))}</option>`).join('')}</select>`:''}${nogT.length?`<select id="volgT" aria-label="toernooi volgen"><option value="">+ toernooi volgen (alle clubleden erin)…</option>${nogT.map(t=>`<option value="${esc(t.naam)}">${esc(t.naam)} (${(t.spelers||[]).length})</option>`).join('')}</select>`:''}</div>
+<div class="pick" style="flex-wrap:wrap">${nogS.length?`<select id="volgS" aria-label="speler volgen"><option value="">+ speler volgen…</option><optgroup label="Clubleden">${nogS.map(x=>`<option value="${esc(tok(x.n))}">${esc(nice(x.n))}</option>`).join('')}</optgroup>${nogX.length?`<optgroup label="Geen clublid">${nogX.map(m=>`<option value="f:${esc(String(m.fide))}">${esc(nice(m.n))}</option>`).join('')}</optgroup>`:''}</select>`:''}${nogT.length?`<select id="volgT" aria-label="toernooi volgen"><option value="">+ toernooi volgen (alle clubleden erin)…</option>${nogT.map(t=>`<option value="${esc(t.naam)}">${esc(t.naam)} (${(t.spelers||[]).length})</option>`).join('')}</select>`:''}</div>
+<details class="small vx"><summary>+ een andere speler volgen (geen clublid)</summary><div class="pick" style="flex-wrap:wrap;margin-top:6px"><input id="volgFn" list="volgDl" placeholder="naam (Achternaam, Voornaam)" aria-label="naam" style="flex:1;min-width:12em"><input id="volgFi" inputmode="numeric" placeholder="FIDE-nummer (mag leeg)" aria-label="FIDE-nummer" style="width:13em"><datalist id="volgDl">${TGN.map(n=>`<option value="${esc(n)}">`).join('')}</datalist><button type="button" id="volgFb" class="indk">Volgen</button></div>
+<p class="na" style="margin:4px 0 0">Een naam volstaat: tijdens het typen krijg je de tegenstanders van clubleden voorgesteld, en je ziet dan zijn partijen tegen clubleden. Met het FIDE-nummer erbij (te vinden op <a href="https://ratings.fide.com/" target="_blank" rel="noopener">ratings.fide.com ↗</a>) volg je hem volledig: de site haalt dan ook zijn rating, toernooien en volgende partij op (meestal binnen een dag). Daarvoor gaat alleen dat nummer naar de club, niets over jou. Spelers die al door iemand volledig gevolgd worden, staan ook bij <i>+ speler volgen</i> onder <i>Geen clublid</i>.</p></details>
 ${sp.length||T.length?'<p class="na small" style="margin:0">Berichten op je gsm over een speler die je volgt: open zijn pagina en zet bij <i>Meldingen</i> zijn kanaal aan.</p>':''}</section>`}
-function volgKoppel(s){const ververs=()=>pagina(s);
+function volgKoppel(s){const ververs=()=>pagina(s);if($('volgA'))volgPing();
   const k=$('volgK');if(k)k.addEventListener('click',()=>{const o=volgLees(),t=tok(s.n);o.sp=o.sp.includes(t)?o.sp.filter(x=>x!==t):[...o.sp,t];volgBewaar(o);const v=o.sp.includes(t);k.setAttribute('aria-pressed',v);k.textContent=v?'★ Je volgt':'☆ Volgen'});
-  const a=$('volgS');if(a)a.addEventListener('change',()=>{if(!a.value)return;const o=volgLees();o.sp.push(a.value);volgBewaar(o);ververs()});
+  const a=$('volgS');if(a)a.addEventListener('change',()=>{if(!a.value)return;const o=volgLees();if(a.value.startsWith('f:')){const f=a.value.slice(2),m=extVan(f);if(!o.x.some(q=>String(q.f)===f))o.x.push({f,n:m?m.n:''});volgBewaar(o);volgPing(f)}else{o.sp.push(a.value);volgBewaar(o)}ververs()});
+  const fb=$('volgFb');if(fb)fb.addEventListener('click',()=>{const fi=$('volgFi'),fe=$('volgFn'),n=String(fe.value||'').trim().replace(/\s+/g,' ');let f=String(fi.value||'').replace(/\D/g,'');if(f.length<4)f='';
+    if(!f&&n.length<3){fe.focus();fe.setCustomValidity('Vul een naam of een FIDE-nummer in');fe.reportValidity();setTimeout(()=>fe.setCustomValidity(''),2500);return}
+    const lid=f?ALLE.find(x=>x.m&&String(x.m.fide)===f):spOf(n);if(lid){const o=volgLees(),t=tok(lid.n);if(!o.sp.includes(t))o.sp.push(t);volgBewaar(o);ververs();return}
+    const o=volgLees(),m=f?extVan(f):EXT().find(z=>nrm(z.n)===nrm(n));if(m)f=String(m.fide);const k=f||'naam:'+nrm(n);if(!o.x.some(q=>String(q.f)===k||(n&&nrm(q.n)===nrm(n))))o.x.push({f:k,n:m?m.n:n});volgBewaar(o);if(f)volgPing(f);ververs()});
   const au=$('volgA');if(au)au.addEventListener('change',()=>{const o=volgLees();o.auto=au.checked;volgBewaar(o);ververs()});
   const b=$('volgT');if(b)b.addEventListener('change',()=>{if(!b.value)return;const o=volgLees();o.t.push(b.value);volgBewaar(o);ververs()});
-  document.querySelectorAll('#app .vk-x').forEach(x=>x.addEventListener('click',()=>{const o=volgLees();if(x.dataset.vsp)o.sp=o.sp.filter(q=>q!==x.dataset.vsp);if(x.dataset.vt)o.t=o.t.filter(q=>q!==x.dataset.vt);volgBewaar(o);ververs()}))}
+  document.querySelectorAll('#app .vk-x').forEach(x=>x.addEventListener('click',()=>{const o=volgLees();if(x.dataset.vsp)o.sp=o.sp.filter(q=>q!==x.dataset.vsp);if(x.dataset.vt)o.t=o.t.filter(q=>q!==x.dataset.vt);if(x.dataset.vx)o.x=o.x.filter(q=>String(q.f)!==x.dataset.vx);volgBewaar(o);ververs()}))}
 
 /* ---------- onderlinge resultaten tegen clubgenoten (FIDE-partijen, nog te verwerken partijen en het clubkampioenschap van dit seizoen) ---------- */
 function clubgenoot(n,ik){let s=spOf(n);if(!s){const a=anm(n),f=nrm(String(n).split(', ')[1]||'')[0];const L=ALLE.filter(x=>anm(x.n)===a&&a&&nrm(String(x.n).split(', ')[1]||'')[0]===f);if(L.length===1)s=L[0]}return s&&nrm(s.n)!==nrm(ik.n)?s:null}
