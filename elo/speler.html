@@ -68,6 +68,7 @@ details.indt[open]{grid-column:1/-1}.indt-in{padding:0 12px 12px}.indt-in>sectio
 .indp .indx{min-width:96px}.indp .indx[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}.indo{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:8px 0}.indkz{display:inline-flex;flex-wrap:wrap;gap:4px}.indkz button{font:inherit;font-size:13px;padding:3px 10px;border:1px solid var(--line);border-radius:999px;background:var(--soft);color:inherit;cursor:pointer}.indkz button[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
 .vkl{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}.vk{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}.vk.vt{grid-column:1/-1}.vk-k{display:flex;align-items:baseline;gap:8px}.vk-k b{flex:1;min-width:0}.vk-x{all:unset;cursor:pointer;color:var(--muted);padding:0 4px}.vk-x:hover{color:var(--down)}
 #volgK[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}#volgK+.indk{margin-left:6px}
+.nw-art{margin-top:6px;font-size:14px;color:var(--fg)}.nw-art a{font-weight:600}
 .nwlijn{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:15px}.nwlijn ul{margin:6px 0 0;padding-left:20px}.nwlijn li{margin:2px 0}.nwlijn.rustig{border-left-color:var(--line);color:var(--muted);font-size:14px;padding:7px 14px}
 details.ond{border-bottom:1px solid var(--line);padding:6px 0}details.ond>summary{cursor:pointer}details.ond>summary span{color:var(--muted);font-size:14px;margin-left:4px}details.ond .board{margin-top:6px}
 .grafiek .lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
@@ -112,12 +113,12 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=88fe2fc68a"></script>
+<script src="data-elo.js?v=d672733bf0"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
-<script src="../club/data-club.js?v=de625f2562"></script>
+<script src="../club/data-club.js?v=00325cfb70"></script>
 <script src="../club/data-interclub.js?v=15434390b5"></script>
-<script src="../club/data-partijen.js?v=b610392426"></script>
+<script src="../club/data-partijen.js?v=ee80dcfa12"></script>
 <script src="../club/verwerk.js?v=ef349255c3"></script>
 <script src="clubsite.js?v=418e518780"></script>
 <script>if(window.ONLINE)document.write('<script src="filmpjes.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
@@ -473,13 +474,17 @@ function vglGrafiek(a,b){const S=[a.m.s[0],b.m.s[0]];let i0=0;const i1=M.length-
   return `<div class="grafiek"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="FIDE-rating van ${esc(nice(a.n))} en ${esc(nice(b.n))}">${g}${lijn(S[1],'--l1')}${lijn(S[0],'--l0')}</svg></div>`}
 
 /* ---------- volgen: spelers en toernooien die je volgt, op je eigen pagina (alleen in deze browser) ---------- */
-function volgLees(){let o=null;try{o=JSON.parse(localStorage.getItem('tw-volgen')||'null')}catch(e){}return {sp:o&&Array.isArray(o.sp)?o.sp:[],t:o&&Array.isArray(o.t)?o.t:[]}}
+function volgLees(){let o=null;try{o=JSON.parse(localStorage.getItem('tw-volgen')||'null')}catch(e){}return {sp:o&&Array.isArray(o.sp)?o.sp:[],t:o&&Array.isArray(o.t)?o.t:[],auto:!!(o&&o.auto)}}
 function volgBewaar(o){try{localStorage.setItem('tw-volgen',JSON.stringify(o))}catch(e){}}
 function mijnTok(){let m=null;try{m=JSON.parse(localStorage.getItem('tw-mijn')||'null')}catch(e){}if(!m||!m.u||!/speler\.html/.test(m.u))return '';try{return decodeURIComponent(String(m.u).split('#')[1]||'')}catch(e){return ''}}
 const TRN=()=>((E&&E.toernooien)||[]).filter(t=>t&&t.naam&&(t.spelers||[]).length);
+/* lopende externe toernooien: de laatste ronde is minder dan 14 dagen geleden, of er is al een paring voor een volgende ronde */
+const LOPEND=()=>{const VG=(E&&E.volgend)||{},grens=dag(TODAY,-14);return TRN().filter(t=>(t.laatste||'')>=grens||Object.values(VG).some(L=>(L||[]).some(v=>v.tour===t.naam)))};
+/* de toernooien die je volgt: zelf gekozen, en (met automatisch volgen) alle lopende */
+const volgT=o=>{const T=o.t.map(n=>TRN().find(z=>z.naam===n)).filter(Boolean);if(o.auto)for(const t of LOPEND())if(!T.includes(t))T.push(Object.assign({},t,{auto:1}));return T};
 /* alle spelers die je volgt: zelf gekozen, en de clubleden in de toernooien die je volgt (zonder jezelf) */
 function volgSpelers(s){const o=volgLees(),uit=new Map();for(const k of o.sp){const x=ALLE.find(y=>tok(y.n)===k);if(x&&x!==s)uit.set(x.n,x)}
-  for(const tn of o.t){const t=TRN().find(z=>z.naam===tn);for(const n of (t&&t.spelers)||[]){const x=spOf(n);if(x&&x!==s)uit.set(x.n,x)}}return [...uit.values()]}
+  for(const t of volgT(o)){for(const n of t.spelers||[]){const x=spOf(n);if(x&&x!==s)uit.set(x.n,x)}}return [...uit.values()]}
 function volgKnop(s){const mt=mijnTok();if(mt&&mt===tok(s.n))return '';const v=volgLees().sp.includes(tok(s.n));
   return `<button type="button" id="volgK" class="indk" aria-pressed="${v}" title="${v?'Je volgt deze speler: wat er bij hem nieuw is, staat op je eigen pagina':'Volg deze speler: wat er bij hem nieuw is, komt op je eigen pagina'}">${v?'★ Je volgt':'☆ Volgen'}</button>`}
 function volgDeel(s){const mt=mijnTok();if(mt&&mt!==tok(s.n))return '';const o=volgLees();
@@ -491,17 +496,19 @@ ${A?`<div class="small"><span class="na">volgende:</span> ${A.d===TODAY?'vandaag
   const toernooi=t=>{const rij=n=>{const x=spOf(n);if(!x)return '';const G=((x.m&&x.m.pend)||[]).filter(g=>g.tour.replace(/ r\d+$/,'')===t.naam),pt=G.reduce((a,g)=>a+(typeof g.r==='number'?g.r:0),0),l=G[G.length-1];
       const v=(((E&&E.volgend)||{})[x.n]||[]).find(q=>q.tour===t.naam);
       return `<tr><td class="l">${spLink(x.n)}</td><td>${G.length?fmt(pt)+' / '+G.length:'<span class="na">–</span>'}</td><td class="l small">${l?res(l)+' tegen '+esc(nice(l.o)):''}</td><td class="l small">${v?`ronde ${v.rn}: ${v.c==='w'?'⚪':'⚫'} ${esc(nice(v.o))}${v.or?' ('+v.or+')':''}`:''}</td></tr>`};
-    return `<div class="vk vt"><div class="vk-k"><b>${t.url?`<a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.naam)}</a>`:esc(t.naam)}</b><button type="button" class="vk-x" data-vt="${esc(t.naam)}" title="niet meer volgen" aria-label="niet meer volgen">✕</button></div>
+    return `<div class="vk vt"><div class="vk-k"><b>${t.url?`<a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.naam)}</a>`:esc(t.naam)}</b>${t.auto?'<span class="na small" title="automatisch gevolgd: een lopend toernooi met clubleden">automatisch</span>':`<button type="button" class="vk-x" data-vt="${esc(t.naam)}" title="niet meer volgen" aria-label="niet meer volgen">✕</button>`}</div>
 <div class="board"><table><thead><tr><th class="l">Clublid</th><th>Punten</th><th class="l">Laatste ronde</th><th class="l">Volgende</th></tr></thead><tbody>${(t.spelers||[]).map(rij).join('')}</tbody></table></div></div>`};
-  const sp=o.sp.map(k=>ALLE.find(y=>tok(y.n)===k)).filter(x=>x&&x!==s),T=o.t.map(n=>TRN().find(z=>z.naam===n)).filter(Boolean);
-  const nogT=TRN().filter(t=>!o.t.includes(t.naam)),nogS=ALLE.filter(x=>x!==s&&!o.sp.includes(tok(x.n)));
-  return `<section><h2>⭐ Wie ik volg</h2>${!sp.length&&!T.length?'<p class="na small" style="margin:0">Volg clubgenoten of een toernooi: wat er bij hen nieuw is, staat hier en in de lijn <i>Nieuw sinds je vorige bezoek</i>. Op de pagina van een speler kan het ook met <b>☆ Volgen</b>.</p>':''}
+  const sp=o.sp.map(k=>ALLE.find(y=>tok(y.n)===k)).filter(x=>x&&x!==s),T=volgT(o);
+  const nogT=TRN().filter(t=>!T.some(z=>z.naam===t.naam)),nogS=ALLE.filter(x=>x!==s&&!o.sp.includes(tok(x.n)));
+  return `<section><h2>⭐ Wie ik volg</h2>${!sp.length&&!T.length?'<p class="na small" style="margin:0">Volg clubgenoten of een toernooi: wat er bij hen nieuw is, staat hier en in de lijn <i>Nieuw sinds je vorige bezoek</i>. Op de pagina van een speler kan het ook met <b>☆ Volgen</b>. Of vink hieronder <i>Automatisch volgen</i> aan.</p>':''}
 <div class="vkl">${sp.map(kaart).join('')}${T.map(toernooi).join('')}</div>
+<label class="small" style="display:block"><input type="checkbox" id="volgA"${o.auto?' checked':''}> <b>Automatisch volgen</b>: alle clubleden die een extern toernooi spelen (zolang het toernooi loopt)</label>
 <div class="pick" style="flex-wrap:wrap">${nogS.length?`<select id="volgS" aria-label="speler volgen"><option value="">+ speler volgen…</option>${nogS.map(x=>`<option value="${esc(tok(x.n))}">${esc(nice(x.n))}</option>`).join('')}</select>`:''}${nogT.length?`<select id="volgT" aria-label="toernooi volgen"><option value="">+ toernooi volgen (alle clubleden erin)…</option>${nogT.map(t=>`<option value="${esc(t.naam)}">${esc(t.naam)} (${(t.spelers||[]).length})</option>`).join('')}</select>`:''}</div>
 ${sp.length||T.length?'<p class="na small" style="margin:0">Berichten op je gsm over een speler die je volgt: open zijn pagina en zet bij <i>Meldingen</i> zijn kanaal aan.</p>':''}</section>`}
 function volgKoppel(s){const ververs=()=>pagina(s);
   const k=$('volgK');if(k)k.addEventListener('click',()=>{const o=volgLees(),t=tok(s.n);o.sp=o.sp.includes(t)?o.sp.filter(x=>x!==t):[...o.sp,t];volgBewaar(o);const v=o.sp.includes(t);k.setAttribute('aria-pressed',v);k.textContent=v?'★ Je volgt':'☆ Volgen'});
   const a=$('volgS');if(a)a.addEventListener('change',()=>{if(!a.value)return;const o=volgLees();o.sp.push(a.value);volgBewaar(o);ververs()});
+  const au=$('volgA');if(au)au.addEventListener('change',()=>{const o=volgLees();o.auto=au.checked;volgBewaar(o);ververs()});
   const b=$('volgT');if(b)b.addEventListener('change',()=>{if(!b.value)return;const o=volgLees();o.t.push(b.value);volgBewaar(o);ververs()});
   document.querySelectorAll('#app .vk-x').forEach(x=>x.addEventListener('click',()=>{const o=volgLees();if(x.dataset.vsp)o.sp=o.sp.filter(q=>q!==x.dataset.vsp);if(x.dataset.vt)o.t=o.t.filter(q=>q!==x.dataset.vt);volgBewaar(o);ververs()}))}
 
@@ -563,9 +570,12 @@ function nwTeken(){const d=$('nwlijn'),R=window.__twNw;if(!d||!R)return;const L=
   const wanneer=R.d?(R.d===new Date().toISOString().slice(0,10)?'eerder vandaag':dlong(R.d)):'';
   const x='<button type="button" onclick="this.parentNode.remove()" aria-label="sluiten" style="all:unset;cursor:pointer;float:right;padding:0 4px;color:var(--muted)">✕</button>';
   const li=t=>t.med!=null?`<li>📢 Nieuwe mededeling van de club: <a href="#" data-med="1">${esc(t.med||'lezen')}</a></li>`:`<li>${esc(t)}</li>`;
-  let h;if(R.eerst&&!L.length)h=`<div class="nwlijn">${x}📌 Dit is je pagina. Vanaf je volgende bezoek staat hier wat er sindsdien nieuw is.</div>`;
-  else if(!L.length)h=`<div class="nwlijn rustig">${x}Niets nieuws sinds je vorige bezoek${wanneer?' ('+wanneer+')':''}.</div>`;
-  else h=`<div class="nwlijn">${x}<b>${R.eerst?'Nieuw':'Nieuw sinds je vorige bezoek'+(wanneer?' ('+wanneer+')':'')}</b><ul>${L.map(li).join('')}</ul></div>`;
+  /* het nieuwste artikel op torrewachters.be (meestal de column van Peter) staat er altijd bij */
+  /* ... maar niet als hetzelfde artikel al op de pagina staat (blok 'In het nieuws op torrewachters.be' bovenaan) */
+  const A0=(window.TW_CLUBSITE||[]).slice().sort((a,b)=>(b.d||'').localeCompare(a.d||''))[0],A=A0&&![...document.querySelectorAll('#app a.nwtop[href]')].some(x=>x.getAttribute('href')===A0.u)?A0:null,art=A?`<div class="nw-art">📰 <a href="${esc(A.u)}" target="_blank" rel="noopener">${esc(A.t)}</a> <span class="na">· torrewachters.be${A.d?', '+dkort(A.d):''}${A.a?' · '+esc(A.a):''}</span></div>`:'';
+  let h;if(R.eerst&&!L.length)h=`<div class="nwlijn">${x}📌 Dit is je pagina. Vanaf je volgende bezoek staat hier wat er sindsdien nieuw is.${art}</div>`;
+  else if(!L.length)h=`<div class="nwlijn rustig">${x}Niets nieuws sinds je vorige bezoek${wanneer?' ('+wanneer+')':''}.${art}</div>`;
+  else h=`<div class="nwlijn">${x}<b>${R.eerst?'Nieuw':'Nieuw sinds je vorige bezoek'+(wanneer?' ('+wanneer+')':'')}</b><ul>${L.map(li).join('')}</ul>${art}</div>`;
   d.innerHTML=h;const a=d.querySelector('[data-med]');if(a)a.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const b=document.querySelector('.twv [data-a="med"]');if(b)b.click();a.closest('li').remove()})}
 function nwVul(){if(!$('nwlijn'))return;nwTeken();let n=0;const t=setInterval(()=>{if(window.TW_MED||++n>20){clearInterval(t);nwTeken()}},300)}
 
