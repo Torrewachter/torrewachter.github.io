@@ -44,7 +44,7 @@ h1{font-family:var(--display);font-size:clamp(32px,7vw,50px);line-height:1;margi
 <div class="wrap">
 <nav class="top"><a class="alleenonline" href="../index.html">← Startpagina</a><a href="speler.html">Spelers</a><a href="cartoons.html">Cartoons</a></nav>
 <header><span class="eyebrow">De Torrewachters</span><h1>Schaken in de pers</h1>
-<p class="na small" style="margin:6px 0 0">Artikels over schaken in kranten en tijdschriften, in het Nederlands, Frans, Engels en Duits, de nieuwste eerst. Is een artikel <b>gratis</b>, dan opent een klik op de titel het artikel. Is het <b>betalend</b> en staat de krant in het krantenarchief van de bib, dan zoekt een klik het artikel op in het krantenarchief van je bib en lees je het gratis met je bibaccount (de titel wordt ook gekopieerd, voor een bib die niet meteen zoekt). Het archief bevat alleen artikels ouder dan twee dagen, dus daar staat <i>via de bib vanaf …</i>. Buitenlandse kranten (behalve Trouw en de Volkskrant) staan er niet in; wie PressReader kan gebruiken (bv. via de bib van Gent), vindt ze daar.</p></header>
+<p class="na small" style="margin:6px 0 0">Artikels over schaken in kranten en tijdschriften, in het Nederlands, Frans, Engels en Duits, de nieuwste eerst. Een klik op de titel opent het artikel op de site van de krant. Staat er <b>betalend</b>, probeer het dan gerust toch: veel kranten laten enkele artikels per maand gratis lezen, soms na een gratis registratie. Lukt het niet en staat de krant in het krantenarchief van de bib, klik dan op <i>lezen via de bib</i>: dat zoekt het artikel op in het krantenarchief van je bib en je leest het gratis met je bibaccount. Het archief bevat alleen artikels ouder dan twee dagen, dus daar staat <i>via de bib vanaf …</i>. Buitenlandse kranten (behalve Trouw en de Volkskrant) staan er niet in; wie PressReader kan gebruiken (veel bibs bieden het aan, bv. Tielt en Gent), vindt ze daar.</p></header>
 <div class="zoek"><input type="search" id="q" placeholder="Zoeken in de titels…" aria-label="Zoeken in de titels"><span class="na small" id="aantal"></span></div>
 <div class="talen" id="talen" role="group" aria-label="taal"></div>
 <div class="talen" id="soorten" role="group" aria-label="hoe lezen"></div>
@@ -53,7 +53,7 @@ h1{font-family:var(--display);font-size:clamp(32px,7vw,50px);line-height:1;margi
 <div class="zoek"><label for="bibgem" class="small">Gemeente</label><input id="bibgem" placeholder="bv. tielt" style="flex:0 1 160px" autocomplete="off"><span class="na small">.bibliotheek.be/krantenarchief</span><button type="button" id="bibzet" class="kb">Gebruiken</button></div>
 <div class="zoek" style="margin-top:6px"><label for="biburl" class="small">of het volledige adres</label><input id="biburl" type="url" placeholder="https://…"><button type="button" id="bibzet2" class="kb">Gebruiken</button></div>
 <p class="na small" style="margin:6px 0 0">Niet elke bib werkt met dat adres (in Roeselare bijvoorbeeld zit de bib in ARhus). Zoek dan op de site van je bib naar <i>kranten</i> of <i>krantenarchief</i> en plak dat adres hierboven. <button type="button" id="bibtest" class="kb2">Openen om te testen</button> <button type="button" id="biballe" class="kb2">Alle schaakartikels in de bib</button> <button type="button" id="bibwis" class="kb2">Wissen</button></p>
-<label class="small" style="display:block;margin-top:10px;border-top:1px solid var(--line);padding-top:8px"><input type="checkbox" id="prk"> Ik kan <b>PressReader</b> gebruiken (bv. via de bib van Gent: 7.000 kranten en tijdschriften uit de hele wereld, ook van vandaag). Dan verschijnt <i>zoeken in PressReader</i> bij betaalartikels die niet (of nog niet) in het krantenarchief staan.</label></details>
+<label class="small" style="display:block;margin-top:10px;border-top:1px solid var(--line);padding-top:8px"><input type="checkbox" id="prk"> Ik kan <b>PressReader</b> gebruiken (veel bibs bieden het gratis aan, bv. Tielt en Gent: kijk op de site van je bib bij <i>e-kranten</i> of <i>PressReader</i>; 7.000 kranten en tijdschriften uit de hele wereld, ook van vandaag). Dan verschijnt <i>zoeken in PressReader</i> bij betaalartikels die niet (of nog niet) in het krantenarchief staan.</label></details>
 <div id="lijst"></div>
 <p class="na small" id="bron"></p>
 </div>
@@ -85,9 +85,18 @@ const aanwezig=new Set((P.items||[]).map(a=>a.l||''));if(taal&&!aanwezig.has(taa
 $('talen').innerHTML=Object.keys(TL).filter(k=>!k||aanwezig.has(k)).map(k=>`<button type="button" data-l="${k}" aria-pressed="${k===taal}">${TL[k]}</button>`).join('');
 $('talen').addEventListener('click',e=>{const b=e.target.closest('button[data-l]');if(!b)return;taal=b.dataset.l;try{localStorage.setItem('tw-pers-taal',taal)}catch(x){}$('talen').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));teken()});
 /* filter: hoe kan ik het lezen? gratis, via de bib (krantenarchief, nu al of binnenkort), of zoeken in PressReader */
-const SRT={'':'Alles',gratis:'Gratis',bib:'Via de bib',pr:'PressReader'};let soort='';try{soort=localStorage.getItem('tw-pers-soort')||''}catch(e){}if(!SRT[soort])soort='';
-const isSoort=a=>{if(!soort)return true;if(soort==='gratis')return a.p===0;const ar=inArchief(a);if(soort==='bib')return ar&&a.p!==0;return a.p!==0&&!(ar&&bibVanaf(a)<=new Date().toISOString().slice(0,10))};
-const soortKnop=()=>{$('soorten').innerHTML=Object.keys(SRT).map(k=>`<button type="button" data-s="${k}" aria-pressed="${k===soort}" title="${k==='bib'?'artikels uit het krantenarchief van de bib (betalend of nog niet nagekeken)':k==='pr'?'betaalartikels die (nog) niet via de bib te lezen zijn: zoeken in PressReader'+(prAan()?'':' (zet PressReader aan bij Jouw bibliotheek)'):k==='gratis'?'vrij te lezen op de site van de krant':''}">${SRT[k]}</button>`).join('')};soortKnop();
+const SRT={'':'Alles',rubriek:'Rubrieken',gratis:'Gratis',bib:'Via de bib',pr:'PressReader'};
+/* een vaste schaakrubriek of -column: zo genoemd in de titel, een schaakrubriek in het adres, of uit een grote krant zonder schaakwoord in de titel
+   (gevonden op de tekst van het artikel: meestal de wekelijkse rubriek, met een titel over een partij of een speler) */
+const SCHAAKW=/scha(ak|ken|ker)|[ée]checs|schach|chess|grootmeester|grand ma[iî]tre|gro(ß|ss)meister|carlsen|gukesh|firouzja/i;
+const isRubriek=a=>{const t=plat(a.t);if(/rubriek|column|chronique|kolumne|schaakprobleem|schachaufgabe|probleme d.echecs|schaakpuzzel|studie van de week/.test(t))return true;
+  let pth='';try{pth=a.u?new URL(a.u).pathname.toLowerCase():''}catch(e){}if(/(column|rubriek|chronique|kolumne)/.test(pth)&&SCHAAKW.test(pth+' '+a.t))return true;
+  if(/guardian/i.test(a.b||'')&&/^chess:/i.test(a.t))return true;   /* de wekelijkse schaakrubriek van The Guardian */
+  return a.k===1&&!SCHAAKW.test(a.t)};let soort='';try{soort=localStorage.getItem('tw-pers-soort')||''}catch(e){}if(!SRT[soort])soort='';
+/* PressReader alleen als filter wie het kan gebruiken (vinkje bij Jouw bibliotheek) */
+const soortOk=()=>{if(soort==='pr'&&!prAan()){soort='';try{localStorage.removeItem('tw-pers-soort')}catch(e){}}};soortOk();
+const isSoort=a=>{if(!soort)return true;if(soort==='rubriek')return isRubriek(a);if(soort==='gratis')return a.p===0;const ar=inArchief(a);if(soort==='bib')return ar&&a.p!==0;return a.p!==0&&!(ar&&bibVanaf(a)<=new Date().toISOString().slice(0,10))};
+const soortKnop=()=>{soortOk();$('soorten').innerHTML=Object.keys(SRT).filter(k=>k!=='pr'||prAan()).map(k=>`<button type="button" data-s="${k}" aria-pressed="${k===soort}" title="${k==='rubriek'?'vaste schaakrubrieken en columns in kranten en tijdschriften':k==='bib'?'artikels uit het krantenarchief van de bib (betalend of nog niet nagekeken)':k==='pr'?'betaalartikels die (nog) niet via de bib te lezen zijn: zoeken in PressReader'+(prAan()?'':' (zet PressReader aan bij Jouw bibliotheek)'):k==='gratis'?'vrij te lezen op de site van de krant':''}">${SRT[k]}</button>`).join('')};soortKnop();
 $('soorten').addEventListener('click',e=>{const b=e.target.closest('button[data-s]');if(!b)return;soort=b.dataset.s;try{localStorage.setItem('tw-pers-soort',soort)}catch(x){}soortKnop();teken()});
 function teken(){const q=plat($('q').value.trim());const L=(P.items||[]).filter(a=>(!taal||(a.l||'')===taal)&&isSoort(a)&&(!q||plat(a.t+' '+a.b).includes(q)));
   $('aantal').textContent=(P.items||[]).length?L.length+' artikel'+(L.length===1?'':'s'):'';
@@ -95,9 +104,9 @@ function teken(){const q=plat($('q').value.trim());const L=(P.items||[]).filter(
   const rij=a=>{const n=(P.items||[]).indexOf(a),ar=inArchief(a),vanaf=bibVanaf(a),nu=new Date().toISOString().slice(0,10),klaar=ar&&vanaf<=nu;
     const pr=prAan()&&a.p!==0&&(!ar||!klaar)?`<a href="${esc(prUrl(a))}" target="_blank" rel="noopener" class="prk">zoeken in PressReader</a>`:'';
     const bib=!ar?(a.p===1&&!pr?'<span class="na">niet in het krantenarchief van de bib</span>':''):!klaar?`<span class="na" title="Het krantenarchief van de bib bevat alleen artikels ouder dan twee dagen">via de bib vanaf ${esc(dlab(vanaf))}</span>`:`<button type="button" data-i="${n}"${a.p===1?' class="hoofd"':''}>${a.p===1?'lezen via de bib':'via de bib'}</button>`;
-    const titel=a.p===1&&klaar?`<button type="button" class="tb" data-i="${n}">${esc(a.t)}</button>`:a.u?`<a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a>`:esc(a.t);
-    const lab=a.p===0?'<span class="vrij">gratis</span>':a.p===1?'<span class="betaal">betalend</span>':'';
-    return `<li><span class="t">${titel}</span><span class="m">${a.l?`<span class="taal">${esc(a.l)}</span>`:''}${lab}<span>${esc(dlab(a.d))}${a.b?' · '+esc(a.b):''}</span>${a.p===0?'':bib}${pr}${a.p===1&&a.u&&klaar?`<a href="${esc(a.u)}" target="_blank" rel="noopener" class="kl">op de site van de krant</a>`:''}</span></li>`};
+    const titel=a.u?`<a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a>`:esc(a.t);
+    const lab=a.p===0?'<span class="vrij">gratis</span>':a.p===1?'<span class="betaal" title="De krant zegt dat dit artikel achter een betaalmuur staat. Veel kranten (bv. NRC, De Standaard) laten toch enkele artikels per maand gratis lezen, soms na een gratis registratie: probeer de titel dus gerust eerst.">betalend</span>':'';
+    return `<li><span class="t">${titel}</span><span class="m">${a.l?`<span class="taal">${esc(a.l)}</span>`:''}${lab}<span>${esc(dlab(a.d))}${a.b?' · '+esc(a.b):''}</span>${a.p===0?'':bib}${pr}</span></li>`};
   $('lijst').innerHTML=L.length?'<ul class="lijst">'+L.map(rij).join('')+'</ul>':'<div class="leeg na">Niets gevonden.</div>';
   $('bron').innerHTML='Gevonden via Google Nieuws (kranten en tijdschriften)'+(P.tijd?', bijgewerkt '+esc(P.tijd):'')+'. Ontbreekt er een artikel (bv. uit de papieren krant)? Laat het de beheerder weten.'}
 $('lijst').addEventListener('click',e=>{const b=e.target.closest('button[data-i]');if(!b)return;const a=(P.items||[])[+b.dataset.i];if(!a)return;
@@ -111,7 +120,7 @@ $('bibzet2').addEventListener('click',()=>bibZet($('biburl').value));
 $('bibtest').addEventListener('click',()=>{const u=bibUrl();if(u)window.open(u,'_blank','noopener')});
 $('biballe').addEventListener('click',()=>{const u=bibUrl();if(u)window.open(bibZoek('schaken'),'_blank','noopener');else{$('bibk').open=true;$('bibgem').focus()}});
 $('bibwis').addEventListener('click',()=>{bibZet('');$('bibgem').value=''});
-$('prk').addEventListener('change',e=>{try{if(e.target.checked)localStorage.setItem('tw-pressreader','1');else localStorage.removeItem('tw-pressreader')}catch(x){}bibToon();teken()});
+$('prk').addEventListener('change',e=>{try{if(e.target.checked)localStorage.setItem('tw-pressreader','1');else localStorage.removeItem('tw-pressreader')}catch(x){}bibToon();soortKnop();teken()});
 })();
 </script>
 <script src="vast.js?v=76d0b69600"></script>
