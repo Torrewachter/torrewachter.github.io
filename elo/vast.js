@@ -118,9 +118,12 @@ function notesActie(a,b){var ta=pan.querySelector('textarea');if(!ta)return;
     else{wisKlaar=Date.now()+4000;b.textContent='Zeker? Klik nog eens';setTimeout(function(){if(b.isConnected)b.textContent='Wissen'},4000)}}}
 
 function teken(){var m=mijn(),hierM=!!(m&&norm(m.u)===norm(hier()));
-  bar.innerHTML='<button type="button" data-a="menu" aria-expanded="'+!menu.hidden+'" aria-controls="twv-menu" title="'+(m?(hierM?'Dit is je pagina: de site opent meteen hier':'Mijn pagina: '+esc(m.t)):'Kies een pagina waar de site meteen mee opent, bv. je eigen spelerspagina')+'">📌'+(m?(hierM?' ✓':''):' Mijn pagina')+'</button>'
-    +'<span class="sep" aria-hidden="true"></span>'+(medTekst()?'<button type="button" data-a="med" aria-expanded="'+(!pan.hidden&&pan.dataset.k==='med')+'" aria-controls="twv-paneel" title="Mededelingen van de club'+(medNieuw()?' (nieuw)':'')+'">📢'+(medNieuw()?'<span class="dot" aria-label="nieuw"></span>':'')+'</button>':'')
+  /* is er een eigen pagina gekozen, dan staat het speldje alleen nog op die pagina (om ze af te zetten); elders niet meer */
+  var pin=!m||hierM;
+  bar.innerHTML=(pin?'<button type="button" data-a="menu" aria-expanded="'+!menu.hidden+'" aria-controls="twv-menu" title="'+(m?(hierM?'Dit is je pagina: de site opent meteen hier':'Mijn pagina: '+esc(m.t)):'Kies een pagina waar de site meteen mee opent, bv. je eigen spelerspagina')+'">📌'+(m?(hierM?' ✓':''):' Mijn pagina')+'</button>'
+    +'<span class="sep" aria-hidden="true"></span>':'')+(medTekst()?'<button type="button" data-a="med" aria-expanded="'+(!pan.hidden&&pan.dataset.k==='med')+'" aria-controls="twv-paneel" title="Mededelingen van de club'+(medNieuw()?' (nieuw)':'')+'">📢'+(medNieuw()?'<span class="dot" aria-label="nieuw"></span>':'')+'</button>':'')
     +'<button type="button" data-a="notes" aria-expanded="'+(!pan.hidden&&pan.dataset.k==='notes')+'" aria-controls="twv-paneel" title="Mijn notities (alleen voor jou)">📝</button>';
+  if(!pin&&!menu.hidden)menu.hidden=true;
   if(!menu.hidden)tekenMenu()}
 function tekenMenu(){var m=mijn(),hierM=!!(m&&norm(m.u)===norm(hier()));
   var h='<h2>Mijn pagina</h2><p>Kies de pagina die je het meest bekijkt, bv. je eigen spelerspagina. Open je de site, dan kom je meteen daar. Alleen voor jou, in deze browser.</p>';

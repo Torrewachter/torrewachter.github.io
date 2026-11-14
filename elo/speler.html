@@ -60,6 +60,14 @@ ul.agenda .tk-in span{display:inline}.tk-in>div{display:flex;justify-content:spa
 ul.studie{list-style:none;margin:0;padding:0}ul.studie li{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line)}ul.studie li:last-child{border-bottom:0}ul.studie li>span:nth-child(2){flex:1;min-width:160px}
 table.vglt{width:100%}table.vglt td,table.vglt th{white-space:nowrap}table.vglt td.l{white-space:normal;min-width:110px}table.vglt th{white-space:normal;font-size:13px}ul.agenda .tk-in .tk-r{color:#fff}table.vglt td.vb{font-weight:700}.vglk{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
 ul.mkl{list-style:none;margin:0;padding:0}li.mk{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line)}li.mk>div:first-child{flex:1 1 220px}li.mk>div:first-child span{display:block;margin-top:2px}.mk-k{flex:0 1 auto}
+.indz{display:flex;flex-direction:column;gap:8px;margin:0 0 20px}.inda+.indz{margin:20px 0 0}.indw .indz{margin:0}.inda>.ind+.ind{margin-top:0}.indz.naast{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+details.indt{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-width:0}details.indt>summary{cursor:pointer;padding:10px 14px;font-weight:700;color:var(--accent);list-style:none;display:flex;justify-content:space-between;gap:8px}details.indt>summary::-webkit-details-marker{display:none}details.indt>summary::after{content:'▸';color:var(--muted)}details.indt[open]>summary::after{content:'▾'}
+details.indt[open]{grid-column:1/-1}.indt-in{padding:0 12px 12px}.indt-in>section>h2:first-child{display:none}
+.inda{display:flex;flex-direction:column;gap:22px;min-width:0}.indw{display:grid;gap:22px;align-items:start}.indw.links{grid-template-columns:minmax(220px,300px) 1fr}.indw.rechts{grid-template-columns:1fr minmax(220px,300px)}.indw .indz.naast{grid-template-columns:1fr}
+@media (max-width:760px){.indw.links,.indw.rechts{grid-template-columns:1fr}.indw.rechts .indz{order:2}}
+.indp .indx{min-width:96px}.indp .indx[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}.indo{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:8px 0}.indkz{display:inline-flex;flex-wrap:wrap;gap:4px}.indkz button{font:inherit;font-size:13px;padding:3px 10px;border:1px solid var(--line);border-radius:999px;background:var(--soft);color:inherit;cursor:pointer}.indkz button[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.vkl{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}.vk{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}.vk.vt{grid-column:1/-1}.vk-k{display:flex;align-items:baseline;gap:8px}.vk-k b{flex:1;min-width:0}.vk-x{all:unset;cursor:pointer;color:var(--muted);padding:0 4px}.vk-x:hover{color:var(--down)}
+#volgK[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}#volgK+.indk{margin-left:6px}
 .nwlijn{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:15px}.nwlijn ul{margin:6px 0 0;padding-left:20px}.nwlijn li{margin:2px 0}.nwlijn.rustig{border-left-color:var(--line);color:var(--muted);font-size:14px;padding:7px 14px}
 details.ond{border-bottom:1px solid var(--line);padding:6px 0}details.ond>summary{cursor:pointer}details.ond>summary span{color:var(--muted);font-size:14px;margin-left:4px}details.ond .board{margin-top:6px}
 .grafiek .lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted)}
@@ -104,12 +112,12 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=a95d1a21a2"></script>
+<script src="data-elo.js?v=88fe2fc68a"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=b570857bb2"></script>
-<script src="../club/data-club.js?v=d76b9d707e"></script>
-<script src="../club/data-interclub.js?v=5fe60899e4"></script>
-<script src="../club/data-partijen.js?v=ceca52b904"></script>
+<script src="../club/data-club.js?v=de625f2562"></script>
+<script src="../club/data-interclub.js?v=15434390b5"></script>
+<script src="../club/data-partijen.js?v=b610392426"></script>
 <script src="../club/verwerk.js?v=ef349255c3"></script>
 <script src="clubsite.js?v=418e518780"></script>
 <script>if(window.ONLINE)document.write('<script src="filmpjes.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
@@ -354,17 +362,31 @@ function prestKleur(m){const dpk=dpS;const x=ALLE.find(y=>y.m===m);
   const t=(x,lab)=>x?`${lab} <b>${x.v}</b> <span class="na">(${fmt(x.sc)} uit ${x.n})</span>`:`${lab} <span class="na">– (minder dan 5 partijen)</span>`;
   return `<p style="margin:10px 0 0">Prestatie ${t(w,'met wit')} · ${t(z,'met zwart')} <span class="na small" title="Standaardpartijen tegen spelers met rating, sinds de aanpassing van de FIDE-ratings in maart 2024 (spelers onder 2000 kregen er toen punten bij). Meer per periode op de pagina Statistieken.">· standaard, sinds ${van?mlab(van):'maart 2024'} ⓘ</span></p>`}
 /* ---------- eigen indeling van de spelerspagina (alleen in de browser van de bezoeker): welke delen, in welke volgorde ---------- */
-const IND=[['nieuw','Wat is nieuw (statuslijn op mijn pagina)'],['boven','Nieuwste artikel waarin de speler staat'],['notities','📝 Mijn notities (met links)'],['melden','🔔 Meldingen voor mijn gsm'],['agenda','Volgende partijen en toernooien'],['club','Clubkampioenschap'],['elo','Elo'],['ic','Interclub'],['onderling','Onderlinge resultaten'],['studie','Mijn partijen om na te spelen (lichess, YouTube)'],['vergelijk','Vergelijken met een andere speler'],['nieuws','In het nieuws']];
+const IND=[['nieuw','Wat is nieuw (statuslijn op mijn pagina)'],['boven','Nieuwste artikel waarin de speler staat'],['notities','📝 Mijn notities (met links)'],['melden','🔔 Meldingen voor mijn gsm'],['agenda','Volgende partijen en toernooien'],['club','Clubkampioenschap'],['elo','Elo'],['ic','Interclub'],['volg','⭐ Wie ik volg (spelers en toernooien)'],['onderling','Onderlinge resultaten'],['studie','Mijn partijen om na te spelen (lichess, YouTube)'],['vergelijk','Vergelijken met een andere speler'],['nieuws','In het nieuws']];
 const IND_UIT=['notities'];
+/* korte namen voor de ingeklapte delen */
+const IND_KORT={volg:'⭐ Wie ik volg',nieuw:'Wat is nieuw',boven:'Nieuwste artikel',notities:'📝 Mijn notities',melden:'🔔 Meldingen',agenda:'Volgende partijen',club:'Clubkampioenschap',elo:'Elo',ic:'Interclub',onderling:'Onderlinge resultaten',studie:'Partijen om na te spelen',vergelijk:'Vergelijken',nieuws:'In het nieuws'};
+const IND_PLAATS={boven:'bovenaan',onder:'onderaan',links:'links ernaast',rechts:'rechts ernaast'};
 function indLees(){let o=null;try{o=JSON.parse(localStorage.getItem('tw-indeling')||'null')}catch(e){}
   const ids=IND.map(x=>x[0]);let v=(o&&Array.isArray(o.v)?o.v:[]).filter(k=>ids.includes(k));
   ids.forEach((k,i)=>{if(!v.includes(k)){const na=ids.slice(0,i).reverse().find(q=>v.includes(q));v.splice(na?v.indexOf(na)+1:0,0,k)}});
-  return {v,uit:o&&Array.isArray(o.uit)?o.uit:IND_UIT.slice(),eigen:!!o}}
-function indBewaar(o){try{if(o)localStorage.setItem('tw-indeling',JSON.stringify({v:o.v,uit:o.uit}));else localStorage.removeItem('tw-indeling')}catch(e){}}
-function indDelen(s,F){const o=indLees();return o.v.filter(k=>!o.uit.includes(k)&&F[k]).map(k=>{let h='';try{h=F[k]()}catch(e){console.error(e)}return h?`<div class="ind" data-ind="${k}">${h}</div>`:''}).join('')}
+  return {v,uit:o&&Array.isArray(o.uit)?o.uit:IND_UIT.slice(),dicht:o&&Array.isArray(o.dicht)?o.dicht.filter(k=>ids.includes(k)):[],
+    plaats:o&&IND_PLAATS[o.plaats]?o.plaats:'boven',naast:o?o.naast!==false:true,eigen:!!o}}
+function indBewaar(o){try{if(o)localStorage.setItem('tw-indeling',JSON.stringify({v:o.v,uit:o.uit,dicht:o.dicht,plaats:o.plaats,naast:o.naast}));else localStorage.removeItem('tw-indeling')}catch(e){}}
+/* de delen van de pagina: open delen gewoon onder elkaar; ingeklapte delen als tegels (naast of onder elkaar), boven, onder, links of rechts van de open delen */
+function indDelen(s,F){const o=indLees(),open=[],dicht=[];
+  for(const k of o.v){if(o.uit.includes(k)||!F[k])continue;let h='';try{h=F[k]()}catch(e){console.error(e)}if(!h)continue;
+    if(o.dicht.includes(k))dicht.push(`<details class="indt" data-ind="${k}"><summary>${esc(IND_KORT[k]||k)}</summary><div class="indt-in">${h}</div></details>`);
+    else open.push(`<div class="ind" data-ind="${k}">${h}</div>`)}
+  if(!dicht.length)return open.join('');
+  const z=`<div class="indz ${o.naast?'naast':'onder'}" aria-label="ingeklapte delen">${dicht.join('')}</div>`,a=`<div class="inda">${open.join('')}</div>`;
+  if(o.plaats==='links'||o.plaats==='rechts')return `<div class="indw ${o.plaats}">${o.plaats==='links'?z+a:a+z}</div>`;
+  return o.plaats==='onder'?a+z:z+a}
 function indPaneel(){const o=indLees(),nm=Object.fromEntries(IND);
-  return `<h2>Indeling van de spelerspagina</h2><p class="na small">Vink aan wat je wilt zien en zet het met ▲ ▼ in je eigen volgorde. Geldt voor alle spelerspagina's, alleen in deze browser.</p><ol>${o.v.map((k,i)=>`<li><label><input type="checkbox" data-k="${k}"${o.uit.includes(k)?'':' checked'}> ${esc(nm[k])}</label><span><button type="button" data-op="${i}" aria-label="hoger"${i?'':' disabled'}>▲</button><button type="button" data-neer="${i}" aria-label="lager"${i<o.v.length-1?'':' disabled'}>▼</button></span></li>`).join('')}</ol>
-<p class="na small">📝 <b>Mijn notities</b> is je eigen kladblok (knopje links onderaan): wat je daar typt, staat dan meteen op de pagina; adressen (https://… of www.…) worden links. Het verschijnt op <i>mijn pagina</i> (📌), of op elke spelerspagina als je geen eigen pagina koos.</p>
+  return `<h2>Indeling van de spelerspagina</h2><p class="na small">Vink aan wat je wilt zien, zet het met ▲ ▼ in je eigen volgorde, en kies per deel of het <b>open</b> staat of <b>ingeklapt</b> (dan zie je alleen de titel en klik je erop om het te openen). Geldt voor alle spelerspagina's, alleen in deze browser.</p><ol>${o.v.map((k,i)=>`<li><label><input type="checkbox" data-k="${k}"${o.uit.includes(k)?'':' checked'}> ${esc(nm[k])}</label><span><button type="button" class="indx" data-dk="${k}" aria-pressed="${o.dicht.includes(k)}" title="open of ingeklapt"${o.uit.includes(k)?' disabled':''}>${o.dicht.includes(k)?'▸ ingeklapt':'▾ open'}</button><button type="button" data-op="${i}" aria-label="hoger"${i?'':' disabled'}>▲</button><button type="button" data-neer="${i}" aria-label="lager"${i<o.v.length-1?'':' disabled'}>▼</button></span></li>`).join('')}</ol>
+<div class="indo"><span class="small"><b>Ingeklapte delen</b> tonen:</span><span class="indkz" role="group" aria-label="plaats">${Object.entries(IND_PLAATS).map(([k,l])=>`<button type="button" data-pl="${k}" aria-pressed="${o.plaats===k}">${l}</button>`).join('')}</span>
+<span class="indkz" role="group" aria-label="schikking"><button type="button" data-na="1" aria-pressed="${o.naast}">naast elkaar</button><button type="button" data-na="0" aria-pressed="${!o.naast}">onder elkaar</button></span></div>
+<p class="na small">Links of rechts ernaast: op een smal scherm (gsm) komen ze toch boven of onder de rest. 📝 <b>Mijn notities</b> is je eigen kladblok (knopje links onderaan): wat je daar typt, staat dan meteen op de pagina; adressen (https://… of www.…) worden links. Het verschijnt op <i>mijn pagina</i> (📌), of op elke spelerspagina als je geen eigen pagina koos.</p>
 <div class="indv"><button type="button" data-std>Standaard</button><button type="button" data-klaar class="hoofd">Klaar</button></div>`}
 let IND_OPEN=false;
 function indKoppel(s){const k=$('indK'),P=$('indP');if(!k)return;
@@ -372,9 +394,13 @@ function indKoppel(s){const k=$('indK'),P=$('indP');if(!k)return;
   k.addEventListener('click',()=>open(P.hidden));
   P.addEventListener('click',e=>{const t=e.target,o=indLees();
     if(t.dataset.op!=null||t.dataset.neer!=null){const i=+(t.dataset.op??t.dataset.neer),j=t.dataset.op!=null?i-1:i+1;if(j<0||j>=o.v.length)return;[o.v[i],o.v[j]]=[o.v[j],o.v[i]];indBewaar(o);pagina(s);const f=$('indP').querySelector(`[data-${j<i?'op':'neer'}="${j}"]`);if(f&&!f.disabled)f.focus()}
+    else if(t.dataset.dk){o.dicht=o.dicht.filter(x=>x!==t.dataset.dk);if(t.getAttribute('aria-pressed')!=='true')o.dicht.push(t.dataset.dk);indBewaar(o);pagina(s);const f=$('indP').querySelector(`[data-dk="${t.dataset.dk}"]`);if(f)f.focus()}
+    else if(t.dataset.pl){o.plaats=t.dataset.pl;indBewaar(o);pagina(s);const f=$('indP').querySelector(`[data-pl="${o.plaats}"]`);if(f)f.focus()}
+    else if(t.dataset.na){o.naast=t.dataset.na==='1';indBewaar(o);pagina(s);const f=$('indP').querySelector(`[data-na="${t.dataset.na}"]`);if(f)f.focus()}
     else if(t.hasAttribute('data-std')){indBewaar(null);pagina(s)}
     else if(t.hasAttribute('data-klaar'))open(false)});
   P.addEventListener('change',e=>{const t=e.target;if(!t.dataset.k)return;const o=indLees();o.uit=o.uit.filter(x=>x!==t.dataset.k);if(!t.checked)o.uit.push(t.dataset.k);indBewaar(o);pagina(s);const f=$('indP').querySelector(`[data-k="${t.dataset.k}"]`);if(f)f.focus()});
+  document.querySelectorAll('#app details.indt').forEach(d=>d.addEventListener('toggle',()=>{if(d.open){const f=d.querySelector('.indt-in > section > details.fold:not(#melden), .indt-in > details.fold');if(f)f.open=true}}));
   if(IND_OPEN)open(true)}
 /* mijn notities (uit het kladblok 📝 van vast.js) op de pagina, met klikbare links */
 function notTekst(){try{return localStorage.getItem('tw-vast-notities')||''}catch(e){return ''}}
@@ -446,6 +472,39 @@ function vglGrafiek(a,b){const S=[a.m.s[0],b.m.s[0]];let i0=0;const i1=M.length-
   const lijn=(z,c)=>{let d='';z.forEach((v,i)=>{if(i<i0||v==null)return;d+=(d?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)});return d?`<path d="${d}" fill="none" stroke="var(${c})" stroke-width="2.2" stroke-linejoin="round"/>`:''};
   return `<div class="grafiek"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="FIDE-rating van ${esc(nice(a.n))} en ${esc(nice(b.n))}">${g}${lijn(S[1],'--l1')}${lijn(S[0],'--l0')}</svg></div>`}
 
+/* ---------- volgen: spelers en toernooien die je volgt, op je eigen pagina (alleen in deze browser) ---------- */
+function volgLees(){let o=null;try{o=JSON.parse(localStorage.getItem('tw-volgen')||'null')}catch(e){}return {sp:o&&Array.isArray(o.sp)?o.sp:[],t:o&&Array.isArray(o.t)?o.t:[]}}
+function volgBewaar(o){try{localStorage.setItem('tw-volgen',JSON.stringify(o))}catch(e){}}
+function mijnTok(){let m=null;try{m=JSON.parse(localStorage.getItem('tw-mijn')||'null')}catch(e){}if(!m||!m.u||!/speler\.html/.test(m.u))return '';try{return decodeURIComponent(String(m.u).split('#')[1]||'')}catch(e){return ''}}
+const TRN=()=>((E&&E.toernooien)||[]).filter(t=>t&&t.naam&&(t.spelers||[]).length);
+/* alle spelers die je volgt: zelf gekozen, en de clubleden in de toernooien die je volgt (zonder jezelf) */
+function volgSpelers(s){const o=volgLees(),uit=new Map();for(const k of o.sp){const x=ALLE.find(y=>tok(y.n)===k);if(x&&x!==s)uit.set(x.n,x)}
+  for(const tn of o.t){const t=TRN().find(z=>z.naam===tn);for(const n of (t&&t.spelers)||[]){const x=spOf(n);if(x&&x!==s)uit.set(x.n,x)}}return [...uit.values()]}
+function volgKnop(s){const mt=mijnTok();if(mt&&mt===tok(s.n))return '';const v=volgLees().sp.includes(tok(s.n));
+  return `<button type="button" id="volgK" class="indk" aria-pressed="${v}" title="${v?'Je volgt deze speler: wat er bij hem nieuw is, staat op je eigen pagina':'Volg deze speler: wat er bij hem nieuw is, komt op je eigen pagina'}">${v?'★ Je volgt':'☆ Volgen'}</button>`}
+function volgDeel(s){const mt=mijnTok();if(mt&&mt!==tok(s.n))return '';const o=volgLees();
+  const res=g=>g.r===1?'winst':g.r===0?'verlies':'remise';
+  const kaart=x=>{const P=partijenVan(x),g=P[0],A=agendaItems(x,false).filter(a=>a.d&&!a.warn)[0],m=x.m,cur=m?m.s[0][M.length-1]:null;
+    return `<div class="vk"><div class="vk-k"><b>${spLink(x.n)}</b>${cur?` <span class="na">${cur}</span>`:''}<button type="button" class="vk-x" data-vsp="${esc(tok(x.n))}" title="niet meer volgen" aria-label="niet meer volgen">✕</button></div>
+${g?`<div class="small"><span class="na">laatst:</span> ${esc(g.tour)} · ${res(g)} tegen ${esc(nice(g.o))}${g.d?` <span class="na">(${dkort(g.d)})</span>`:''}</div>`:''}
+${A?`<div class="small"><span class="na">volgende:</span> ${A.d===TODAY?'vandaag':dkort(A.d)} · ${esc(A.what)}${A.detail&&/tegen/.test(A.detail)?' · '+esc(A.detail.split(' · ')[0]):''}</div>`:''}</div>`};
+  const toernooi=t=>{const rij=n=>{const x=spOf(n);if(!x)return '';const G=((x.m&&x.m.pend)||[]).filter(g=>g.tour.replace(/ r\d+$/,'')===t.naam),pt=G.reduce((a,g)=>a+(typeof g.r==='number'?g.r:0),0),l=G[G.length-1];
+      const v=(((E&&E.volgend)||{})[x.n]||[]).find(q=>q.tour===t.naam);
+      return `<tr><td class="l">${spLink(x.n)}</td><td>${G.length?fmt(pt)+' / '+G.length:'<span class="na">–</span>'}</td><td class="l small">${l?res(l)+' tegen '+esc(nice(l.o)):''}</td><td class="l small">${v?`ronde ${v.rn}: ${v.c==='w'?'⚪':'⚫'} ${esc(nice(v.o))}${v.or?' ('+v.or+')':''}`:''}</td></tr>`};
+    return `<div class="vk vt"><div class="vk-k"><b>${t.url?`<a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.naam)}</a>`:esc(t.naam)}</b><button type="button" class="vk-x" data-vt="${esc(t.naam)}" title="niet meer volgen" aria-label="niet meer volgen">✕</button></div>
+<div class="board"><table><thead><tr><th class="l">Clublid</th><th>Punten</th><th class="l">Laatste ronde</th><th class="l">Volgende</th></tr></thead><tbody>${(t.spelers||[]).map(rij).join('')}</tbody></table></div></div>`};
+  const sp=o.sp.map(k=>ALLE.find(y=>tok(y.n)===k)).filter(x=>x&&x!==s),T=o.t.map(n=>TRN().find(z=>z.naam===n)).filter(Boolean);
+  const nogT=TRN().filter(t=>!o.t.includes(t.naam)),nogS=ALLE.filter(x=>x!==s&&!o.sp.includes(tok(x.n)));
+  return `<section><h2>⭐ Wie ik volg</h2>${!sp.length&&!T.length?'<p class="na small" style="margin:0">Volg clubgenoten of een toernooi: wat er bij hen nieuw is, staat hier en in de lijn <i>Nieuw sinds je vorige bezoek</i>. Op de pagina van een speler kan het ook met <b>☆ Volgen</b>.</p>':''}
+<div class="vkl">${sp.map(kaart).join('')}${T.map(toernooi).join('')}</div>
+<div class="pick" style="flex-wrap:wrap">${nogS.length?`<select id="volgS" aria-label="speler volgen"><option value="">+ speler volgen…</option>${nogS.map(x=>`<option value="${esc(tok(x.n))}">${esc(nice(x.n))}</option>`).join('')}</select>`:''}${nogT.length?`<select id="volgT" aria-label="toernooi volgen"><option value="">+ toernooi volgen (alle clubleden erin)…</option>${nogT.map(t=>`<option value="${esc(t.naam)}">${esc(t.naam)} (${(t.spelers||[]).length})</option>`).join('')}</select>`:''}</div>
+${sp.length||T.length?'<p class="na small" style="margin:0">Berichten op je gsm over een speler die je volgt: open zijn pagina en zet bij <i>Meldingen</i> zijn kanaal aan.</p>':''}</section>`}
+function volgKoppel(s){const ververs=()=>pagina(s);
+  const k=$('volgK');if(k)k.addEventListener('click',()=>{const o=volgLees(),t=tok(s.n);o.sp=o.sp.includes(t)?o.sp.filter(x=>x!==t):[...o.sp,t];volgBewaar(o);const v=o.sp.includes(t);k.setAttribute('aria-pressed',v);k.textContent=v?'★ Je volgt':'☆ Volgen'});
+  const a=$('volgS');if(a)a.addEventListener('change',()=>{if(!a.value)return;const o=volgLees();o.sp.push(a.value);volgBewaar(o);ververs()});
+  const b=$('volgT');if(b)b.addEventListener('change',()=>{if(!b.value)return;const o=volgLees();o.t.push(b.value);volgBewaar(o);ververs()});
+  document.querySelectorAll('#app .vk-x').forEach(x=>x.addEventListener('click',()=>{const o=volgLees();if(x.dataset.vsp)o.sp=o.sp.filter(q=>q!==x.dataset.vsp);if(x.dataset.vt)o.t=o.t.filter(q=>q!==x.dataset.vt);volgBewaar(o);ververs()}))}
+
 /* ---------- onderlinge resultaten tegen clubgenoten (FIDE-partijen, nog te verwerken partijen en het clubkampioenschap van dit seizoen) ---------- */
 function clubgenoot(n,ik){let s=spOf(n);if(!s){const a=anm(n),f=nrm(String(n).split(', ')[1]||'')[0];const L=ALLE.filter(x=>anm(x.n)===a&&a&&nrm(String(x.n).split(', ')[1]||'')[0]===f);if(L.length===1)s=L[0]}return s&&nrm(s.n)!==nrm(ik.n)?s:null}
 function onderling(s){const P=[];const m=s.m;
@@ -492,7 +551,10 @@ function nieuwLijn(s){let m=null;try{m=JSON.parse(localStorage.getItem('tw-mijn'
     const nu=window.TW_SAMENVATTING(s.n),N=window.TW_IN_NIEUWS(s.n);if(!nu)return '';
     R={eerst:!oud,d:oud&&oud.d||'',L:[]};
     if(oud&&oud.s){try{R.L=window.TW_VERSCHIL(oud.s,nu)}catch(e){}for(const a of N)if(!(oud.nws||[]).includes(a.u))R.L.push(`In het nieuws: ${a.t}${/[.!?…]$/.test(a.t)?'':'.'}`)}
-    try{localStorage.setItem(K,JSON.stringify({d:new Date().toISOString().slice(0,10),s:nu,nws:N.map(a=>a.u)}));sessionStorage.setItem(K,JSON.stringify(R))}catch(e){return ''}}
+    /* wie je volgt (zelf of via een toernooi): wat er bij hen nieuw is, met hun naam ervoor */
+    const VV={};for(const x of volgSpelers(s)){const nx=window.TW_SAMENVATTING(x.n);if(!nx)continue;VV[nx.tok]=nx;const ox=oud&&oud.v&&oud.v[nx.tok];
+      if(ox){let L=[];try{L=window.TW_VERSCHIL(ox,nx)}catch(e){}for(const r of L)R.L.push(nice(x.n)+' – '+r)}}
+    try{localStorage.setItem(K,JSON.stringify({d:new Date().toISOString().slice(0,10),s:nu,nws:N.map(a=>a.u),v:VV}));sessionStorage.setItem(K,JSON.stringify(R))}catch(e){return ''}}
   window.__twNw=R;return '<div id="nwlijn"></div>'}
 /* tekent de statuslijn; een nieuwe mededeling van de club (mededelingen.js, wordt door vast.js ingeladen) komt erbij zodra die binnen is */
 function nwTeken(){const d=$('nwlijn'),R=window.__twNw;if(!d||!R)return;const L=R.L.slice();
@@ -536,7 +598,7 @@ ${app?`<p style="margin:0">1. ${app}</p>`:''}<p class="small" style="margin:0">$
 ${rij('📊','Uitslagen en Elo',`Na elke update als er voor ${vn} iets nieuw is: een uitslag, de stand, een nieuwe FIDE-lijst, de paring van je volgende ronde in een toernooi.`,K.uitslag,true)}
 ${rij('⏰','Herinnering de avond ervoor',`De avond voor een partij: wanneer, waar, tegen wie, met welke kleur.`,K.morgen,true)}
 ${rij('♟','Mijn partijen en het nieuws',`Je partij staat in de lichess-studie of is besproken op YouTube, of je wordt vermeld in een artikel op torrewachters.be.`,K.media,true)}
-${rij('📰','Clubnieuws (voor iedereen)','Een nieuwe partij in de lichess-studie, een nieuw filmpje op het YouTube-kanaal, een nieuwe mededeling van de club.',kn,false)}
+${rij('📰','Clubnieuws (voor iedereen)','Nieuwe uitslagen in het clubkampioenschap, de interclub en toernooien van clubleden, een nieuwe FIDE-lijst, een nieuwe partij in de lichess-studie, een nieuw filmpje op het YouTube-kanaal, een nieuwe mededeling van de club.',kn,false)}
 ${/^(ja|yes|1)$/i.test(String(I['pers zichtbaar']||'').trim())?rij('🗞','Schaken in de pers (voor iedereen)','Nieuwe artikels over schaken in de kranten (hoogstens één bericht per update, met de titels).',kn.replace(/-nieuws$/,'-pers'),false):''}
 </ul><div class="na small" id="proefst" aria-live="polite"></div>
 <p class="na small" style="margin:0">Tip: in ntfy kun je per kanaal ook het geluid uitzetten of een stil uur instellen. Wie de naam van een kanaal kent, kan meelezen; er staat alleen in wat ook op deze website staat.</p></div></details>`}
@@ -576,10 +638,10 @@ function pagina(s){document.title=nice(s.n)+' · Torrewachters';$('pdfbtn').hidd
   const el=eloDeel(s);const ck=clubDeel(s);const ic=icDeel(s);const ag=agendaDeel(s);
   const opts=ALLE.map(x=>`<option value="${esc(tok(x.n))}"${x===s?' selected':''}>${esc(nice(x.n))}</option>`).join('');
   $('app').innerHTML=`<header><span class="eyebrow">Speler · De Torrewachters</span><h1>${esc(nice(s.n))}</h1><p class="sub">${[wat(s)?wat(s).replace(/^reeks/,'clubkampioenschap reeks'):'',s.m&&s.m.tit?s.m.tit:''].filter(Boolean).map(esc).join(' · ')||'&nbsp;'}</p></header>
-<div class="pick"><label class="na" for="ander">Andere speler</label><select id="ander">${opts}</select><button type="button" id="indK" class="indk" aria-expanded="false" title="Kies zelf wat je op de spelerspagina ziet en in welke volgorde">⚙ Indeling</button></div><div id="indP" class="indp" hidden></div>
-${indDelen(s,{nieuw:()=>nieuwLijn(s),boven:()=>nieuwBoven(s),melden:()=>meldDeel(s),notities:()=>notDeel(s),agenda:()=>ag,club:()=>ck,elo:()=>el.html,ic:()=>ic,onderling:()=>onderlingDeel(s),studie:()=>studieDeel(s),vergelijk:()=>vglDeel(s),nieuws:()=>nieuwsDeel(s)})}`;
+<div class="pick"><label class="na" for="ander">Andere speler</label><select id="ander">${opts}</select>${volgKnop(s)}<button type="button" id="indK" class="indk" aria-expanded="false" title="Kies zelf wat je op de spelerspagina ziet en in welke volgorde">⚙ Indeling</button></div><div id="indP" class="indp" hidden></div>
+${indDelen(s,{nieuw:()=>nieuwLijn(s),boven:()=>nieuwBoven(s),melden:()=>meldDeel(s),notities:()=>notDeel(s),agenda:()=>ag,club:()=>ck,elo:()=>el.html,ic:()=>ic,volg:()=>volgDeel(s),onderling:()=>onderlingDeel(s),studie:()=>studieDeel(s),vergelijk:()=>vglDeel(s),nieuws:()=>nieuwsDeel(s)})}`;
   $('ander').addEventListener('change',e=>{location.hash=e.target.value});
-  meldKoppel(s);agKoppel(s);nwVul();vglKoppel(s);const io=IND_OPEN;indKoppel(s);if(!io)window.scrollTo(0,0)}
+  meldKoppel(s);agKoppel(s);nwVul();vglKoppel(s);volgKoppel(s);const io=IND_OPEN;indKoppel(s);if(!io)window.scrollTo(0,0)}
 
 /* ---------- samenvatting per speler, voor de meldingen na het automatisch bijwerken (meldingen.js op GitHub) ---------- */
 window.TW_SPELERS=()=>ALLE.map(s=>s.n);
@@ -602,6 +664,6 @@ window.addEventListener('hashchange',route);route();
 {const t=(E&&E.tijd)||(V&&V.tijd)||'';$('notes').innerHTML=`<p>${window.ONLINE?'Bijgewerkt op ':'Gegevens van '}${t?(+t.slice(8,10))+'/'+(+t.slice(5,7))+'/'+t.slice(0,4)+' om '+t.slice(11):'?'}. FIDE-ratings van de maandlijsten van de FIDE, het clubkampioenschap uit SWAR, de interclub van de KBSB, toernooien van chess-results, OpenResults en de Franse bond.</p><p>Een fout gezien? Laat het weten aan de verantwoordelijke van de website.</p>`}
 })();
 </script>
-<script src="vast.js?v=3f1831802a"></script>
+<script src="vast.js?v=76d0b69600"></script>
 </body>
 </html>
