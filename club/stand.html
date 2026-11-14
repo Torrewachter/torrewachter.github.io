@@ -124,6 +124,7 @@ td.de .na,td.de .todo{white-space:normal;display:inline-block;max-width:16ch;tex
   <h1>Clubkampioenschap Roeselare 2026</h1>
   <p class="sub">Stand van de vier reeksen onder elkaar. Elke balk is zo breed als het aantal punten dat een speler kan halen, in halve punten verdeeld. Groen groeit van links bij elk gewonnen halfje, rood groeit van rechts bij elk verloren halfje. Wat grijs blijft, kan nog gewonnen worden.</p>
 </header>
+<div id="inh"></div>
 <nav class="tabs" id="tabs" aria-label="Reeksen"></nav>
 <div id="all" class="all"></div>
 <div class="legend">
@@ -148,9 +149,9 @@ td.de .na,td.de .todo{white-space:normal;display:inline-block;max-width:16ch;tex
 </div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="../elo/data-elo.js?v=a14674085e"></script>
+<script src="../elo/data-elo.js?v=6d855b986d"></script>
 <script src="../elo/elo-verwerk.js?v=0f9f453a2c"></script>
-<script src="data-club.js?v=5f52bfb36a"></script>
+<script src="data-club.js?v=e8440caae8"></script>
 <script src="data-interclub.js?v=15434390b5"></script>
 <script src="verwerk.js?v=ef349255c3"></script>
 <script>
@@ -295,6 +296,16 @@ function renderAll(){const ks=ORD(Object.keys(RAW));const raw=decodeURIComponent
   tabs.querySelectorAll('a').forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')==='#r'+first?'true':'false'));
   if(h)all.scrollIntoView({block:'start'})}
 renderAll();window.addEventListener('hashchange',renderAll);setTimeout(renderAll,400);setTimeout(renderAll,1500);
+/* ingehaalde partijen: SWAR zet ze bij hun oorspronkelijke ronde; club/ingehaald.js (gemaakt op GitHub) zegt wanneer ze gespeeld werden */
+(function(){if(!/^https?:$/.test(location.protocol))return;const sc=document.createElement('script');sc.src='ingehaald.js?u='+Math.floor(Date.now()/600000);
+  sc.onload=()=>{const L=window.TW_INHAAL||[];if(!L.length)return;const MN=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'],WD=['zo','ma','di','wo','do','vr','za'];
+    const dg=d=>{const t=new Date(d+'T12:00:00Z');return WD[t.getUTCDay()]+' '+t.getUTCDate()+' '+MN[t.getUTCMonth()]},kort=d=>d?(+d.slice(8,10))+'/'+(+d.slice(5,7)):'';
+    const nm=n=>{const [a,b]=String(n).split(', ');return b?b+' '+a:String(n)},ln=n=>`<a class="spn" href="../elo/speler.html#${tok(n)}">${nm(n)}</a>`;
+    const G=new Map();for(const x of L){const k=x.d+'|'+x.i;if(!G.has(k))G.set(k,[]);G.get(k).push(x)}
+    const grp=[...G.entries()].slice(0,8),recent=L[0].d>=new Date(Date.now()-7*864e5).toISOString().slice(0,10);
+    document.getElementById('inh').innerHTML=`<details class="wa inh"${recent?' open':''}><summary>🕓 Ingehaalde partijen <span class="na" style="max-width:none">uitgestelde partijen staan in de stand bij hun oorspronkelijke ronde; hier zie je wanneer ze gespeeld werden</span></summary>
+${grp.map(([k,X])=>`<h3>${dg(X[0].d)}${X[0].i?' · inhaaldag':' · <span class="na" style="max-width:none">uitslag verschenen</span>'}</h3><ul>${X.map(x=>`<li>${x.lab||'Reeks '+x.k}, ronde ${x.r}${x.rd?' <span class="na" style="max-width:none">(van '+kort(x.rd)+')</span>':''}: ${ln(x.w)} – ${ln(x.z)} <b>${x.u}</b></li>`).join('')}</ul>`).join('')}</details>`};
+  document.head.appendChild(sc)})();
 </script>
 
 <style>
@@ -321,6 +332,7 @@ renderAll();window.addEventListener('hashchange',renderAll);setTimeout(renderAll
  body.pdf-uitleg .legend{margin-top:8px}
  .notes p{break-inside:avoid}
 }
+.inh h3{font-size:.95rem;margin:12px 0 4px}.inh ul{margin:0;padding-left:20px}.inh li{margin:2px 0}
 </style>
 <button type="button" class="pdfbtn" id="pdfbtn" aria-haspopup="true" aria-expanded="false" title="Kies wat in de PDF komt; daarna opent het afdrukvenster: kies daar Opslaan als PDF">Opslaan als PDF ▾</button>
 <div class="pdfmenu" id="pdfmenu" hidden role="menu">
