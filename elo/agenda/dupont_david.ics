@@ -86,6 +86,16 @@ DESCRIPTION:met wit tegen Karim Fezoua: gewonnen\nSpelerspagina: https://t
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
+UID:ym6cfq@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20261107T140000
+DTEND;TZID=Europe/Brussels:20261107T180000
+SUMMARY:Clubkampioenschap Reeks 2A\, ronde 6
+DESCRIPTION:met zwart tegen Arthur Meganck: remise\nSpelerspagina: https:/
+ /torrewachter.github.io/elo/speler.html#Dupont_David
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
 UID:ym6cfr@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261121T140000

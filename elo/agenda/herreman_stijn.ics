@@ -25,6 +25,16 @@ RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
 END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
+UID:18vpc63@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260919T140000
+DTEND;TZID=Europe/Brussels:20260919T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 1
+DESCRIPTION:met zwart tegen Korneel Baert: remise\nSpelerspagina: https://
+ torrewachter.github.io/elo/speler.html#Herreman_Stijn
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
 UID:18vpc60@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20260926T140000

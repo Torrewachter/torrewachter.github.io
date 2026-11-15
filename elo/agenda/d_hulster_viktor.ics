@@ -35,6 +35,16 @@ DESCRIPTION:met wit tegen Guido Vancoillie: gewonnen\nSpelerspagina: https
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
+UID:sur8qn@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260926T140000
+DTEND;TZID=Europe/Brussels:20260926T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 2
+DESCRIPTION:met zwart tegen Pauwel Deblauwe: gewonnen\nSpelerspagina: http
+ s://torrewachter.github.io/elo/speler.html#D_Hulster_Viktor
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
 UID:sur8qm@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261003T140000

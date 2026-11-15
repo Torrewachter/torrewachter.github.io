@@ -35,6 +35,16 @@ DESCRIPTION:met zwart tegen Jan Feys: verloren\nSpelerspagina: https://tor
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
+UID:f3r9qj@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;TZID=Europe/Brussels:20260926T140000
+DTEND;TZID=Europe/Brussels:20260926T180000
+SUMMARY:Clubkampioenschap Reeks 1B\, ronde 2
+DESCRIPTION:met wit tegen Viktor D'Hulster: verloren\nSpelerspagina: https
+ ://torrewachter.github.io/elo/speler.html#Deblauwe_Pauwel
+LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
 UID:f3r9qi@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261003T140000
