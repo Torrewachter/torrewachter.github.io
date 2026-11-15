@@ -59,16 +59,6 @@ LOCATION:Altea (Spanje)
 URL:https://s3.chess-results.com/tnr1383655.aspx?lan=1
 END:VEVENT
 BEGIN:VEVENT
-UID:bhgxmk@torrewachters
-DTSTAMP:20260101T000000Z
-DTSTART;VALUE=DATE:20261115
-DTEND;VALUE=DATE:20261116
-TRANSP:TRANSPARENT
-SUMMARY:Interclub KRST 1\, ronde 3
-DESCRIPTION:uit bij KSGK 1 · de opstelling is nog niet gekend\nSpelerspag
- ina: https://torrewachter.github.io/elo/speler.html#Logie_Bernard
-END:VEVENT
-BEGIN:VEVENT
 UID:bhgxmj@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;VALUE=DATE:20261129
