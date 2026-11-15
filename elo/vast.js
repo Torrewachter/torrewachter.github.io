@@ -195,3 +195,11 @@ window.addEventListener('hashchange',function(){setTimeout(bij,50)});
 window.addEventListener('storage',function(e){if(e.key===MK)teken()});
 teken();setTimeout(bij,800);meeOntvang();
 })();
+/* bezoekersteller (GoatCounter: telt alleen paginabezoeken, zonder cookies en zonder iets over de bezoeker te bewaren).
+   Alleen online, en alleen als in instellingen.txt van Clubkampioenschap-Interclub "teller = <code>" staat: dan zet website.ps1 de code in elo/teller.js */
+(function(){try{if(window.__twTeller||location.protocol!=='https:')return;window.__twTeller=1;
+var me=document.currentScript||[].slice.call(document.scripts).filter(function(x){return /vast\.js/.test(x.src)})[0];if(!me)return;
+var s=document.createElement('script');s.src=me.src.replace(/vast\.js.*$/,'teller.js');
+s.onload=function(){var c=window.TW_TELLER;if(!c||!/^[a-z0-9-]+$/.test(c))return;var g=document.createElement('script');g.async=true;
+  g.setAttribute('data-goatcounter','https://'+c+'.goatcounter.com/count');g.src='https://gc.zgo.at/count.js';document.head.appendChild(g)};
+document.head.appendChild(s)}catch(e){}})();
