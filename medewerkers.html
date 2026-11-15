@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Voor medewerkers · KRST Torrewachters</title>
+<style>
+:root{--bg:#f6f7f5;--fg:#1d2420;--sub:#5d6862;--kaart:#fff;--lijn:#dfe4e0;--accent:#2f5d4b;--zacht:#eef3f0}
+@media (prefers-color-scheme:dark){:root{--bg:#141816;--fg:#e8ece9;--sub:#a3ada7;--kaart:#1d2320;--lijn:#2f3833;--accent:#7fc4a6;--zacht:#232b27}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:820px;margin:0 auto;padding:24px 16px 48px}
+a{color:var(--accent)}.terug{font-size:14px;font-weight:600;text-decoration:none}
+h1{margin:8px 0 4px;font-size:28px}.sub{color:var(--sub);margin:0 0 16px}
+h2{font-size:19px;margin:4px 0 6px;color:var(--accent)}
+section{background:var(--kaart);border:1px solid var(--lijn);border-radius:12px;padding:12px 16px 12px;margin:14px 0}
+p{margin:6px 0}.klein{font-size:14px;color:var(--sub)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td{padding:6px 4px;border-top:1px solid var(--lijn);vertical-align:middle}tr:first-child td{border-top:0}
+td.l{width:9.5em;text-align:right;white-space:nowrap}
+.u{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:var(--sub);word-break:break-all;display:block}
+button{font:inherit;font-size:13px;padding:4px 10px;border-radius:8px;border:1px solid var(--lijn);background:var(--zacht);color:var(--fg);cursor:pointer}
+button.ok{background:var(--accent);color:#fff;border-color:var(--accent)}
+input{font:inherit;padding:6px 8px;border:1px solid var(--lijn);border-radius:8px;background:var(--kaart);color:var(--fg);width:16em;max-width:100%}
+</style></head><body><div class="w">
+<a class="terug" href="index.html">&larr; Startpagina</a>
+<h1>Voor medewerkers</h1>
+<p class="sub">Vaste links naar delen van de website, om te plakken onder een column, in een mail of in een bericht. Deze pagina staat niet in het menu; bewaar het adres.</p>
+<p><b>Kopiëren</b> zet de link op het klembord. <b>Open</b> toont eerst wat de lezer te zien krijgt. Elke link wijst altijd naar de nieuwste toestand: de link naar <i>Gespeelde partijen</i> toont volgende week dus de partijen van volgende week.</p>
+<p class="klein">Op elke pagina (behalve de spelerspagina's) staat naast de titel van elk deel ook een knopje 🔗: dat kopieert de link naar dat deel. Zo vind je ook een link die hier niet staat.</p>
+<div id="lijst"></div>
+<section><h2>Een spelerspagina</h2>
+<p>Typ <b>familienaam en voornaam</b> zoals ze op de site staan (bv. <i>Maddens Martijn</i>):</p>
+<p><input id="nm" placeholder="Familienaam Voornaam" autocomplete="off"> <button id="spk">Kopiëren</button> <a id="spo" href="#" target="_blank" rel="noopener">Open</a></p>
+<p><span class="u" id="spu"></span></p>
+<p class="klein">Of open de spelerspagina en kopieer het adres bovenaan in de browser.</p></section>
+<section><h2>Waar komt wat vandaan?</h2>
+<p><b>Mededelingen</b> (bovenaan de startpagina en via 📢 op elke pagina): geef ze door aan de beheerder van de website; hij zet ze in <i>mededelingen.txt</i>. Ze staan online na de volgende update.</p>
+<p><b>Nieuws en de column</b> komen vanzelf van torrewachters.be (elke woensdag- en donderdagavond), met de cartoon erbij.</p>
+<p><b>Uitslagen</b> komen vanzelf uit SWAR: het clubkampioenschap zaterdagavond, de interclub zondagavond, toernooien van clubleden elke avond. Klopt er iets niet, laat het weten aan de beheerder.</p>
+<p><b>Spelers</b> kunnen zelf hun meldingen kiezen (app ntfy) en hun pagina instellen: zie <a href="aan-de-slag.pdf">Aan de slag</a> (PDF, 2 blz.) om door te geven aan nieuwe leden.</p></section>
+<script>
+(function(){
+var B=location.origin+location.pathname.replace(/[^\/]*$/,'');
+var L=[
+ ['Clubkampioenschap',[
+  ['Stand (alle reeksen)','club/stand.html'],
+  ['Gespeelde partijen (laatste speeldag of inhaaldag)','club/stand.html#gespeeld'],
+  ['Nog te spelen achterstallige partijen','club/stand.html#achterstallig'],
+  ['Reeks 1A','club/stand.html?deel=reeks-1a'],['Reeks 1B','club/stand.html?deel=reeks-1b'],
+  ['Reeks 2A','club/stand.html?deel=reeks-2a'],['Reeks 2B','club/stand.html?deel=reeks-2b']],
+  'Heten de reeksen volgend seizoen anders, gebruik dan het knopje 🔗 op de stand.'],
+ ['Interclub',[
+  ['Interclub (alle afdelingen)','club/interclub.html'],
+  ['Afdeling 4B','club/interclub.html?deel=afdeling-4b']]],
+ ['Seizoensverslag',[
+  ['Seizoensverslag','club/seizoensverslag.html'],
+  ['Clubkampioenschap','club/seizoensverslag.html?deel=clubkampioenschap'],
+  ['Nationale interclub','club/seizoensverslag.html?deel=nationale-interclub'],
+  ['Interclub: stand','club/seizoensverslag.html?deel=nationale-interclub-stand'],
+  ['Interclub: spelers','club/seizoensverslag.html?deel=nationale-interclub-spelers'],
+  ['Elo','club/seizoensverslag.html?deel=elo'],
+  ['Grootste stijging','club/seizoensverslag.html?deel=elo-grootste-stijging'],
+  ['Grootste daling','club/seizoensverslag.html?deel=elo-grootste-daling'],
+  ['Meeste partijen','club/seizoensverslag.html?deel=elo-meeste-partijen'],
+  ['Beste prestatie','club/seizoensverslag.html?deel=elo-beste-prestatie-minstens-5-partijen'],
+  ['Verschil wit en zwart','club/seizoensverslag.html?deel=elo-grootste-verschil-wit-en-zwart']]],
+ ['Elo en statistieken',[
+  ['Elo-ratings','elo/elo.html'],
+  ['Statistieken','elo/statistieken.html'],
+  ['Ranglijsten','elo/statistieken.html?deel=ranglijsten'],
+  ['Partijen per maand','elo/statistieken.html?deel=partijen-per-maand'],
+  ['Alle spelers','elo/statistieken.html?deel=alle-spelers'],
+  ['Toernooien','elo/statistieken.html?deel=toernooien']]],
+ ['Cartoons en uitleg',[
+  ['Cartoons','elo/cartoons.html'],
+  ['Cartoons als diashow','elo/cartoons.html?diashow'],
+  ['Uitleg','uitleg.html'],
+  ['Uitleg: spelerspagina','uitleg.html?deel=spelerspagina'],
+  ['Uitleg: stand en wat-als','uitleg.html?deel=stand-clubkampioenschap-en-wat-als'],
+  ['Aan de slag (PDF voor nieuwe leden)','aan-de-slag.pdf'],
+  ['Startpagina','']],
+  'Een link naar één cartoon: open Cartoons en gebruik het knopje 🔗 bij die cartoon.']];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var h='';L.forEach(function(g){h+='<section><h2>'+esc(g[0])+'</h2><table>';
+ g[1].forEach(function(r){var u=B+r[1];h+='<tr><td>'+esc(r[0])+'<span class="u">'+esc(u)+'</span></td><td class="l"><button data-u="'+esc(u)+'">Kopiëren</button> <a href="'+esc(u)+'" target="_blank" rel="noopener">Open</a></td></tr>'});
+ h+='</table>'+(g[2]?'<p class="klein">'+esc(g[2])+'</p>':'')+'</section>'});
+document.getElementById('lijst').innerHTML=h;
+function kopieer(b,u){var ok=function(){var t=b.textContent;b.textContent='✓ gekopieerd';b.classList.add('ok');setTimeout(function(){b.textContent=t;b.classList.remove('ok')},2000)};
+ if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(u).then(ok,function(){prompt('Kopieer de link:',u)});
+ else{var a=document.createElement('textarea');a.value=u;document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){prompt('Kopieer de link:',u)}a.remove()}}
+document.addEventListener('click',function(e){var b=e.target.closest('button[data-u]');if(b)kopieer(b,b.dataset.u)});
+var nm=document.getElementById('nm'),spu=document.getElementById('spu'),spo=document.getElementById('spo');
+function tok(n){return n.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'')}
+function sp(){var t=tok(nm.value.trim());var u=B+'elo/speler.html'+(t?'#'+t:'');spu.textContent=u;spo.href=u;return u}
+nm.addEventListener('input',sp);sp();
+document.getElementById('spk').onclick=function(){kopieer(this,sp())};
+})();
+</script>
+</div></body></html>

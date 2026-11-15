@@ -115,12 +115,12 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=81434ac043"></script>
+<script src="data-elo.js?v=a9f6000a16"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=0f9f453a2c"></script>
 <script src="../club/data-club.js?v=f7c1dfbbb5"></script>
-<script src="../club/data-interclub.js?v=91b0377a01"></script>
-<script src="../club/data-partijen.js?v=2112354048"></script>
+<script src="../club/data-interclub.js?v=4519c1d1a4"></script>
+<script src="../club/data-partijen.js?v=92a4d61a66"></script>
 <script src="../club/verwerk.js?v=ef349255c3"></script>
 <script src="clubsite.js?v=418e518780"></script>
 <script>if(window.ONLINE)document.write('<script src="filmpjes.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
@@ -365,10 +365,10 @@ function prestKleur(m){const dpk=dpS;const x=ALLE.find(y=>y.m===m);
   const t=(x,lab)=>x?`${lab} <b>${x.v}</b> <span class="na">(${fmt(x.sc)} uit ${x.n})</span>`:`${lab} <span class="na">– (minder dan 5 partijen)</span>`;
   return `<p style="margin:10px 0 0">Prestatie ${t(w,'met wit')} · ${t(z,'met zwart')} <span class="na small" title="Standaardpartijen tegen spelers met rating, sinds de aanpassing van de FIDE-ratings in maart 2024 (spelers onder 2000 kregen er toen punten bij). Meer per periode op de pagina Statistieken.">· standaard, sinds ${van?mlab(van):'maart 2024'} ⓘ</span></p>`}
 /* ---------- eigen indeling van de spelerspagina (alleen in de browser van de bezoeker): welke delen, in welke volgorde ---------- */
-const IND=[['nieuw','Wat is nieuw (statuslijn op mijn pagina)'],['boven','Nieuwste artikel waarin de speler staat'],['notities','📝 Mijn notities (met links)'],['melden','🔔 Meldingen voor mijn gsm'],['agenda','Volgende partijen en toernooien'],['club','Clubkampioenschap'],['elo','Elo'],['ic','Interclub'],['volg','⭐ Wie ik volg (spelers en toernooien)'],['onderling','Onderlinge resultaten'],['studie','Mijn partijen om na te spelen (lichess, YouTube)'],['vergelijk','Vergelijken met een andere speler'],['nieuws','In het nieuws']];
-const IND_UIT=['notities'];
+const IND=[['nieuw','Wat is nieuw (statuslijn op mijn pagina)'],['boven','Nieuwste artikel waarin de speler staat'],['notities','📝 Mijn notities (met links)'],['melden','🔔 Meldingen voor mijn gsm'],['agenda','Volgende partijen en toernooien'],['club','Clubkampioenschap'],['elo','Elo'],['ic','Interclub'],['volg','⭐ Wie ik volg (spelers en toernooien)'],['onderling','Onderlinge resultaten'],['studie','Mijn partijen om na te spelen (lichess, YouTube)'],['lichess','♞ Nieuwste partijen op lichess (van de club)'],['youtube','▶ Nieuwste filmpjes op YouTube (van de club)'],['vergelijk','Vergelijken met een andere speler'],['nieuws','In het nieuws']];
+const IND_UIT=['notities','lichess','youtube'];   /* staan standaard uit: aanzetten bij ⚙ Indeling */
 /* korte namen voor de ingeklapte delen */
-const IND_KORT={volg:'⭐ Wie ik volg',nieuw:'Wat is nieuw',boven:'Nieuwste artikel',notities:'📝 Mijn notities',melden:'🔔 Meldingen',agenda:'Volgende partijen',club:'Clubkampioenschap',elo:'Elo',ic:'Interclub',onderling:'Onderlinge resultaten',studie:'Partijen om na te spelen',vergelijk:'Vergelijken',nieuws:'In het nieuws'};
+const IND_KORT={volg:'⭐ Wie ik volg',nieuw:'Wat is nieuw',boven:'Nieuwste artikel',notities:'📝 Mijn notities',melden:'🔔 Meldingen',agenda:'Volgende partijen',club:'Clubkampioenschap',elo:'Elo',ic:'Interclub',onderling:'Onderlinge resultaten',studie:'Partijen om na te spelen',lichess:'♞ Lichess',youtube:'▶ YouTube',vergelijk:'Vergelijken',nieuws:'In het nieuws'};
 const IND_PLAATS={boven:'bovenaan',onder:'onderaan',links:'links ernaast',rechts:'rechts ernaast'};
 function indLees(){let o=null;try{o=JSON.parse(localStorage.getItem('tw-indeling')||'null')}catch(e){}
   const ids=IND.map(x=>x[0]);let v=(o&&Array.isArray(o.v)?o.v:[]).filter(k=>ids.includes(k));
@@ -446,6 +446,18 @@ function studieDeel(s){const wie=n=>spOf(n)||clubgenoot(n,{n:''}),ikB=n=>{const 
     const res=g.r&&g.r!=='*'?(g.r==='1/2-1/2'?'remise':(g.r==='1-0')===ik?'gewonnen':'verloren'):'';
     return `<li><span class="na nw">${g.d?dkort(g.d)+" '"+g.d.slice(2,4):''}</span><span>${ik?'⚪':'⚫'} tegen ${spLink(o)}${res?' · '+res:''}${g.e?' <span class="na">· '+esc(g.e)+'</span>':''}</span><span class="nw"><a href="${esc(g.u)}" target="_blank" rel="noopener">♟ lichess</a>${f?` · <a href="https://youtu.be/${esc(f.id)}" target="_blank" rel="noopener" title="${esc(f.t||'')}">▶ filmpje</a>`:''}</span></li>`}).join('')}</ul>
 <p class="na small" style="margin:6px 0 0">Uit de studie <a href="https://lichess.org/study/${esc(((window.BRON_PARTIJEN||{}).instellingen||{})['lichess studie']||'')}" target="_blank" rel="noopener">KRST YouTube</a> op lichess: partijen van clubleden met uitleg${Object.keys(F).length?', en het filmpje op YouTube als het er is':''}.</p></div></section>`}
+
+/* ---------- de nieuwste partijen op lichess en filmpjes op YouTube van de club (aan te zetten bij ⚙ Indeling) ---------- */
+function clubStudie(s,film){const F=window.TW_FILM||{},I=((window.BRON_CLUB||{}).instellingen)||{},yt=I.youtube&&/^https?:/.test(I.youtube)?I.youtube:'',st=((window.BRON_PARTIJEN||{}).instellingen||{})['lichess studie']||I['lichess studie']||'';
+  const L=((E&&E.studie)||[]).filter(g=>!film||F[g.u]).slice().sort((a,b)=>(b.d||'').localeCompare(a.d||'')).slice(0,8);
+  if(film){/* de filmpjes zelf (TW_YT, van het YouTube-kanaal), met de partij op lichess als die erbij hoort */
+    const Y=(window.TW_YT||[]).slice(0,8),G=new Map(Object.entries(F).map(([u,f])=>[f.id,u]));
+    return `<section><h2>Nieuwste filmpjes op YouTube</h2><div class="card">${Y.length?`<ul class="studie">${Y.map(v=>{const u=G.get(v.id);return `<li><span class="na nw">${v.d?dkort(v.d)+" '"+v.d.slice(2,4):''}</span><span>${esc(v.t)}</span><span class="nw"><a href="https://youtu.be/${esc(v.id)}" target="_blank" rel="noopener">▶ filmpje</a>${u?` · <a href="${esc(u)}" target="_blank" rel="noopener">♟ lichess</a>`:''}</span></li>`}).join('')}</ul>`:'<p class="na">Nog niets.</p>'}
+<p class="na small" style="margin:6px 0 0">${yt?`Alle filmpjes op het <a href="${esc(yt)}" target="_blank" rel="noopener">YouTube-kanaal ↗</a>.`:''}</p></div></section>`}
+  const rij=g=>{const f=F[g.u],res=g.r&&g.r!=='*'?(g.r==='1/2-1/2'?'½-½':g.r):'';
+    return `<li><span class="na nw">${g.d?dkort(g.d)+" '"+g.d.slice(2,4):''}</span><span>${spLink(g.w)} – ${spLink(g.b)}${res?' <b>'+esc(res)+'</b>':''}${film&&f&&f.t?'<br><span class="na small">'+esc(f.t)+'</span>':g.e?' <span class="na">· '+esc(g.e)+'</span>':''}</span><span class="nw">${film&&f?`<a href="https://youtu.be/${esc(f.id)}" target="_blank" rel="noopener">▶ filmpje</a> · `:''}<a href="${esc(g.u)}" target="_blank" rel="noopener">♟ lichess</a>${!film&&f?` · <a href="https://youtu.be/${esc(f.id)}" target="_blank" rel="noopener">▶ filmpje</a>`:''}</span></li>`};
+  return `<section><h2>${film?'Nieuwste filmpjes op YouTube':'Nieuwste partijen op lichess'}</h2><div class="card">${L.length?`<ul class="studie">${L.map(rij).join('')}</ul>`:'<p class="na">Nog niets.</p>'}
+<p class="na small" style="margin:6px 0 0">${film?(yt?`Alle filmpjes op het <a href="${esc(yt)}" target="_blank" rel="noopener">YouTube-kanaal ↗</a>.`:''):(st?`Alle partijen in de studie <a href="https://lichess.org/study/${esc(st)}" target="_blank" rel="noopener">KRST YouTube ↗</a> op lichess.`:'')}</p></div></section>`}
 
 /* ---------- vergelijken met een andere speler ---------- */
 function vglDeel(s){if(!s.m)return '';let k='';try{k=localStorage.getItem('tw-vgl')||''}catch(e){}
@@ -681,7 +693,7 @@ function pagina(s){document.title=nice(s.n)+' · Torrewachters';$('pdfbtn').hidd
   const opts=ALLE.map(x=>`<option value="${esc(tok(x.n))}"${x===s?' selected':''}>${esc(nice(x.n))}</option>`).join('');
   $('app').innerHTML=`<header><span class="eyebrow">Speler · De Torrewachters</span><h1>${esc(nice(s.n))}</h1><p class="sub">${[wat(s)?wat(s).replace(/^reeks/,'clubkampioenschap reeks'):'',s.m&&s.m.tit?s.m.tit:''].filter(Boolean).map(esc).join(' · ')||'&nbsp;'}</p></header>
 <div class="pick"><label class="na" for="ander">Andere speler</label><select id="ander">${opts}</select>${volgKnop(s)}<button type="button" id="indK" class="indk" aria-expanded="false" title="Kies zelf wat je op de spelerspagina ziet en in welke volgorde">⚙ Indeling</button></div><div id="indP" class="indp" hidden></div>
-${indDelen(s,{nieuw:()=>nieuwLijn(s),boven:()=>nieuwBoven(s),melden:()=>meldDeel(s),notities:()=>notDeel(s),agenda:()=>ag,club:()=>ck,elo:()=>el.html,ic:()=>ic,volg:()=>volgDeel(s),onderling:()=>onderlingDeel(s),studie:()=>studieDeel(s),vergelijk:()=>vglDeel(s),nieuws:()=>nieuwsDeel(s)})}`;
+${indDelen(s,{lichess:()=>clubStudie(s,false),youtube:()=>clubStudie(s,true),nieuw:()=>nieuwLijn(s),boven:()=>nieuwBoven(s),melden:()=>meldDeel(s),notities:()=>notDeel(s),agenda:()=>ag,club:()=>ck,elo:()=>el.html,ic:()=>ic,volg:()=>volgDeel(s),onderling:()=>onderlingDeel(s),studie:()=>studieDeel(s),vergelijk:()=>vglDeel(s),nieuws:()=>nieuwsDeel(s)})}`;
   $('ander').addEventListener('change',e=>{location.hash=e.target.value});
   meldKoppel(s);agKoppel(s);nwVul();vglKoppel(s);volgKoppel(s);const io=IND_OPEN;indKoppel(s);if(!io)window.scrollTo(0,0)}
 
