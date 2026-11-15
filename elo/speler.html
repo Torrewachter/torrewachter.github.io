@@ -115,12 +115,12 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <div class="notes" id="notes"></div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=02a96114a8"></script>
+<script src="data-elo.js?v=2abcc46174"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
-<script src="elo-verwerk.js?v=0f9f453a2c"></script>
+<script src="elo-verwerk.js?v=139a115d28"></script>
 <script src="../club/data-club.js?v=f7c1dfbbb5"></script>
-<script src="../club/data-interclub.js?v=da5ab4635e"></script>
-<script src="../club/data-partijen.js?v=ff9099c833"></script>
+<script src="../club/data-interclub.js?v=58ffad1b6e"></script>
+<script src="../club/data-partijen.js?v=a308e6ca6e"></script>
 <script src="../club/verwerk.js?v=ef349255c3"></script>
 <script src="clubsite.js?v=418e518780"></script>
 <script>if(window.ONLINE)document.write('<script src="filmpjes.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
@@ -496,9 +496,15 @@ const TRN=()=>((E&&E.toernooien)||[]).filter(t=>t&&t.naam&&(t.spelers||[]).lengt
 const LOPEND=()=>{const VG=(E&&E.volgend)||{},grens=dag(TODAY,-14);return TRN().filter(t=>(t.laatste||'')>=grens||Object.values(VG).some(L=>(L||[]).some(v=>v.tour===t.naam)))};
 /* de toernooien die je volgt: zelf gekozen, en (met automatisch volgen) alle lopende */
 const volgT=o=>{const T=o.t.map(n=>TRN().find(z=>z.naam===n)).filter(Boolean);if(o.auto)for(const t of LOPEND())if(!T.includes(t))T.push(Object.assign({},t,{auto:1}));return T};
-/* alle spelers die je volgt: zelf gekozen, en de clubleden in de toernooien die je volgt (zonder jezelf) */
+/* interclub: bezig als er de laatste 3 weken een ronde was of de volgende binnen 2 weken valt; de laatste ronde met uitslagen (ook gedeeltelijk) */
+const icLaatste=()=>{if(!IC)return 0;return Math.max(0,...(IC.ind||[]).map(g=>+g.ronde||0))};
+const icVolgende=()=>IC?((IC.kalender||[]).filter(g=>g.d>=TODAY).sort((a,b)=>a.d.localeCompare(b.d))[0]||null):null;
+const icLopend=()=>{if(!IC)return false;const D=(IC.series&&IC.series.dates)||{},l=icLaatste(),v=icVolgende();return !!((l&&(D[l]||'')>=dag(TODAY,-21))||(v&&v.d<=dag(TODAY,14)))};
+const icSpelers=()=>{if(!IC)return [];const l=icLaatste();return [...new Set([...(IC.spelers||[]),...(IC.ind||[]).filter(g=>+g.ronde===l).map(g=>g.speler)])]};
+/* alle spelers die je volgt: zelf gekozen, de clubleden in de toernooien die je volgt, en (automatisch volgen) de interclubspelers (zonder jezelf) */
 function volgSpelers(s){const o=volgLees(),uit=new Map();for(const k of o.sp){const x=ALLE.find(y=>tok(y.n)===k);if(x&&x!==s)uit.set(x.n,x)}
-  for(const t of volgT(o)){for(const n of t.spelers||[]){const x=spOf(n);if(x&&x!==s)uit.set(x.n,x)}}return [...uit.values()]}
+  for(const t of volgT(o)){for(const n of t.spelers||[]){const x=spOf(n);if(x&&x!==s)uit.set(x.n,x)}}
+  if(o.auto&&icLopend())for(const n of icSpelers()){const x=spOf(n);if(x&&x!==s)uit.set(x.n,x)}return [...uit.values()]}
 /* spelers die geen clublid zijn: de lijst van de club (instellingen.txt, met FIDE-gegevens) en wie je zelf toevoegt met een FIDE-nummer */
 const EXT=()=>(E&&E.extern)||[];
 /* volledig volgen van een speler met een FIDE-nummer: het nummer (en niets anders) gaat naar het clubkanaal <voorvoegsel>-volg op ntfy;
@@ -526,6 +532,11 @@ ${A?`<div class="small"><span class="na">volgende:</span> ${A.d===TODAY?'vandaag
       return `<tr><td class="l">${spLink(x.n)}</td><td>${G.length?fmt(pt)+' / '+G.length:'<span class="na">–</span>'}</td><td class="l small">${l?res(l)+' tegen '+esc(nice(l.o)):''}</td><td class="l small">${v?`ronde ${v.rn}: ${v.c==='w'?'⚪':'⚫'} ${esc(nice(v.o))}${v.or?' ('+v.or+')':''}`:''}</td></tr>`};
     return `<div class="vk vt"><div class="vk-k"><b>${t.url?`<a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.naam)}</a>`:esc(t.naam)}</b>${t.auto?'<span class="na small" title="automatisch gevolgd: een lopend toernooi met clubleden">automatisch</span>':`<button type="button" class="vk-x" data-vt="${esc(t.naam)}" title="niet meer volgen" aria-label="niet meer volgen">✕</button>`}</div>
 <div class="board"><table><thead><tr><th class="l">Clublid</th><th>Punten</th><th class="l">Laatste ronde</th><th class="l">Volgende</th></tr></thead><tbody>${(t.spelers||[]).map(rij).join('')}</tbody></table></div></div>`};
+  const icKaart=()=>{const D=(IC.series&&IC.series.dates)||{},l=icLaatste(),x=(IC.gespeeld||[]).find(y=>y.r===l),G=(IC.ind||[]).filter(g=>+g.ronde===l).sort((a,b)=>a.bord-b.bord),v=icVolgende();
+    return `<div class="vk vt"><div class="vk-k"><b><a href="../club/interclub.html">Interclub ${esc(IC.team||'')}${IC.label?' · '+esc(IC.label):''}</a></b><span class="na small" title="automatisch gevolgd: de interclub loopt">automatisch</span></div>
+${l?`<div class="small"><span class="na">ronde ${l}${D[l]?' ('+dkort(D[l])+')':''}:</span> ${x?(x.thuis?'thuis tegen ':'uit bij ')+esc(x.opp)+(x.voor!=null?' · <b>'+fmt(x.voor)+'–'+fmt(x.tegen)+'</b>':''):''}</div>
+<div class="board"><table><thead><tr><th>Bord</th><th class="l">Clublid</th><th class="l">Tegenstander</th><th>Uitslag</th></tr></thead><tbody>${G.map(g=>`<tr><td>${g.bord}</td><td class="l">${spOf(g.speler)?spLink(spOf(g.speler).n):esc(nice(g.speler))}</td><td class="l small">${esc(nice(g.tegen))}${g.elo_t?' <span class="na">('+g.elo_t+')</span>':''}</td><td>${rs(g.score==='ff'?'ff':+g.score)}</td></tr>`).join('')}</tbody></table></div>`:''}
+${v?`<div class="small"><span class="na">volgende:</span> ronde ${v.r} op ${dkort(v.d)}, ${v.thuis?'thuis tegen':'uit bij'} ${esc(v.opp)}</div>`:''}</div>`};
   const ext=q=>{const fn=/^\d+$/.test(q.f),m=fn?extVan(q.f):EXT().find(z=>nrm(z.n)===nrm(q.n))||null,n=m?m.n:(q.n||'FIDE '+q.f),fl=fn?q.f:m?String(m.fide):'',x={n,m,club:[]},P=m?partijenVan(x):[],g=P[0],cur=m&&m.s&&m.s[0]?m.s[0][M.length-1]:null;
     const v=(((E&&E.volgend)||{})[n]||[])[0],TC=tegenClub(n),tc=TC[0];
     return `<div class="vk"><div class="vk-k"><b>${esc(nice(n))}</b>${cur?` <span class="na">${cur}</span>`:''}<span class="na small" title="geen clublid">extern</span><button type="button" class="vk-x" data-vx="${esc(q.f)}" title="niet meer volgen" aria-label="niet meer volgen">✕</button></div>
@@ -539,8 +550,8 @@ ${fl?`<div class="small"><a href="https://ratings.fide.com/profile/${encodeURICo
   const TGN=[...new Set(ALLE.flatMap(x=>partijenVan(x).map(g=>String(g.o||''))).filter(n=>n.includes(',')&&!spOf(n)))].sort((a,b)=>a.localeCompare(b,'nl'));
   const nogT=TRN().filter(t=>!T.some(z=>z.naam===t.naam)),nogS=ALLE.filter(x=>x!==s&&!o.sp.includes(tok(x.n)));
   return `<section><h2>⭐ Wie ik volg</h2>${!sp.length&&!T.length&&!XS.length?'<p class="na small" style="margin:0">Volg clubgenoten of een toernooi: wat er bij hen nieuw is, staat hier en in de lijn <i>Nieuw sinds je vorige bezoek</i>. Op de pagina van een speler kan het ook met <b>☆ Volgen</b>. Of vink hieronder <i>Automatisch volgen</i> aan.</p>':''}
-<div class="vkl">${sp.map(kaart).join('')}${XS.map(ext).join('')}${T.map(toernooi).join('')}</div>
-<label class="small" style="display:block"><input type="checkbox" id="volgA"${o.auto?' checked':''}> <b>Automatisch volgen</b>: alle clubleden die een extern toernooi spelen (zolang het toernooi loopt)</label>
+<div class="vkl">${sp.map(kaart).join('')}${XS.map(ext).join('')}${T.map(toernooi).join('')}${o.auto&&icLopend()?icKaart():''}</div>
+<label class="small" style="display:block"><input type="checkbox" id="volgA"${o.auto?' checked':''}> <b>Automatisch volgen</b>: alle clubleden die een extern toernooi spelen (zolang het toernooi loopt) en de spelers van de interclub (zolang de interclub loopt)</label>
 <div class="pick" style="flex-wrap:wrap">${nogS.length?`<select id="volgS" aria-label="speler volgen"><option value="">+ speler volgen…</option><optgroup label="Clubleden">${nogS.map(x=>`<option value="${esc(tok(x.n))}">${esc(nice(x.n))}</option>`).join('')}</optgroup>${nogX.length?`<optgroup label="Geen clublid">${nogX.map(m=>`<option value="f:${esc(String(m.fide))}">${esc(nice(m.n))}</option>`).join('')}</optgroup>`:''}</select>`:''}${nogT.length?`<select id="volgT" aria-label="toernooi volgen"><option value="">+ toernooi volgen (alle clubleden erin)…</option>${nogT.map(t=>`<option value="${esc(t.naam)}">${esc(t.naam)} (${(t.spelers||[]).length})</option>`).join('')}</select>`:''}</div>
 <details class="small vx"><summary>+ een andere speler volgen (geen clublid)</summary><div class="pick" style="flex-wrap:wrap;margin-top:6px"><input id="volgFn" list="volgDl" placeholder="naam (Achternaam, Voornaam)" aria-label="naam" style="flex:1;min-width:12em"><input id="volgFi" inputmode="numeric" placeholder="FIDE-nummer (mag leeg)" aria-label="FIDE-nummer" style="width:13em"><datalist id="volgDl">${TGN.map(n=>`<option value="${esc(n)}">`).join('')}</datalist><button type="button" id="volgFb" class="indk">Volgen</button></div>
 <p class="na" style="margin:4px 0 0">Een naam volstaat: tijdens het typen krijg je de tegenstanders van clubleden voorgesteld, en je ziet dan zijn partijen tegen clubleden. Met het FIDE-nummer erbij (te vinden op <a href="https://ratings.fide.com/" target="_blank" rel="noopener">ratings.fide.com ↗</a>) volg je hem volledig: de site haalt dan ook zijn rating, toernooien en volgende partij op (meestal binnen een dag). Daarvoor gaat alleen dat nummer naar de club, niets over jou. Spelers die al door iemand volledig gevolgd worden, staan ook bij <i>+ speler volgen</i> onder <i>Geen clublid</i>.</p></details>

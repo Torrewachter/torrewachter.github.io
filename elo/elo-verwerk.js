@@ -17,6 +17,8 @@ const API=B.api||{};const LED={},NAAM={};
 for(const k of Object.keys(API))if(k.startsWith('clubmembers_')){const l=J(API[k]);if(!Array.isArray(l)){fouten.push('ledenlijst '+k.slice(12)+' onleesbaar');continue}
   for(const m of l){const n=m.last_name+', '+m.first_name;LED[m.idnumber]={id:m.idnumber,n,by:m.birthyear||0,fr:m.fiderating||0,fide:m.idfide||0,club:m.idclub,tit:m.fidetitle||'',g:m.gender||''};NAAM[nrm(n)]??=m.idnumber}}
 for(const k of Object.keys(API))if(k.startsWith('member_')){const m=J(API[k]);if(m&&m.idnumber&&!LED[m.idnumber]){const n=m.last_name+', '+m.first_name;LED[m.idnumber]={id:m.idnumber,n,by:m.birthyear||0,fr:m.fiderating||0,fide:m.idfide||0,club:m.idclub};NAAM[nrm(n)]??=m.idnumber}}
+/* zonder rating in de ledenlijst (nieuwe KBSB-site): de FIDE-rating uit de interclubgegevens van de clubs */
+for(const k of Object.keys(API))if(k.startsWith('icclub_')){const c=J(API[k]);for(const p of (c&&c.players)||[]){const m=LED[p.idnumber];if(m&&!m.fr&&p.fiderating>0)m.fr=p.fiderating}}
 /* spelers die geen clublid zijn maar gevolgd worden (instellingen.txt: "extern <FIDE-nummer> = Achternaam, Voornaam") */
 {const FL=new Set(Object.values(LED).map(m=>String(m.fide||'')));for(const [k,v] of Object.entries(inst)){const x=/^extern\s+(\d{4,10})$/.exec(k);if(!x||FL.has(x[1]))continue;const n=String(v||'').trim()||('FIDE '+x[1]);LED['x'+x[1]]={id:'x'+x[1],n,by:0,fr:0,fide:+x[1],club:0,tit:'',g:'',ext:1};NAAM[nrm(n)]??='x'+x[1]}}
 const eigen=Object.values(LED).filter(m=>m.club===club).sort((a,b)=>a.n.localeCompare(b.n,'nl'));
