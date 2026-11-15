@@ -150,10 +150,10 @@ td.de .na,td.de .todo{white-space:normal;display:inline-block;max-width:16ch;tex
 </div>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="../elo/data-elo.js?v=ecc9ece44f"></script>
+<script src="../elo/data-elo.js?v=91a701442b"></script>
 <script src="../elo/elo-verwerk.js?v=0f9f453a2c"></script>
 <script src="data-club.js?v=f7c1dfbbb5"></script>
-<script src="data-interclub.js?v=a7978028f7"></script>
+<script src="data-interclub.js?v=2dbdfe77cb"></script>
 <script src="verwerk.js?v=ef349255c3"></script>
 <script>
 const RAW={
@@ -297,8 +297,8 @@ function renderAll(){const ks=ORD(Object.keys(RAW));const raw=decodeURIComponent
   tabs.querySelectorAll('a').forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')==='#r'+first?'true':'false'));
   if(h)all.scrollIntoView({block:'start'})}
 renderAll();window.addEventListener('hashchange',renderAll);setTimeout(renderAll,400);setTimeout(renderAll,1500);
-/* rechtstreekse links: stand.html#ingehaald en stand.html#achterstallig openen die lijst en springen ernaartoe; de knop 🔗 kopieert de link */
-function naarLijst(){const h=decodeURIComponent(location.hash||'').replace(/^#/,'');if(h!=='ingehaald'&&h!=='achterstallig')return;const el=document.getElementById(h);if(!el)return;el.open=true;setTimeout(()=>el.scrollIntoView({block:'start'}),50)}
+/* rechtstreekse links: stand.html#gespeeld (oud: #ingehaald) en stand.html#achterstallig openen die lijst en springen ernaartoe; de knop 🔗 kopieert de link */
+function naarLijst(){let h=decodeURIComponent(location.hash||'').replace(/^#/,'');if(h==='ingehaald')h='gespeeld';if(h!=='gespeeld'&&h!=='achterstallig')return;const el=document.getElementById(h);if(!el)return;el.open=true;setTimeout(()=>el.scrollIntoView({block:'start'}),50)}
 window.addEventListener('hashchange',naarLijst);
 document.addEventListener('click',e=>{const b=e.target.closest('button[data-lk]');if(!b)return;e.preventDefault();e.stopPropagation();const u=location.origin+location.pathname+'#'+b.dataset.lk;
   const ok=()=>{const o=b.textContent;b.textContent='✓ link gekopieerd';setTimeout(()=>b.textContent=o,2500)};
@@ -312,16 +312,29 @@ document.addEventListener('click',e=>{const b=e.target.closest('button[data-lk]'
   const AG=(window.VERWERKT&&VERWERKT.agenda)||{},ih=(AG.inhaal||[]).filter(x=>x>=vd).sort()[0];
   document.getElementById('achter').innerHTML=`<details class="wa inh" id="achterstallig" open><summary>⏳ Nog te spelen achterstallige partijen <button type="button" class="lk" data-lk="achterstallig" title="link naar deze lijst kopiëren (bv. voor onder een column)">🔗 link</button> <span class="na" style="max-width:none">${X.length} partij${X.length>1?'en':''}${ih?' · volgende inhaaldag '+dg(ih):''} · spelers spreken onderling af wanneer ze spelen</span></summary>
 <ul>${X.map(x=>`<li>Reeks ${x.k}, ronde ${x.rd} <span class="na" style="max-width:none">(van ${kort(x.d)})</span>: ${ln(x.a)} – ${ln(x.b)}</li>`).join('')}</ul></details>`;naarLijst()}catch(e){}})();
-/* ingehaalde partijen: SWAR zet ze bij hun oorspronkelijke ronde; club/ingehaald.js (gemaakt op GitHub) zegt wanneer ze gespeeld werden */
-(function(){if(!/^https?:$/.test(location.protocol))return;const sc=document.createElement('script');sc.src='ingehaald.js?u='+Math.floor(Date.now()/600000);
-  sc.onload=()=>{const L=window.TW_INHAAL||[];if(!L.length)return;const MN=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'],WD=['zo','ma','di','wo','do','vr','za'];
-    const dg=d=>{const t=new Date(d+'T12:00:00Z');return WD[t.getUTCDay()]+' '+t.getUTCDate()+' '+MN[t.getUTCMonth()]},kort=d=>d?(+d.slice(8,10))+'/'+(+d.slice(5,7)):'';
-    const nm=n=>{const [a,b]=String(n).split(', ');return b?b+' '+a:String(n)},ln=n=>`<a class="spn" href="../elo/speler.html#${tok(n)}">${nm(n)}</a>`;
-    const G=new Map();for(const x of L){const k=x.d+'|'+x.i;if(!G.has(k))G.set(k,[]);G.get(k).push(x)}
-    const grp=[...G.entries()].slice(0,8),recent=L[0].d>=new Date(Date.now()-7*864e5).toISOString().slice(0,10);
-    document.getElementById('inh').innerHTML=`<details class="wa inh" id="ingehaald"${recent?' open':''}><summary>🕓 Ingehaalde partijen <button type="button" class="lk" data-lk="ingehaald" title="link naar deze lijst kopiëren (bv. voor onder een column)">🔗 link</button> <span class="na" style="max-width:none">uitgestelde partijen staan in de stand bij hun oorspronkelijke ronde; hier zie je wanneer ze gespeeld werden</span></summary>
-${grp.map(([k,X])=>`<h3>${dg(X[0].d)}${X[0].i===1?' · inhaaldag':X[0].i===2?' · speeldag clubkampioenschap':' · <span class="na" style="max-width:none">uitslag verschenen</span>'}</h3><ul>${X.map(x=>`<li>${x.lab||'Reeks '+x.k}, ronde ${x.r}${x.rd?' <span class="na" style="max-width:none">(van '+kort(x.rd)+')</span>':''}: ${ln(x.w)} – ${ln(x.z)} <b>${x.u}</b></li>`).join('')}</ul>`).join('')}</details>`;naarLijst()};
-  document.head.appendChild(sc)})();
+/* gespeelde partijen: de laatste gewone ronde, en wat daarna ingehaald werd (club/ingehaald.js, gemaakt op GitHub: wanneer een uitgestelde partij
+   gespeeld werd; SWAR zet ze bij hun oorspronkelijke ronde). Een vaste link: stand.html#gespeeld (het oude #ingehaald werkt ook) */
+(function(){const vd=new Date().toLocaleDateString('sv-SE'),MN=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'],WD=['zo','ma','di','wo','do','vr','za'];
+  const dg=d=>{const t=new Date(d+'T12:00:00Z');return WD[t.getUTCDay()]+' '+t.getUTCDate()+' '+MN[t.getUTCMonth()]},kort=d=>d?(+d.slice(8,10))+'/'+(+d.slice(5,7)):'';
+  const nm=n=>{const [a,b]=String(n).split(', ');return b?b+' '+a:String(n)},ln=n=>`<a class="spn" href="../elo/speler.html#${tok(n)}">${nm(n)}</a>`;
+  const uit=r=>String(r).replace(/ff/g,'')+(/ff/.test(r)?' (forfait)':'');
+  let laatste='';for(const k of Object.keys(RAW)){const R=RAW[k].rondes||RDAT||{};for(const d of Object.values(R))if(d&&d<=vd&&d>laatste)laatste=d}
+  /* de gewone ronde(s) van die dag, per reeks */
+  const gewoon=[];if(laatste)for(const k of Object.keys(RAW)){const per=PER(k),R=RAW[k].rondes||RDAT||{};const rd=+Object.keys(R).find(r=>R[r]===laatste);if(!rd)continue;
+    (RAW[k].r||[]).forEach((row,i)=>{if(Math.floor(i/per)+1!==rd)return;const [a,,res,b]=row.split('|');if(!b||b==='Bye'||res==='-')return;gewoon.push({k,r:rd,a,b,u:res})})}
+  const teken=IH=>{const L=(IH||[]).filter(x=>x.d>=laatste);const G=new Map();
+    for(const x of L){const g=x.d+'|'+x.i;if(!G.has(g))G.set(g,{d:x.d,kop:dg(x.d)+(x.i===1?' · inhaaldag':x.i===2?' · ingehaald op de speeldag':' · <span class="na" style="max-width:none">ingehaald, uitslag verschenen</span>'),X:[]});
+      G.get(g).X.push(`<li>${x.lab||'Reeks '+x.k}, ronde ${x.r}${x.rd?' <span class="na" style="max-width:none">(van '+kort(x.rd)+')</span>':''}: ${ln(x.w)} – ${ln(x.z)} <b>${x.u}</b></li>`)}
+    /* een partij van die ronde die pas later ingehaald werd, staat bij het inhalen, niet bij de ronde */
+    const later=new Set((IH||[]).map(x=>x.k+'|'+x.r+'|'+[x.w,x.z].sort().join('|'))),gw=gewoon.filter(x=>!later.has(x.k+'|'+x.r+'|'+[x.a,x.b].sort().join('|')));
+    if(gw.length){const rs=[...new Set(gw.map(x=>x.r))];G.set(laatste+'|r',{d:laatste,o:1,kop:dg(laatste)+' · ronde '+rs.join(', '),X:gw.sort((p,q)=>p.k.localeCompare(q.k)).map(x=>`<li>Reeks ${x.k}: ${ln(x.a)} – ${ln(x.b)} <b>${uit(x.u)}</b></li>`)})}
+    /* alleen de laatste dag: de laatste speeldag of de laatste inhaaldag (wat ervoor kwam, werd al eerder getoond) */
+    const alle=[...G.values()].sort((p,q)=>q.d.localeCompare(p.d)||(q.o||0)-(p.o||0)),grp=alle.filter(g=>alle.length&&g.d===alle[0].d);
+    if(!grp.length){document.getElementById('inh').innerHTML=/#(gespeeld|ingehaald)$/.test(location.hash)?'<p class="na" style="max-width:none">Nog geen gespeelde partijen dit seizoen.</p>':'';return}
+    const recent=grp.some(g=>g.d>=new Date(Date.now()-7*864e5).toISOString().slice(0,10));
+    document.getElementById('inh').innerHTML=`<details class="wa inh" id="gespeeld"${recent?' open':''}><summary>✅ Gespeelde partijen <button type="button" class="lk" data-lk="gespeeld" title="link naar deze lijst kopiëren (bv. voor onder een column)">🔗 link</button> <span class="na" style="max-width:none">de laatste speeldag of inhaaldag (een uitgestelde partij staat in de stand bij haar oorspronkelijke ronde)</span></summary>
+${grp.map(g=>`<h3>${g.kop}</h3><ul>${g.X.join('')}</ul>`).join('')}</details>`;naarLijst()};
+  teken([]);if(!/^https?:$/.test(location.protocol))return;const sc=document.createElement('script');sc.src='ingehaald.js?u='+Math.floor(Date.now()/600000);sc.onload=()=>teken(window.TW_INHAAL);document.head.appendChild(sc)})();
 </script>
 
 <style>
@@ -399,6 +412,6 @@ ${grp.map(([k,X])=>`<h3>${dg(X[0].d)}${X[0].i===1?' · inhaaldag':X[0].i===2?' �
  window.addEventListener('afterprint',function(){opened.forEach(function(d){d.open=false});opened=[]});
 })();
 </script>
-<script src="../elo/vast.js?v=257479f511"></script>
+<script src="../elo/vast.js?v=7a2155c8cd"></script>
 </body>
 </html>
