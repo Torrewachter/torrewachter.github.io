@@ -112,7 +112,8 @@ p{margin:8px 0}
 var slug=function(t){return String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)};
 var doel=(new URLSearchParams(location.search)).get('deel')||'',gedaan=!doel,t0=Date.now();
 var st=document.createElement('style');st.textContent='.twlk{all:unset;cursor:pointer;font-size:12px;font-weight:400;color:var(--muted,#888);margin-left:8px;vertical-align:middle;opacity:.7}.twlk:hover{opacity:1;text-decoration:underline}@media print{.twlk{display:none}}';document.head.appendChild(st);
-var kop=function(h){if(h.querySelector('.twlk'))return;var tekst=(h.textContent||'').trim();if(!tekst)return;var sl=slug(tekst);if(!sl)return;h.setAttribute('data-deel',sl);
+var kop=function(h){if(h.querySelector('.twlk'))return;/* alleen de eigen tekst van de kop (niet wat in een span ernaast staat, zoals aantallen): zo blijft de link altijd dezelfde */
+  var eigen=[].slice.call(h.childNodes).filter(function(n){return n.nodeType===3}).map(function(n){return n.textContent}).join(' ').trim(),tekst=eigen||(h.textContent||'').trim();if(!tekst)return;var sl=slug(tekst);if(!sl)return;h.setAttribute('data-deel',sl);
   var b=document.createElement('button');b.type='button';b.className='twlk';b.textContent='🔗';b.title='link naar dit deel kopiëren';
   b.onclick=function(e){e.preventDefault();e.stopPropagation();var u=location.origin+location.pathname+'?deel='+sl+location.hash;
     var ok=function(){b.textContent='✓ link gekopieerd';setTimeout(function(){b.textContent='🔗'},2500)};

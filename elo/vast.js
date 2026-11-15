@@ -209,13 +209,19 @@ document.head.appendChild(s)}catch(e){}})();
 var slug=function(t){return String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)};
 var doel=(new URLSearchParams(location.search)).get('deel')||'',gedaan=!doel,t0=Date.now();
 var st=document.createElement('style');st.textContent='.twlk{all:unset;cursor:pointer;font-size:12px;font-weight:400;color:var(--muted,#888);margin-left:8px;vertical-align:middle;opacity:.7}.twlk:hover{opacity:1;text-decoration:underline}@media print{.twlk{display:none}}';document.head.appendChild(st);
-var kop=function(h){if(h.querySelector('.twlk'))return;var tekst=(h.textContent||'').trim();if(!tekst)return;var sl=slug(tekst);if(!sl)return;h.setAttribute('data-deel',sl);
+var kop=function(h){if(h.querySelector('.twlk'))return;/* alleen de eigen tekst van de kop (niet wat in een span ernaast staat, zoals aantallen): zo blijft de link altijd dezelfde */
+  var eigen=[].slice.call(h.childNodes).filter(function(n){return n.nodeType===3}).map(function(n){return n.textContent}).join(' ').trim(),tekst=eigen||(h.textContent||'').trim();if(!tekst)return;var sl=slug(tekst);if(!sl)return;
+  /* een rubriek (h3) krijgt de naam van haar hoofdstuk ervoor: elo-grootste-stijging */
+  if(h.tagName==='H3'){var sec=h.closest('section'),h2=sec&&sec.querySelector('h2');if(h2){var t2=[].slice.call(h2.childNodes).filter(function(n){return n.nodeType===3}).map(function(n){return n.textContent}).join(' ').trim()||h2.textContent;sl=slug(t2)+'-'+sl}}
+  h.setAttribute('data-deel',sl);
   var b=document.createElement('button');b.type='button';b.className='twlk';b.textContent='🔗';b.title='link naar dit deel kopiëren';
   b.onclick=function(e){e.preventDefault();e.stopPropagation();var u=location.origin+location.pathname+'?deel='+sl+location.hash;
     var ok=function(){b.textContent='✓ link gekopieerd';setTimeout(function(){b.textContent='🔗'},2500)};
     try{navigator.clipboard.writeText(u).then(ok,function(){prompt('Link:',u)})}catch(x){prompt('Link:',u)}};h.appendChild(b)};
 var spring=function(){if(gedaan)return;if(Date.now()-t0>15000){gedaan=true;return}var h=document.querySelector('[data-deel="'+doel+'"]');if(!h)return;gedaan=true;
   for(var p=h.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;setTimeout(function(){h.scrollIntoView({block:'start'})},60)};
-var alles=function(){var H=document.querySelectorAll('h2');for(var i=0;i<H.length;i++)kop(H[i]);spring()};
+/* rubrieken (h3) alleen in het seizoensverslag */
+var sel=/seizoensverslag\.html$/.test(location.pathname)?'h2,h3':'h2';
+var alles=function(){var H=document.querySelectorAll(sel);for(var i=0;i<H.length;i++)kop(H[i]);spring()};
 var wacht=null;new MutationObserver(function(){if(wacht)return;wacht=setTimeout(function(){wacht=null;alles()},120)}).observe(document.documentElement,{childList:true,subtree:true});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',alles);else alles()}catch(e){}})();
