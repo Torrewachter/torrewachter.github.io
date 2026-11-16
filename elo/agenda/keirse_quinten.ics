@@ -47,6 +47,16 @@ DESCRIPTION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare\nSpelersp
 LOCATION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
+UID:pwqkh3@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261116
+TRANSP:TRANSPARENT
+SUMMARY:Interclub KRST 1\, ronde 3
+DESCRIPTION:uit bij KSGK 1 · bord 2 tegen Mark Dechamps: verloren\nSpeler
+ spagina: https://torrewachter.github.io/elo/speler.html#Keirse_Quinten
+END:VEVENT
+BEGIN:VEVENT
 UID:pwqkgw@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;VALUE=DATE:20261129
