@@ -91,9 +91,8 @@ DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261121T140000
 DTEND;TZID=Europe/Brussels:20261121T180000
 SUMMARY:Clubkampioenschap Reeks 1B\, ronde 7
-DESCRIPTION:met zwart tegen Viktor D'Hulster (1674) · Café Den Arend\, P
- olenplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github
- .io/elo/speler.html#Herreman_Stijn
+DESCRIPTION:met zwart tegen Viktor D'Hulster: verloren\nSpelerspagina: htt
+ ps://torrewachter.github.io/elo/speler.html#Herreman_Stijn
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT

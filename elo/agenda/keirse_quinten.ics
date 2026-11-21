@@ -68,6 +68,19 @@ DESCRIPTION:thuis tegen KBSK Brugge 3 · de opstelling is nog niet gekend\
  nten
 END:VEVENT
 BEGIN:VEVENT
+UID:a2les1@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261212
+DTEND;VALUE=DATE:20261213
+TRANSP:TRANSPARENT
+SUMMARY:Rapid & Blitz Bosgenot
+DESCRIPTION: · Roeselare\nUitslagen: https://militarychess.be/delcattos-b
+ osgenot/participants-2026/\nSpelerspagina: https://torrewachter.github.io
+ /elo/speler.html#Keirse_Quinten
+LOCATION:Roeselare
+URL:https://militarychess.be/delcattos-bosgenot/participants-2026/
+END:VEVENT
+BEGIN:VEVENT
 UID:pwqkgx@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;VALUE=DATE:20261220

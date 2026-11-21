@@ -101,9 +101,8 @@ DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261121T140000
 DTEND;TZID=Europe/Brussels:20261121T180000
 SUMMARY:Clubkampioenschap Reeks 2A\, ronde 7
-DESCRIPTION:met zwart tegen Lowie Dejonghe (1428) · Café Den Arend\, Pol
- enplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.i
- o/elo/speler.html#Meganck_Arthur
+DESCRIPTION:met zwart tegen Lowie Dejonghe: verloren\nSpelerspagina: https
+ ://torrewachter.github.io/elo/speler.html#Meganck_Arthur
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT

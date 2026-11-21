@@ -101,9 +101,8 @@ DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261121T140000
 DTEND;TZID=Europe/Brussels:20261121T180000
 SUMMARY:Clubkampioenschap Reeks 1B\, ronde 7
-DESCRIPTION:met wit tegen Korneel Baert (1589) · Café Den Arend\, Polenp
- lein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/e
- lo/speler.html#Vancoillie_Guido
+DESCRIPTION:met wit tegen Korneel Baert: gewonnen\nSpelerspagina: https://
+ torrewachter.github.io/elo/speler.html#Vancoillie_Guido
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
