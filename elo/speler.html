@@ -120,7 +120,7 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <script src="elo-verwerk.js?v=139a115d28"></script>
 <script src="../club/data-club.js?v=513fe5e422"></script>
 <script src="../club/data-interclub.js?v=e4895a93ab"></script>
-<script src="../club/data-partijen.js?v=ffb84fd050"></script>
+<script src="../club/data-partijen.js?v=1ff4d86ca9"></script>
 <script src="../club/verwerk.js?v=ef349255c3"></script>
 <script src="clubsite.js?v=743143abc1"></script>
 <script>if(window.ONLINE)document.write('<script src="filmpjes.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
@@ -157,7 +157,12 @@ for(const k of RK)for(const r of RAW[k].r){const s=r.split('|');add(s[0],k);add(
 const IC=(V&&V.ic&&V.ic.ok)?V.ic:null;
 if(IC){(IC.spelers||[]).forEach(n=>{add(n);SP.get(nrm(n)).ic=true});(IC.ind||[]).forEach(g=>{add(g.speler);SP.get(nrm(g.speler)).ic=true})}
 const spOf=n=>SP.get(nrm(n))||null;
-const spLink=(n,txt)=>{const s=spOf(n);return s?`<a href="#${tok(s.n)}">${esc(txt??nice(n))}</a>`:esc(txt??nice(n))};
+/* een naam in een andere volgorde (bv. "Diederik Wydooghe" in de lichess-studie in plaats van "Wydooghe, Diederik") toch herkennen */
+const tokS=n=>nrm(n).replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(Boolean).sort().join(' ');let SPV=null;
+const spOfVrij=n=>{if(!SPV){SPV=new Map();for(const s of SP.values()){const k=tokS(s.n);SPV.set(k,SPV.has(k)&&SPV.get(k)!==s?false:s)}}const k=tokS(n),x=SPV.get(k);if(x)return x;if(x===false)return null;
+  /* of een deel ervan, bv. "Victor Chacon" voor "Chacon Jaime, Victor" (alleen als dat maar bij een speler past) */
+  const t=k.split(' ');if(t.length<2)return null;const r=[...SP.values()].filter(s=>{const u=tokS(s.n).split(' ');return t.every(w=>u.includes(w))});return r.length===1?r[0]:null};
+const spLink=(n,txt)=>{const s=spOf(n)||spOfVrij(n);return s?`<a href="#${tok(s.n)}">${esc(txt??nice(n))}</a>`:esc(txt??nice(n))};
 const M=(E&&E.maanden)||[];
 const curStd=s=>s&&s.m&&M.length?s.m.s[0][M.length-1]:null;
 
