@@ -118,8 +118,8 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <script src="data-elo.js?v=a33438a237"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
 <script src="elo-verwerk.js?v=139a115d28"></script>
-<script src="../club/data-club.js?v=bc30ecd70c"></script>
-<script src="../club/data-interclub.js?v=4dafa02952"></script>
+<script src="../club/data-club.js?v=4f049b4cc5"></script>
+<script src="../club/data-interclub.js?v=e4895a93ab"></script>
 <script src="../club/data-partijen.js?v=d5e3eacb57"></script>
 <script src="../club/verwerk.js?v=ef349255c3"></script>
 <script src="clubsite.js?v=743143abc1"></script>
@@ -224,7 +224,7 @@ const pct=v=>v>=1?'100%':v<=0?'0%':v>.99?'>99%':v<.01?'<1%':v<.05?'<5%':v>.95?'>
 const CACHE={};
 function reeks(key){if(CACHE[key])return CACHE[key];const L=build(key),n=L.length,Z=zones(key,n);const KS=[...new Set(Z.map(z=>z.k))];chances(L,KS);L.thZ={};
   for(const K of KS){L.forEach(p=>{p.sfZ??={};p.stZ??={};p.sfZ[K]=safeFrom(L,p,K);p.stZ[K]=(p.sfZ[K]!=null&&p.sfZ[K]<=p.w+2*p.fb)?'sure':(L.filter(q=>q!==p&&q.pts>p.max).length>=K?'out':'in')});
-    const th=L.filter(p=>p.sfZ[K]!=null).map(p=>p.sfZ[K]).sort((a,b)=>a-b);L.thZ[K]=th.length?th[th.length-1]:null}
+    const th=L.filter(p=>p.sfZ[K]!=null&&p.stZ[K]==='in').map(p=>p.sfZ[K]).sort((a,b)=>a-b);L.thZ[K]=th.length?th[th.length-1]:null}
   let prev=null,rank=0;L.forEach((p,i)=>{const k=p.pts+'/'+p.wins;if(k!==prev){rank=i+1;prev=k}p.rank=rank});
   return CACHE[key]={L,Z}}
 
@@ -277,7 +277,7 @@ function clubDeel(s){const ks=RK.filter(k=>s.club.includes(k));if(!ks.length)ret
   for(const k of ks.slice().reverse()){const {L,Z}=reeks(k);const p=L.find(q=>q.n===s.club_n?.[k]||nrm(q.n)===nrm(s.n));if(!p)continue;const per=PER(k),PL=PLD(k);const lab=(V.club.labels&&V.club.labels[k])||'Reeks '+k;
     const zs=Z.map(z=>{const st=p.stZ[z.k];let v=st==='sure'?1:st==='out'?0:p.chK[z.k];let c=v>=.75?'up':v<.4?'down':'';if(z.t==='zakken'){v=1-v;c=v>=.4?'down':''}
       const S=p.sfZ[z.k],need=S!=null?(S-p.w-2*p.fb)/2:null;
-      const zk=st==='sure'&&z.t!=='zakken'?`<span class="up">${z.sure}</span>`:st==='out'&&z.out&&z.t!=='zakken'?`<span class="down">${z.out}</span>`:z.t==='zakken'&&st==='sure'?'<span class="up">zeker gered</span>':z.t==='zakken'&&st==='out'?'<span class="down">degradeert</span>':S==null?'niet zelf af te dwingen':need<=0?'<span class="up">bereikt</span>':`${z.need} met nog ${fmt(need)} uit ${p.open}`;
+      const zk=st==='sure'&&z.t!=='zakken'?`<span class="up">${z.sure}</span>`:st==='out'&&z.out&&z.t!=='zakken'?`<span class="down">${z.out}</span>`:z.t==='zakken'&&st==='sure'?'<span class="up">zeker gered</span>':z.t==='zakken'&&st==='out'?'<span class="down">degradeert</span>':st==='out'?'niet meer haalbaar':S==null?'niet zelf af te dwingen':need<=0?'<span class="up">bereikt</span>':`${z.need} met nog ${fmt(need)} uit ${p.open}`;
       return `<div class="num"><b class="${c}">${pct(v)}</b><span>${z.kans}<br>${zk}</span></div>${z.t==='med'&&p.pos?`<div class="num"><b>${pct(p.pos[0])}</b><span>goud · zilver ${pct(p.pos[1])} · brons ${pct(p.pos[2])}</span></div>`:''}`}).join('');
     const R=RAW[k].rondes||RDAT;const rows=[];RAW[k].r.forEach((row,i)=>{const [a,ea,res,b,eb]=row.split('|');if(nrm(a)!==nrm(p.n)&&nrm(b)!==nrm(p.n))return;const rd=Math.floor(i/per)+1;rows.push({rd,d:R[rd]||'',a,ea,res,b,eb,wit:nrm(a)===nrm(p.n)})});
     const tr=rows.map(x=>{if(x.b==='Bye')return `<tr><td>${x.rd}</td><td class="l nw">${dkort(x.d)}</td><td class="l na">bye (vrij)</td><td class="hm"></td><td>${x.rd<=PL?'<b>1</b>':'<span class="na">1</span>'}</td></tr>`;

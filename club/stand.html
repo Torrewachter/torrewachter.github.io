@@ -152,8 +152,8 @@ td.de .na,td.de .todo{white-space:normal;display:inline-block;max-width:16ch;tex
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
 <script src="../elo/data-elo.js?v=a33438a237"></script>
 <script src="../elo/elo-verwerk.js?v=139a115d28"></script>
-<script src="data-club.js?v=bc30ecd70c"></script>
-<script src="data-interclub.js?v=4dafa02952"></script>
+<script src="data-club.js?v=4f049b4cc5"></script>
+<script src="data-interclub.js?v=e4895a93ab"></script>
 <script src="verwerk.js?v=ef349255c3"></script>
 <script>
 const RAW={
@@ -244,13 +244,14 @@ function pctZ(p,z){const s=p.stZ[z.k];let v=s==='sure'?1:s==='out'?0:p.chK[z.k];
   const c=v>=.75?'hi':v>=.4?'mid':'lo';
   const med=z.t==='med'&&p.pos?`<span class="nw md">goud ${pctTxt(p.pos[0])} · zilver ${pctTxt(p.pos[1])} · brons ${pctTxt(p.pos[2])}</span>`:'';
   return `<span class="pc ${c}">${pctTxt(v,st)}</span><span class="pb"><i style="width:${Math.round(v*100)}%"></i></span>${med}`}
-function safeZ(L,p,z){const S=p.sfZ[z.k];if(S==null)return '<span class="na">niet zelf af te dwingen</span>';const need=(S-p.w-2*p.fb)/2;if(need<=0)return '<span class="up">bereikt</span>';const th=L.thZ[z.k];return `<b>nog ${fmt(need)} uit ${p.open}</b><span class="nw">zeker vanaf ${fmt(S/2)} punten${th&&S!==th?' (minder dan de anderen: hij speelt nog tegen concurrenten)':''}</span>`}
+function safeZ(L,p,z){const S=p.sfZ[z.k];if(p.stZ[z.k]==='out')return z.t==='zakken'?'<span class="down">degradeert</span>':'<span class="na">niet meer haalbaar</span>';if(S==null)return '<span class="na">niet zelf af te dwingen</span>';const need=(S-p.w-2*p.fb)/2;if(need<=0)return '<span class="up">bereikt</span>';const th=L.thZ[z.k];return `<b>nog ${fmt(need)} uit ${p.open}</b><span class="nw">zeker vanaf ${fmt(S/2)} punten${th&&S!==th?' (minder dan de anderen: hij speelt nog tegen concurrenten)':''}</span>`}
 function section(key){
   const L=build(key),n=L.length,Z=zones(key,n),z0=Z[0],K0=z0.k,lead=L[Math.max(0,Math.min(K0-1,n-1))].pts;
   const KS=[...new Set(Z.map(z=>z.k))];chances(L,KS);L.thZ={};
   for(const K of KS){const stO=p=>L.filter(q=>q!==p&&q.pts>p.max).length>=K?'out':'in';
     L.forEach(p=>{p.sfZ??={};p.stZ??={};p.sfZ[K]=safeFrom(L,p,K);p.stZ[K]=(p.sfZ[K]!=null&&p.sfZ[K]<=p.w+2*p.fb)?'sure':stO(p)});
-    const th=[...new Set(L.filter(p=>p.sfZ[K]!=null).map(p=>p.sfZ[K]))].sort((a,b)=>a-b);L.thZ[K]=th.length?th[th.length-1]:null;L['th'+K]=th}
+    /* drempel alleen voor wie het nog niet zeker is (en het nog kan halen): wie al zeker is, telt niet mee */
+    const th=[...new Set(L.filter(p=>p.sfZ[K]!=null&&p.stZ[K]==='in').map(p=>p.sfZ[K]))].sort((a,b)=>a-b);L.thZ[K]=th.length?th[th.length-1]:null;L['th'+K]=th;L['al'+K]=L.filter(p=>p.stZ[K]==='sure').length}
   const sure=L.filter(p=>p.stZ[K0]==='sure').length,can=L.filter(p=>p.stZ[K0]!=='out').length;
   const meta=`<span><b>${n}</b> spelers</span><span>na ronde <b>${PLD(key)}</b> van ${NR(key)}</span><span>${z0.nr} heeft nu <b>${fmt(lead)}</b></span>${z0.t==='zakken'?`<span><b>${sure}</b> zeker gered</span><span><b>${n-can}</b> zeker gedegradeerd</span>`:`<span><b>${sure}</b> ${z0.sure}</span>${z0.out?`<span><b>${can}</b> kunnen nog ${z0.t==='top'?'top '+z0.n+' halen':z0.likely}</span>`:''}`}<span>SWAR bijgewerkt ${RAW[key].b}</span>`;
   const HEAD=`<thead><tr><th>#</th><th class="nm">Speler</th><th>Ptn</th><th>Gesp.</th><th>Open</th><th>Max</th>${Z.map((z,i)=>`<th>${z.kans}</th>${i===0?`<th>${z.zeker}</th>`:''}`).join('')}<th>Elo ±</th><th class="nm">Verloop (groen = gewonnen, grijs = open, rood = verloren; zwart streepje = punten van ${z0.nr==='de leider'?'de huidige leider':'de huidige '+z0.nr})</th></tr></thead>`;
@@ -262,8 +263,10 @@ function section(key){
     const chip=Z.map(z=>{const s=p.stZ[z.k];return s==='sure'&&z.sure?`<span class="chip ${z.t==='zakken'?'in':'sure'}">${z.sure}</span>`:s==='out'&&z.out?`<span class="chip out">${z.out}</span>`:''}).join('');
     return `<tr class="${p.n===HL()?'me':''}${cuts.has(i)?' cut':''}"><td class="pl">${rank}</td><td class="nm"><a class="spn" href="../elo/speler.html#${tok(p.n)}" title="spelerspagina">${p.n}</a>${chip}<span class="elo">${p.elo?'Elo '+p.elo:'geen rating'}${p.sw&&p.sw!==p.elo?' (start '+p.sw+')':''}${p.bye?' · '+p.bye+' bye':''}</span></td><td class="pts">${fmt(p.pts)}</td><td>${p.games}</td><td>${p.open}${p.fb?' + bye':''}</td><td class="max">${fmt(p.max)}</td>${Z.map((z,j)=>`<td class="ch">${pctZ(p,z)}</td>${j===0?`<td class="sf">${safeZ(L,p,z)}</td>`:''}`).join('')}<td class="de">${elo(p)}</td><td class="barc">${bar}</td></tr>`}).join('');
   const needs=Z.map((z,j)=>{const th=L['th'+z.k];const thr=th.length?fmt(th[th.length-1]/2):'–';const lk=L.likely[z.k];
-    if(j)return `<p class="need sec">${z.need} met <b>${thr} punten</b>${th.length>1?` <span>(zeker voor iedereen; wie nog tegen concurrenten speelt, soms met minder)</span>`:''}${lk!=null?` <span class="lk">· waarschijnlijk voldoende: <b>${fmt(lk/2)}</b></span>`:''}</p>`;
-    return `<p class="need">${z.need} met <b>${thr} punten</b> op ${L.cells/2}<span>${th.length>1?'zeker voor iedereen; wie nog tegen rechtstreekse concurrenten speelt, kan met minder al zeker zijn: zie per speler de kolom '+z.zeker:'wiskundig zeker, wat de andere uitslagen ook worden'}</span></p>${lk!=null?`<p class="need likely">Waarschijnlijk voldoende voor ${z.likely}: <b>${fmt(lk/2)} punten</b><span>in de simulatie haalt wie zo eindigt dat in minstens 95% van de gevallen</span></p>`:''}`}).join('');
+    const al=L['al'+z.k]||0,alT=al?` (voor wie het nog niet zeker is; ${al} al zeker)`:'';
+    if(!th.length){const t=al>=z.k?`<b>beslist</b> <span>alle ${z.k} plaatsen zijn al zeker</span>`:`<b>niet meer zelf af te dwingen</b> <span>${al?al+' al zeker; ':''}voor de anderen hangt het ook af van de andere uitslagen</span>`;return `<p class="need${j?' sec':''}">${z.need}: ${t}</p>`+(j||lk==null||al>=z.k?'':`<p class="need likely">Waarschijnlijk voldoende voor ${z.likely}: <b>${fmt(lk/2)} punten</b><span>in de simulatie haalt wie zo eindigt dat in minstens 95% van de gevallen</span></p>`)}
+    if(j)return `<p class="need sec">${z.need} met <b>${thr} punten</b>${alT}${th.length>1?` <span>(zeker voor iedereen; wie nog tegen concurrenten speelt, soms met minder)</span>`:''}${lk!=null?` <span class="lk">· waarschijnlijk voldoende: <b>${fmt(lk/2)}</b></span>`:''}</p>`;
+    return `<p class="need">${z.need} met <b>${thr} punten</b> op ${L.cells/2}${alT}<span>${th.length>1?'zeker voor iedereen; wie nog tegen rechtstreekse concurrenten speelt, kan met minder al zeker zijn: zie per speler de kolom '+z.zeker:'wiskundig zeker, wat de andere uitslagen ook worden'}</span></p>${lk!=null?`<p class="need likely">Waarschijnlijk voldoende voor ${z.likely}: <b>${fmt(lk/2)} punten</b><span>in de simulatie haalt wie zo eindigt dat in minstens 95% van de gevallen</span></p>`:''}`}).join('');
   return `<section id="r${key}"><h2>Reeks ${key}</h2>${needs}<div class="meta">${meta}</div><div class="board"><table>${HEAD}<tbody>${rows}</tbody></table></div></section>`}
 tabs.innerHTML=ORD(Object.keys(RAW)).map(k=>`<a href="#r${k}">Reeks ${k}</a>`).join('');
 // Wat als: zelf uitslagen invullen voor nog te spelen partijen en alles herberekenen
