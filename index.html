@@ -21,7 +21,7 @@
 <div id="twmed"></div>
 <div class="cs"><a class="csi" href="elo/cartoons.html" title="Cartoons van de column"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEizqeEF-3UzamM_FuPUbNLs4GCLfZ_TscAHKHpuj6N4jab0BOpk81uRkNTADyBM6T8t02qOdYW6618QE_ZxFaw11ougERP64lNMCQZcySqdlTapj_N4Q87qRNt78Bw6mn-ldEK-_M-fsChZR80l_F4eXKnL227vuZsqzw3j1DwSDDHKzQrhmWA6xzRmHSk4/w486-h323/Vlaamse%20Voetbalnostalgie%20langs%20de%20Lijn.png" alt="" loading="lazy"></a><div><b>Nieuws op torrewachters.be</b><a href="https://torrewachters.be/Nieuws/2026-11-guldensporenslag-anno-2026-eindigt" target="_blank" rel="noopener">Guldensporenslag anno 2026 eindigt onbeslist</a> <span>&middot; 18/11 &middot; Peter</span> <a class="al" href="https://torrewachters.be/Nieuws" target="_blank" rel="noopener">alle nieuws &rarr;</a> <a class="al" href="elo/cartoons.html">cartoons &rarr;</a></div></div>
 <div id="twcn"></div><script>(function(){if(!/^https?:$/.test(location.protocol))return;var s=document.createElement('script');s.src='elo/clubnieuws.js?u='+Math.floor(Date.now()/600000);
-s.onload=function(){var L0=window.TW_CN||[],d=document.getElementById('twcn');if(!d)return;
+s.onload=function(){var L0=(window.TW_CN||[]).filter(function(a){return a.t!=='Nieuw op torrewachters.be'}),d=document.getElementById('twcn');/* het artikel op torrewachters.be staat al apart erboven */if(!d)return;
 var lees=function(k){try{return localStorage.getItem(k)||''}catch(e){return ''}},zet=function(k,v){try{localStorage.setItem(k,v)}catch(e){}};
 var vorig='';try{vorig=sessionStorage.getItem('tw-cn-vorig');if(vorig===null){vorig=lees('tw-cn-bezoek');sessionStorage.setItem('tw-cn-vorig',vorig)}}catch(e){vorig=lees('tw-cn-bezoek')}
 zet('tw-cn-bezoek',new Date().toISOString().slice(0,16));
