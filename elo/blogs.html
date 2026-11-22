@@ -41,7 +41,7 @@ h2{font-family:var(--display);font-size:26px;line-height:1.1;margin:0 0 4px}
 <div class="wrap">
 <nav class="top"><a class="alleenonline" href="../index.html">← Startpagina</a><a href="speler.html">Spelers</a><a href="cartoons.html">Cartoons</a></nav>
 <header><span class="eyebrow">Nieuws · De Torrewachters</span><h1>In de blogs</h1>
-<p class="na" style="margin:4px 0 0">Berichten op schaakblogs waarin de club (De Torrewachters) of een clublid vernoemd wordt, de nieuwste eerst. Een clublid telt als zijn voor- en familienaam er samen in staan; klik op zijn naam voor zijn spelerspagina.</p></header>
+<p class="na" style="margin:4px 0 0">Berichten op de blog van Roeselare op lichess en op Schaken-Brabo waarin de club (De Torrewachters) of een clublid vernoemd wordt, de nieuwste eerst. Een clublid telt als zijn voor- en familienaam er samen in staan; klik op zijn naam voor zijn spelerspagina.</p></header>
 <div id="app"><p class="na">laden…</p></div>
 </div>
 <script>document.write('<script src="blogs.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
@@ -54,7 +54,7 @@ const dmy=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(d||'');return m?(+m[3])+'/'
 const L=(window.TW_BLOGS||[]).filter(x=>(x.m&&x.m.length)||x.c).sort((a,b)=>(b.d||'').localeCompare(a.d||''));
 const app=document.getElementById('app');
 if(!L.length){app.innerHTML='<p class="leeg">Nog geen berichten gevonden'+(document.documentElement.classList.contains('online')?'.':' (deze pagina werkt alleen online).')+'</p>';return}
-const blogs=[...new Set(L.map(x=>x.b))],spelers=[...new Set(L.flatMap(x=>x.m||[]))].sort((a,b)=>nice(a).localeCompare(nice(b)));
+const blogs=[...new Set(L.map(x=>x.b))].sort((a,b)=>(/roeselare/i.test(b)?1:0)-(/roeselare/i.test(a)?1:0)),spelers=[...new Set(L.flatMap(x=>x.m||[]))].sort((a,b)=>nice(a).localeCompare(nice(b)));
 let blog='',sp='';
 const rij=x=>`<div class="r"><a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)} ↗</a><span class="na small">${[dmy(x.d),'op '+esc(x.b),x.a?'door '+esc(x.a):''].filter(Boolean).join(' · ')}</span>${(x.m||[]).length||x.c?`<span class="small">${x.c?'<span class="chip">de club</span>':''}${(x.m||[]).map(n=>`<a class="chip" href="speler.html#${tok(n)}">${esc(nice(n))}</a>`).join('')}</span>`:''}</div>`;
 function teken(){
