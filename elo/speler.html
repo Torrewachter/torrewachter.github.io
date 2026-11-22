@@ -660,7 +660,8 @@ function lijst(){document.title='Spelers Torrewachters';window.TW_BEW=false;$('p
   const AK='tw-spelers-archief',aLees=()=>{try{const o=JSON.parse(localStorage.getItem(AK)||'{}')||{};return {p:o.p||[],g:o.g||[]}}catch(e){return {p:[],g:[]}}},aZet=o=>{try{localStorage.setItem(AK,JSON.stringify(o))}catch(e){}};
   const reeksVan=s=>s.club.length?s.club.slice().reverse()[0]:'';
   const GR=[...RK.filter(k=>ALLE.some(s=>reeksVan(s)===k)).map(k=>({k:'r:'+k,lab:(V.club&&V.club.labels&&V.club.labels[k])||'reeks '+k,in:s=>reeksVan(s)===k})),
-    ...(ALLE.some(s=>s.ic)?[{k:'ic',lab:((IC&&IC.team)||'interclub')+' (interclub)',in:s=>s.ic}]:[])];
+    ...(ALLE.some(s=>s.ic)?[{k:'ic',lab:((IC&&IC.team)||'interclub')+' (interclub)',in:s=>s.ic}]:[]),
+    ...(ALLE.some(s=>!reeksVan(s)&&!s.ic)?[{k:'rest',lab:'geen clubkampioenschap of interclub',in:s=>!reeksVan(s)&&!s.ic}]:[])];
   const weg=(s,o)=>o.p.includes(tok(s.n))||GR.some(g=>o.g.includes(g.k)&&g.in(s));
   /* eigen volgorde (tw-spelers-volgorde): met ‹ › of slepen bij "Volgorde aanpassen"; nieuwe spelers achteraan op naam */
   const VK='tw-spelers-volgorde',vLees=()=>{try{return JSON.parse(localStorage.getItem(VK)||'null')}catch(e){return null}},vZet=o=>{try{o?localStorage.setItem(VK,JSON.stringify(o)):localStorage.removeItem(VK)}catch(e){}};
