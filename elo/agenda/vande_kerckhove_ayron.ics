@@ -77,17 +77,6 @@ DESCRIPTION:met wit tegen Liam Vuylsteke: gewonnen\nSpelerspagina: https:/
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
-UID:1nnb176@torrewachters
-DTSTAMP:20260101T000000Z
-DTSTART;TZID=Europe/Brussels:20261121T140000
-DTEND;TZID=Europe/Brussels:20261121T180000
-SUMMARY:Clubkampioenschap Reeks 2B\, ronde 7
-DESCRIPTION:met zwart tegen Pierre Bol · Café Den Arend\, Polenplein 1\,
-  Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/elo/spele
- r.html#Vande_Kerckhove_Ayron
-LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
-END:VEVENT
-BEGIN:VEVENT
 UID:1nnb17h@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261128T140000
@@ -97,6 +86,16 @@ DESCRIPTION:met wit tegen Renaat Vanassche (1495) · Café Den Arend\, Pol
  enplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.i
  o/elo/speler.html#Vande_Kerckhove_Ayron
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:19w7slb@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Vande_Kerckhove_Ayron
 END:VEVENT
 BEGIN:VEVENT
 UID:1nnb17g@torrewachters

@@ -117,6 +117,16 @@ DESCRIPTION:met zwart tegen Stijn Herreman (1642) · Café Den Arend\, Pol
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
+UID:1vxyxtb@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Keirse_Steven
+END:VEVENT
+BEGIN:VEVENT
 UID:1d1zr7z@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261205T140000

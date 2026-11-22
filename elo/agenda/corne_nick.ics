@@ -76,17 +76,6 @@ DESCRIPTION:met zwart tegen George Dahdal: verloren\nSpelerspagina: https:
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
-UID:x1j44@torrewachters
-DTSTAMP:20260101T000000Z
-DTSTART;TZID=Europe/Brussels:20261121T140000
-DTEND;TZID=Europe/Brussels:20261121T180000
-SUMMARY:Clubkampioenschap Reeks 2B\, ronde 7
-DESCRIPTION:met wit tegen Ilan Carette · Café Den Arend\, Polenplein 1\,
-  Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/elo/spele
- r.html#Corne_Nick
-LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
-END:VEVENT
-BEGIN:VEVENT
 UID:x1j4b@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261128T140000
@@ -96,6 +85,16 @@ DESCRIPTION:met zwart tegen Tim Santy (1434) · Café Den Arend\, Polenple
  in 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/elo
  /speler.html#Corne_Nick
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:1p7b6x@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Corne_Nick
 END:VEVENT
 BEGIN:VEVENT
 UID:x1j4a@torrewachters

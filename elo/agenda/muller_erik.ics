@@ -116,6 +116,16 @@ DESCRIPTION:met zwart tegen Borys Zhusov\nSpelerspagina: https://torrewach
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
+UID:1vz1fmx@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Muller_Erik
+END:VEVENT
+BEGIN:VEVENT
 UID:byuqju@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261205T140000

@@ -117,6 +117,16 @@ DESCRIPTION:met wit tegen Lowie Dejonghe (1428) · Café Den Arend\, Polen
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
+UID:737wrw@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Stepaniuk_Kyryl
+END:VEVENT
+BEGIN:VEVENT
 UID:19ket58@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261205T140000

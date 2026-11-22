@@ -69,6 +69,16 @@ DESCRIPTION:uit bij KSGK 1 · bord 3 tegen Steven Debrauwere: verloren\nSp
  o
 END:VEVENT
 BEGIN:VEVENT
+UID:1mgsh1i@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Petralia_Fabio
+END:VEVENT
+BEGIN:VEVENT
 UID:12m16x6@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;VALUE=DATE:20261129

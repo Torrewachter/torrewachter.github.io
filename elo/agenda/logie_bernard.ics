@@ -69,6 +69,16 @@ DESCRIPTION:uit bij KSGK 1 · bord 4 tegen Kurt Pattyn: gewonnen\nSpelersp
  agina: https://torrewachter.github.io/elo/speler.html#Logie_Bernard
 END:VEVENT
 BEGIN:VEVENT
+UID:ouv1zr@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Logie_Bernard
+END:VEVENT
+BEGIN:VEVENT
 UID:bhgxmj@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;VALUE=DATE:20261129

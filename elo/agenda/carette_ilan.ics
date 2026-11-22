@@ -96,17 +96,6 @@ DESCRIPTION:met wit tegen Tim Santy: gewonnen\nSpelerspagina: https://torr
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
-UID:1cwwn38@torrewachters
-DTSTAMP:20260101T000000Z
-DTSTART;TZID=Europe/Brussels:20261121T140000
-DTEND;TZID=Europe/Brussels:20261121T180000
-SUMMARY:Clubkampioenschap Reeks 2B\, ronde 7
-DESCRIPTION:met zwart tegen Nick Corne (1573) · Café Den Arend\, Polenpl
- ein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/el
- o/speler.html#Carette_Ilan
-LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
-END:VEVENT
-BEGIN:VEVENT
 UID:1cwwn3f@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261128T140000
@@ -116,6 +105,16 @@ DESCRIPTION:met wit tegen Liam Vuylsteke · Café Den Arend\, Polenplein 1
  \, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/elo/spe
  ler.html#Carette_Ilan
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:1o6bs21@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Carette_Ilan
 END:VEVENT
 BEGIN:VEVENT
 UID:1cwwn3e@torrewachters

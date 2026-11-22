@@ -96,17 +96,6 @@ DESCRIPTION:met wit tegen Lowie Dejonghe: verloren\nSpelerspagina: https:/
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
-UID:19f5qpv@torrewachters
-DTSTAMP:20260101T000000Z
-DTSTART;TZID=Europe/Brussels:20261121T140000
-DTEND;TZID=Europe/Brussels:20261121T180000
-SUMMARY:Clubkampioenschap Reeks 2A\, ronde 7
-DESCRIPTION:met zwart tegen Dany Van Hamme (1638) · Café Den Arend\, Pol
- enplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.i
- o/elo/speler.html#Fezoua_Karim
-LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
-END:VEVENT
-BEGIN:VEVENT
 UID:19f5qq4@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261128T140000
@@ -115,6 +104,16 @@ SUMMARY:Clubkampioenschap Reeks 2A\, ronde 8
 DESCRIPTION:bye (vrij\, 1 punt)\nSpelerspagina: https://torrewachter.githu
  b.io/elo/speler.html#Fezoua_Karim
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:1va9irx@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Fezoua_Karim
 END:VEVENT
 BEGIN:VEVENT
 UID:19f5qq5@torrewachters

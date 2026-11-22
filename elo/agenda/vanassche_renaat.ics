@@ -96,17 +96,6 @@ DESCRIPTION:bye (vrij\, 1 punt)\nSpelerspagina: https://torrewachter.githu
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
 END:VEVENT
 BEGIN:VEVENT
-UID:zoo6d@torrewachters
-DTSTAMP:20260101T000000Z
-DTSTART;TZID=Europe/Brussels:20261121T140000
-DTEND;TZID=Europe/Brussels:20261121T180000
-SUMMARY:Clubkampioenschap Reeks 2B\, ronde 7
-DESCRIPTION:met wit tegen Philip Maddens (1546) · Café Den Arend\, Polen
- plein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.io/
- elo/speler.html#Vanassche_Renaat
-LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
-END:VEVENT
-BEGIN:VEVENT
 UID:zoo6i@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;TZID=Europe/Brussels:20261128T140000
@@ -116,6 +105,16 @@ DESCRIPTION:met zwart tegen Ayron Vande Kerckhove · Café Den Arend\, Pol
  enplein 1\, Roeselare\, 14u\nSpelerspagina: https://torrewachter.github.i
  o/elo/speler.html#Vanassche_Renaat
 LOCATION:Café Den Arend\, Polenplein 1\, Roeselare
+END:VEVENT
+BEGIN:VEVENT
+UID:fpp3e0@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Vanassche_Renaat
 END:VEVENT
 BEGIN:VEVENT
 UID:zoo6j@torrewachters

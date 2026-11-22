@@ -35,4 +35,14 @@ DESCRIPTION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare\nSpelersp
  agina: https://torrewachter.github.io/elo/speler.html#Talloen_Adriaan
 LOCATION:Het Schuurtje\, Klokke Roelandstraat 38B\, Roeselare
 END:VEVENT
+BEGIN:VEVENT
+UID:16aiac2@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Talloen_Adriaan
+END:VEVENT
 END:VCALENDAR

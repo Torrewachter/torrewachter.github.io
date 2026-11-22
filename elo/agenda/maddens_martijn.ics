@@ -68,6 +68,16 @@ DESCRIPTION:uit bij KSGK 1 · bord 1 tegen Pieter Truwant: gewonnen\nSpele
  rspagina: https://torrewachter.github.io/elo/speler.html#Maddens_Martijn
 END:VEVENT
 BEGIN:VEVENT
+UID:qvjou8@torrewachters
+DTSTAMP:20260101T000000Z
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+TRANSP:TRANSPARENT
+SUMMARY:Schaakkwis (info: torrewachters.be/uploads/Schaakkwis 2026.pdf)
+DESCRIPTION:Spelerspagina: https://torrewachter.github.io/elo/speler.html#
+ Maddens_Martijn
+END:VEVENT
+BEGIN:VEVENT
 UID:oqhx70@torrewachters
 DTSTAMP:20260101T000000Z
 DTSTART;VALUE=DATE:20261129
