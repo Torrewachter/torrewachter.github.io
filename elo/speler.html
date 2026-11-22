@@ -124,6 +124,7 @@ html.online .pdfbtn{background:transparent;color:inherit;border:1px solid rgba(1
 <script src="../club/verwerk.js?v=ef349255c3"></script>
 <script src="clubsite.js?v=743143abc1"></script>
 <script>if(window.ONLINE)document.write('<script src="filmpjes.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
+<script>if(window.ONLINE)document.write('<script src="blogs.js?u='+Math.floor(Date.now()/600000)+'"><\/script>')</script>
 <script>
 (function(){
 'use strict';
@@ -696,14 +697,15 @@ window.TW_NIEUWS_KOPPEL=function(naam,alle,L){const delen=n=>{const [l,f]=String
     if(uV.some(v=>w.has(v)&&!ander(v)))return true;                   // een voornaam die maar een keer in de club voorkomt
     if(uA)return uA.includes(' ')?n.some(q=>q.includes(' '+uA+' ')):w.has(uA);   // idem voor de familienaam
     return false})};
-window.TW_IN_NIEUWS=n=>window.TW_NIEUWS_KOPPEL(n,ALLE.map(x=>x.n),window.TW_CLUBSITE);
+/* torrewachters.be en de schaakblogs (blogs.js van meldingen.js: alleen met voor- en familienaam samen), nieuwste eerst */
+window.TW_IN_NIEUWS=n=>window.TW_NIEUWS_KOPPEL(n,ALLE.map(x=>x.n),[...(window.TW_CLUBSITE||[]),...(window.TW_BLOGS||[])]).sort((a,b)=>(b.d||'').localeCompare(a.d||''));
 /* staat de speler in het nieuwste artikel op torrewachters.be, dan dat artikel ook bovenaan de pagina */
 function nieuwBoven(s){const A=(window.TW_CLUBSITE||[]).slice().sort((a,b)=>(b.d||'').localeCompare(a.d||''))[0];
   if(!A||!window.TW_IN_NIEUWS(s.n).some(x=>x.u===A.u))return '';
   return `<a class="nwtop" href="${esc(A.u)}" target="_blank" rel="noopener">${A.i?`<img src="${esc(A.i)}" alt="" loading="lazy">`:''}<span><span class="eyebrow">In het nieuws op torrewachters.be</span><b>${esc(A.t)}</b><span class="na small">${[A.d?dmy(A.d):'',A.a?'door '+esc(A.a):''].filter(Boolean).join(' · ')} · lees het artikel ↗</span></span></a>`}
 function nieuwsDeel(s){const L=window.TW_IN_NIEUWS(s.n);if(!L.length)return '';
-  const rij=x=>`<div class="nwr"><a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)}</a><span class="na small">${[x.d?dmy(x.d):'',x.a?'door '+esc(x.a):''].filter(Boolean).join(' · ')}</span></div>`;
-  return `<section><h2>In het nieuws</h2><div class="card"><p class="na small" style="margin:0">Artikels op <a href="https://torrewachters.be/Nieuws" target="_blank" rel="noopener">torrewachters.be</a> waarin ${esc(nice(s.n))} vermeld wordt (met voor- en familienaam, of met een naam die maar één keer in de club voorkomt)</p>${L.slice(0,8).map(rij).join('')}${L.length>8?`<details><summary class="na small">nog ${L.length-8} ouder</summary>${L.slice(8).map(rij).join('')}</details>`:''}</div></section>`}
+  const rij=x=>`<div class="nwr"><a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)}</a><span class="na small">${[x.d?dmy(x.d):'',x.a?'door '+esc(x.a):'',x.b?'op '+esc(x.b):''].filter(Boolean).join(' · ')}</span></div>`;
+  return `<section><h2>In het nieuws</h2><div class="card"><p class="na small" style="margin:0">Artikels op <a href="https://torrewachters.be/Nieuws" target="_blank" rel="noopener">torrewachters.be</a> waarin ${esc(nice(s.n))} vermeld wordt (met voor- en familienaam, of met een naam die maar één keer in de club voorkomt), en berichten op schaakblogs met zijn voor- en familienaam</p>${L.slice(0,8).map(rij).join('')}${L.length>8?`<details><summary class="na small">nog ${L.length-8} ouder</summary>${L.slice(8).map(rij).join('')}</details>`:''}</div></section>`}
 const dmy=d=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(d);return m?(+m[3])+'/'+(+m[2])+'/'+m[1]:d};
 function pagina(s){document.title=nice(s.n)+' · Torrewachters';$('pdfbtn').hidden=false;
   $('eloL').href='elo.html#'+tok(s.n);if(s.club.length)$('standL').href='../club/stand.html#r'+encodeURIComponent(s.club.slice().reverse()[0])+'~'+tok(s.n);
