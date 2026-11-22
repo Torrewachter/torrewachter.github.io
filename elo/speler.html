@@ -92,6 +92,9 @@ ul.agenda em{display:block;color:var(--warn);font-style:normal;font-size:13px}
 .lijst a{display:flex;flex-direction:column;gap:1px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 12px;text-decoration:none;color:var(--fg)}
 .lijst a:hover,.lijst a:focus-visible{border-color:var(--accent);outline:none}
 .lijst a b{font-weight:600}
+.lw{position:relative;display:flex}.lw>a{flex:1;padding-right:30px}.lx{position:absolute;top:4px;right:4px;border:0;background:none;color:var(--muted);font:18px/1 system-ui,sans-serif;cursor:pointer;padding:4px 6px;border-radius:6px;opacity:.5}.lx:hover,.lx:focus-visible{opacity:1;background:var(--line)}
+#grp{margin:-4px 0 10px}.grpk,.arch button{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:4px 9px;font:inherit;font-size:13px;cursor:pointer;margin:2px 0}.grpk[aria-pressed=true]{color:var(--muted);border-style:dashed}.grpk:hover,.arch button:hover{border-color:var(--accent)}
+.arch{margin-top:14px;font-size:14px;color:var(--muted)}.arch summary{cursor:pointer}.arch div{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .lijst a span{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
 .num b.sm{font-size:26px;white-space:nowrap}
 .nwr{display:flex;flex-direction:column;gap:1px}.nwr a{font-weight:600}
@@ -649,9 +652,25 @@ const wat=s=>[s.club.length?'reeks '+s.club.slice().reverse()[0]:'',s.ic?(IC&&IC
 function lijst(){document.title='Spelers Torrewachters';$('pdfbtn').hidden=true;
   $('app').innerHTML=`<header><span class="eyebrow">Koninklijke Roeselaarse Schaakclub De Torrewachters · club ${esc((E&&E.club)||309)}</span><h1>Spelers</h1><p class="sub">Per speler: Elo en verloop, clubkampioenschap met kansen, interclub en toernooien. Kies een naam.</p></header>
 <div class="pick"><input type="search" id="q" placeholder="Zoek speler…" aria-label="Zoek speler"><label class="na">Volgorde <select id="srt"><option value="n">naam</option><option value="r">rating</option></select></label><span class="na" id="aantal"></span></div>
-<div class="lijst" id="lijst"></div>`;
-  const tek=()=>{const q=nrm($('q').value);let L=ALLE.filter(s=>!q||nrm(s.n).includes(q)||nrm(nice(s.n)).includes(q));if($('srt').value==='r')L=L.slice().sort((a,b)=>(curStd(b)||0)-(curStd(a)||0)||a.n.localeCompare(b.n,'nl'));
-    $('lijst').innerHTML=L.map(s=>{const r=curStd(s);return `<a href="#${tok(s.n)}"><b>${esc(nice(s.n))}</b><span>${[wat(s),r?r:''].filter(Boolean).join(' · ')}</span></a>`}).join('')||'<p class="na">Niemand gevonden.</p>';$('aantal').textContent=L.length+' speler'+(L.length===1?'':'s')};
+<div class="na small" id="grp"></div>
+<div class="lijst" id="lijst"></div><div id="arch" class="arch"></div>`;
+  /* archiveren (in de eigen browser, tw-spelers-archief): een speler apart (x op zijn tegel), of een hele reeks van het clubkampioenschap of de interclubspelers;
+     wie zoekt, vindt ook gearchiveerde spelers */
+  const AK='tw-spelers-archief',aLees=()=>{try{const o=JSON.parse(localStorage.getItem(AK)||'{}')||{};return {p:o.p||[],g:o.g||[]}}catch(e){return {p:[],g:[]}}},aZet=o=>{try{localStorage.setItem(AK,JSON.stringify(o))}catch(e){}};
+  const reeksVan=s=>s.club.length?s.club.slice().reverse()[0]:'';
+  const GR=[...RK.filter(k=>ALLE.some(s=>reeksVan(s)===k)).map(k=>({k:'r:'+k,lab:(V.club&&V.club.labels&&V.club.labels[k])||'reeks '+k,in:s=>reeksVan(s)===k})),
+    ...(ALLE.some(s=>s.ic)?[{k:'ic',lab:((IC&&IC.team)||'interclub')+' (interclub)',in:s=>s.ic}]:[])];
+  const weg=(s,o)=>o.p.includes(tok(s.n))||GR.some(g=>o.g.includes(g.k)&&g.in(s));
+  const tek=()=>{const q=nrm($('q').value),o=aLees();let L=ALLE.filter(s=>!q||nrm(s.n).includes(q)||nrm(nice(s.n)).includes(q));if($('srt').value==='r')L=L.slice().sort((a,b)=>(curStd(b)||0)-(curStd(a)||0)||a.n.localeCompare(b.n,'nl'));
+    const W=q?[]:L.filter(s=>weg(s,o));if(!q)L=L.filter(s=>!weg(s,o));
+    $('grp').innerHTML=GR.length?`Archiveren per groep: ${GR.map(g=>{const uit=o.g.includes(g.k);return `<button type="button" class="grpk" data-g="${esc(g.k)}" aria-pressed="${uit}" title="${uit?'Weer tonen':'Alle spelers van deze groep archiveren'}">${uit?'↺ ':''}${esc(g.lab)}</button>`}).join(' ')}`:'';
+    $('lijst').innerHTML=L.map(s=>{const r=curStd(s),gearch=weg(s,o);return `<div class="lw"><a href="#${tok(s.n)}"><b>${esc(nice(s.n))}</b><span>${[wat(s),r?r:'',gearch?'gearchiveerd':''].filter(Boolean).join(' · ')}</span></a>${gearch?'':`<button type="button" class="lx" data-p="${esc(tok(s.n))}" title="Speler archiveren (onderaan zet je hem terug)" aria-label="${esc(nice(s.n))} archiveren">×</button>`}</div>`}).join('')||'<p class="na">Niemand gevonden.</p>';
+    $('aantal').textContent=L.length+' speler'+(L.length===1?'':'s');
+    const losP=ALLE.filter(s=>o.p.includes(tok(s.n))),grU=GR.filter(g=>o.g.includes(g.k)),open=$('arch').querySelector('details');
+    $('arch').innerHTML=(!q&&W.length)?`<details${open&&open.open?' open':''}><summary>Gearchiveerde spelers (${W.length})</summary><div>${grU.map(g=>`<button type="button" data-g="${esc(g.k)}" title="Deze groep weer tonen">↺ ${esc(g.lab)} (groep)</button>`).join('')}${losP.map(s=>`<button type="button" data-p="${esc(tok(s.n))}" title="Weer tonen">↺ ${esc(nice(s.n))}</button>`).join('')}${grU.length+losP.length>1?'<button type="button" data-alles="1">alles terugzetten</button>':''}</div></details>`:''};
+  window.TW_ARCH_TEK=tek;if(!window.TW_ARCH_K){window.TW_ARCH_K=1;$('app').addEventListener('click',e=>{const b=e.target.closest('button[data-p],button[data-g],button[data-alles]');if(!b||!$('lijst'))return;const tek=window.TW_ARCH_TEK;const o=aLees();
+    if(b.dataset.alles){o.p=[];o.g=[]}else if(b.dataset.g){const g=b.dataset.g;o.g=o.g.includes(g)?o.g.filter(x=>x!==g):[...o.g,g]}else{const p=b.dataset.p;o.p=o.p.includes(p)?o.p.filter(x=>x!==p):[...o.p,p]}
+    aZet(o);tek();const f=$('arch').querySelector('summary')||$('q');if(f&&b.classList.contains('lx'))f.focus()})}
   $('q').addEventListener('input',tek);$('srt').addEventListener('change',tek);tek()}
 
 /* ---------- meldingen voor deze speler: hij abonneert zich zelf in de app ntfy (zie meldingen.js) ---------- */
