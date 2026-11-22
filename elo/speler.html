@@ -93,6 +93,7 @@ ul.agenda em{display:block;color:var(--warn);font-style:normal;font-size:13px}
 .lijst a:hover,.lijst a:focus-visible{border-color:var(--accent);outline:none}
 .lijst a b{font-weight:600}
 .lw{position:relative;display:flex}.lw>a{flex:1;padding-right:30px}.lx{position:absolute;top:4px;right:4px;border:0;background:none;color:var(--muted);font:18px/1 system-ui,sans-serif;cursor:pointer;padding:4px 6px;border-radius:6px;opacity:.5}.lx:hover,.lx:focus-visible{opacity:1;background:var(--line)}
+.kvs{position:absolute;bottom:4px;right:4px;display:flex;gap:3px}.kv{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:6px;font:15px/1 system-ui,sans-serif;padding:3px 8px;cursor:pointer}.kv:hover,.kv:focus-visible{border-color:var(--accent)}.lijst.bew .lw>a{cursor:grab;border-style:dashed;padding-bottom:30px}.lw.sleep{opacity:.4}.lijst.bew .lx{display:none}
 #grp{margin:-4px 0 10px}.grpk,.arch button{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:4px 9px;font:inherit;font-size:13px;cursor:pointer;margin:2px 0}.grpk[aria-pressed=true]{color:var(--muted);border-style:dashed}.grpk:hover,.arch button:hover{border-color:var(--accent)}
 .arch{margin-top:14px;font-size:14px;color:var(--muted)}.arch summary{cursor:pointer}.arch div{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .lijst a span{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
@@ -649,9 +650,9 @@ function nwVul(){if(!$('nwlijn'))return;nwTeken();let n=0;const t=setInterval(()
 /* ---------- lijst van alle spelers ---------- */
 const ALLE=[...SP.values()].sort((a,b)=>a.n.localeCompare(b.n,'nl'));
 const wat=s=>[s.club.length?'reeks '+s.club.slice().reverse()[0]:'',s.ic?(IC&&IC.team)||'interclub':''].filter(Boolean).join(' · ');
-function lijst(){document.title='Spelers Torrewachters';$('pdfbtn').hidden=true;
+function lijst(){document.title='Spelers Torrewachters';window.TW_BEW=false;$('pdfbtn').hidden=true;
   $('app').innerHTML=`<header><span class="eyebrow">Koninklijke Roeselaarse Schaakclub De Torrewachters · club ${esc((E&&E.club)||309)}</span><h1>Spelers</h1><p class="sub">Per speler: Elo en verloop, clubkampioenschap met kansen, interclub en toernooien. Kies een naam.</p></header>
-<div class="pick"><input type="search" id="q" placeholder="Zoek speler…" aria-label="Zoek speler"><label class="na">Volgorde <select id="srt"><option value="n">naam</option><option value="r">rating</option></select></label><span class="na" id="aantal"></span></div>
+<div class="pick"><input type="search" id="q" placeholder="Zoek speler…" aria-label="Zoek speler"><label class="na">Volgorde <select id="srt"><option value="n">naam</option><option value="r">rating</option><option value="c">stand clubkampioenschap</option><option value="e">eigen volgorde</option></select></label><button type="button" class="grpk" id="volgB">${window.TW_BEW?'Klaar':'⇅ Volgorde aanpassen'}</button><span class="na" id="aantal"></span></div>
 <div class="na small" id="grp"></div>
 <div class="lijst" id="lijst"></div><div id="arch" class="arch"></div>`;
   /* archiveren (in de eigen browser, tw-spelers-archief): een speler apart (x op zijn tegel), of een hele reeks van het clubkampioenschap of de interclubspelers;
@@ -661,14 +662,39 @@ function lijst(){document.title='Spelers Torrewachters';$('pdfbtn').hidden=true;
   const GR=[...RK.filter(k=>ALLE.some(s=>reeksVan(s)===k)).map(k=>({k:'r:'+k,lab:(V.club&&V.club.labels&&V.club.labels[k])||'reeks '+k,in:s=>reeksVan(s)===k})),
     ...(ALLE.some(s=>s.ic)?[{k:'ic',lab:((IC&&IC.team)||'interclub')+' (interclub)',in:s=>s.ic}]:[])];
   const weg=(s,o)=>o.p.includes(tok(s.n))||GR.some(g=>o.g.includes(g.k)&&g.in(s));
-  const tek=()=>{const q=nrm($('q').value),o=aLees();let L=ALLE.filter(s=>!q||nrm(s.n).includes(q)||nrm(nice(s.n)).includes(q));if($('srt').value==='r')L=L.slice().sort((a,b)=>(curStd(b)||0)-(curStd(a)||0)||a.n.localeCompare(b.n,'nl'));
+  /* eigen volgorde (tw-spelers-volgorde): met ‹ › of slepen bij "Volgorde aanpassen"; nieuwe spelers achteraan op naam */
+  const VK='tw-spelers-volgorde',vLees=()=>{try{return JSON.parse(localStorage.getItem(VK)||'null')}catch(e){return null}},vZet=o=>{try{o?localStorage.setItem(VK,JSON.stringify(o)):localStorage.removeItem(VK)}catch(e){}};
+  try{const v=localStorage.getItem('tw-spelers-srt');if(v&&$('srt').querySelector(`option[value="${v}"]`))$('srt').value=v}catch(e){}
+  /* stand clubkampioenschap: per reeks (1A, 1B ...) op de huidige plaats; wie niet meespeelt, achteraan op naam */
+  const clubRang=s=>{const k=reeksVan(s);if(!k||!RAW[k])return null;try{const {L}=reeks(k);const p=L.find(q=>q.n===s.club_n?.[k]||nrm(q.n)===nrm(s.n));return p?{ri:RK.indexOf(k),r:p.rank,pts:p.pts}:null}catch(e){return null}};window.TW_CLUBRANG=clubRang;
+  const sorteer=L=>{const v=$('srt').value;if(v==='c'){const R=new Map(L.map(s=>[s,clubRang(s)]));return L.slice().sort((a,b)=>{const x=R.get(a),y=R.get(b);if(!x||!y)return (x?0:1)-(y?0:1)||a.n.localeCompare(b.n,'nl');return x.ri-y.ri||x.r-y.r||a.n.localeCompare(b.n,'nl')})}if(v==='r')return L.slice().sort((a,b)=>(curStd(b)||0)-(curStd(a)||0)||a.n.localeCompare(b.n,'nl'));
+    if(v==='e'){const O=vLees()||[],pos=s=>{const j=O.indexOf(tok(s.n));return j<0?1e5:j};return L.slice().sort((a,b)=>pos(a)-pos(b)||a.n.localeCompare(b.n,'nl'))}return L};
+  window.TW_ARCH_SORT=sorteer;window.TW_ARCH_V=[vLees,vZet];
+  const tek=()=>{const q=nrm($('q').value),o=aLees(),bew=!!window.TW_BEW;let L=sorteer(ALLE.filter(s=>!q||nrm(s.n).includes(q)||nrm(nice(s.n)).includes(q)));
     const W=q?[]:L.filter(s=>weg(s,o));if(!q)L=L.filter(s=>!weg(s,o));
     $('grp').innerHTML=GR.length?`Archiveren per groep: ${GR.map(g=>{const uit=o.g.includes(g.k);return `<button type="button" class="grpk" data-g="${esc(g.k)}" aria-pressed="${uit}" title="${uit?'Weer tonen':'Alle spelers van deze groep archiveren'}">${uit?'↺ ':''}${esc(g.lab)}</button>`}).join(' ')}`:'';
-    $('lijst').innerHTML=L.map(s=>{const r=curStd(s),gearch=weg(s,o);return `<div class="lw"><a href="#${tok(s.n)}"><b>${esc(nice(s.n))}</b><span>${[wat(s),r?r:'',gearch?'gearchiveerd':''].filter(Boolean).join(' · ')}</span></a>${gearch?'':`<button type="button" class="lx" data-p="${esc(tok(s.n))}" title="Speler archiveren (onderaan zet je hem terug)" aria-label="${esc(nice(s.n))} archiveren">×</button>`}</div>`}).join('')||'<p class="na">Niemand gevonden.</p>';
-    $('aantal').textContent=L.length+' speler'+(L.length===1?'':'s');
+    window.TW_ARCH_ZICHT=L.map(s=>tok(s.n));$('lijst').classList.toggle('bew',bew);$('volgB').textContent=bew?'Klaar':'⇅ Volgorde aanpassen';
+    $('lijst').innerHTML=L.map(s=>{const r=curStd(s),gearch=weg(s,o);return `<div class="lw"${bew?` draggable="true" data-sl="${esc(tok(s.n))}"`:''}><a href="#${tok(s.n)}"><b>${esc(nice(s.n))}</b><span>${[wat(s),$('srt').value==='c'&&clubRang(s)?clubRang(s).r+'e met '+String(clubRang(s).pts).replace('.5','½').replace(/^0½/,'½')+' pt':'',r?r:'',gearch?'gearchiveerd':''].filter(Boolean).join(' · ')}</span></a>${gearch?'':`<button type="button" class="lx" data-p="${esc(tok(s.n))}" title="Speler archiveren (onderaan zet je hem terug)" aria-label="${esc(nice(s.n))} archiveren">×</button>`}${bew?`<span class="kvs"><button type="button" class="kv" data-mv="-1" data-tp="${esc(tok(s.n))}" aria-label="${esc(nice(s.n))} naar voren">‹</button><button type="button" class="kv" data-mv="1" data-tp="${esc(tok(s.n))}" aria-label="${esc(nice(s.n))} naar achteren">›</button></span>`:''}</div>`}).join('')||'<p class="na">Niemand gevonden.</p>';
+    $('aantal').textContent=L.length+' speler'+(L.length===1?'':'s')+(bew?' · klik op ‹ › of sleep een speler naar zijn plaats'+(vLees()?'':''):'');
+    if($('volgStd'))$('volgStd').remove();if(bew&&vLees())$('volgB').insertAdjacentHTML('afterend','<button type="button" class="grpk" id="volgStd">standaardvolgorde</button>');
     const losP=ALLE.filter(s=>o.p.includes(tok(s.n))),grU=GR.filter(g=>o.g.includes(g.k)),open=$('arch').querySelector('details');
     $('arch').innerHTML=(!q&&W.length)?`<details${open&&open.open?' open':''}><summary>Gearchiveerde spelers (${W.length})</summary><div>${grU.map(g=>`<button type="button" data-g="${esc(g.k)}" title="Deze groep weer tonen">↺ ${esc(g.lab)} (groep)</button>`).join('')}${losP.map(s=>`<button type="button" data-p="${esc(tok(s.n))}" title="Weer tonen">↺ ${esc(nice(s.n))}</button>`).join('')}${grU.length+losP.length>1?'<button type="button" data-alles="1">alles terugzetten</button>':''}</div></details>`:''};
-  window.TW_ARCH_TEK=tek;if(!window.TW_ARCH_K){window.TW_ARCH_K=1;$('app').addEventListener('click',e=>{const b=e.target.closest('button[data-p],button[data-g],button[data-alles]');if(!b||!$('lijst'))return;const tek=window.TW_ARCH_TEK;const o=aLees();
+  window.TW_ARCH_TEK=tek;if(!window.TW_ARCH_K){window.TW_ARCH_K=1;
+    const allesTok=()=>{const [vL]=window.TW_ARCH_V,O=(vL()||[]).filter(x=>ALLE.some(s=>tok(s.n)===x));for(const s of window.TW_ARCH_SORT(ALLE))if(!O.includes(tok(s.n)))O.push(tok(s.n));return O};
+    const naarEigen=()=>{if($('srt').value!=='e'){const O=window.TW_ARCH_SORT(ALLE).map(s=>tok(s.n));window.TW_ARCH_V[1](O);$('srt').value='e';try{localStorage.setItem('tw-spelers-srt','e')}catch(e){}}};
+    const verplaats=(p,q,na)=>{const O=allesTok().filter(x=>x!==p),k=O.indexOf(q);if(k<0)return;O.splice(na?k+1:k,0,p);window.TW_ARCH_V[1](O);window.TW_ARCH_TEK()};
+    $('app').addEventListener('change',e=>{if(e.target.id==='srt'){try{localStorage.setItem('tw-spelers-srt',e.target.value)}catch(x){}}});
+    let sl=null;
+    $('app').addEventListener('dragstart',e=>{const w=e.target.closest&&e.target.closest('.lw[data-sl]');if(!w||!window.TW_BEW)return;sl=w.dataset.sl;w.classList.add('sleep');try{e.dataTransfer.setData('text/plain',sl)}catch(x){}});
+    $('app').addEventListener('dragend',e=>{sl=null;document.querySelectorAll('.lw.sleep').forEach(x=>x.classList.remove('sleep'))});
+    $('app').addEventListener('dragover',e=>{const w=e.target.closest&&e.target.closest('.lw[data-sl]');if(sl&&w&&w.dataset.sl!==sl)e.preventDefault()});
+    $('app').addEventListener('drop',e=>{const w=e.target.closest&&e.target.closest('.lw[data-sl]');if(!sl||!w||w.dataset.sl===sl)return;e.preventDefault();const O=allesTok();verplaats(sl,w.dataset.sl,O.indexOf(sl)<O.indexOf(w.dataset.sl));sl=null});
+    $('app').addEventListener('click',e=>{if(window.TW_BEW&&$('lijst')&&e.target.closest('.lijst a')){e.preventDefault();return}
+    const v=e.target.closest('#volgB,#volgStd,button[data-mv]');if(v&&$('lijst')){
+      if(v.id==='volgB'){window.TW_BEW=!window.TW_BEW;if(window.TW_BEW)naarEigen();window.TW_ARCH_TEK();$('volgB').focus();return}
+      if(v.id==='volgStd'){window.TW_ARCH_V[1](null);$('srt').value='n';try{localStorage.setItem('tw-spelers-srt','n')}catch(x){}window.TW_ARCH_TEK();$('volgB').focus();return}
+      const p=v.dataset.tp,d=+v.dataset.mv,Z=window.TW_ARCH_ZICHT,q=Z[Z.indexOf(p)+d];if(!q)return;verplaats(p,q,d>0);const f=document.querySelector(`[data-tp="${CSS.escape(p)}"][data-mv="${d}"]`);if(f)f.focus();return}
+    const b=e.target.closest('button[data-p],button[data-g],button[data-alles]');if(!b||!$('lijst'))return;const tek=window.TW_ARCH_TEK;const o=aLees();
     if(b.dataset.alles){o.p=[];o.g=[]}else if(b.dataset.g){const g=b.dataset.g;o.g=o.g.includes(g)?o.g.filter(x=>x!==g):[...o.g,g]}else{const p=b.dataset.p;o.p=o.p.includes(p)?o.p.filter(x=>x!==p):[...o.p,p]}
     aZet(o);tek();const f=$('arch').querySelector('summary')||$('q');if(f&&b.classList.contains('lx'))f.focus()})}
   $('q').addEventListener('input',tek);$('srt').addEventListener('change',tek);tek()}

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="nl"><head><meta charset="utf-8"><meta name="tw-versie" content="2ecff91b71f2"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="nl"><head><meta charset="utf-8"><meta name="tw-versie" content="f46bdd4e2822"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KRST Torrewachters</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="app-180.png"><link rel="icon" href="app-32.png" type="image/png"><meta name="theme-color" content="#2f5d4b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Torrewachters">
 <style>
@@ -12,7 +12,8 @@
 .k:hover{border-color:var(--accent)}.k b{display:block;color:var(--accent);font-size:17px;margin-bottom:4px}.k span{color:var(--sub);font-size:14px}
 .v{margin-top:24px;font-size:13px}
 .kw{position:relative}.kw>.k{height:100%;padding-right:36px}.kw[hidden]{display:none}.ka{position:absolute;top:6px;right:6px;border:0;background:none;color:var(--sub);font:20px/1 system-ui,sans-serif;cursor:pointer;padding:4px 7px;border-radius:6px;opacity:.5}.ka:hover,.ka:focus-visible{opacity:1;background:var(--lijn)}
-.ar{margin-top:14px;font-size:14px;color:var(--sub)}.ar summary{cursor:pointer}.ar div{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.ar button{border:1px solid var(--lijn);background:var(--kaart);color:var(--fg);border-radius:8px;padding:6px 10px;font:inherit;cursor:pointer}.ar button:hover{border-color:var(--accent)}
+.kvs{display:none;position:absolute;bottom:8px;right:8px;gap:4px}.g.bew .kvs{display:flex}.g.bew .ka{display:none}.g.bew .kw>.k{cursor:grab;border-style:dashed;padding-bottom:44px}.kv{border:1px solid var(--lijn);background:var(--kaart);color:var(--fg);border-radius:6px;font:16px/1 system-ui,sans-serif;padding:5px 10px;cursor:pointer}.kv:hover,.kv:focus-visible{border-color:var(--accent)}.kw.sleep{opacity:.4}
+.arv{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}.ar{margin-top:14px;font-size:14px;color:var(--sub)}.ar summary{cursor:pointer}.ar div{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.ar button{border:1px solid var(--lijn);background:var(--kaart);color:var(--fg);border-radius:8px;padding:6px 10px;font:inherit;cursor:pointer}.ar button:hover{border-color:var(--accent)}
 .cs{display:flex;gap:14px;align-items:center;background:var(--kaart);border:1px solid var(--lijn);border-radius:12px;padding:12px 16px;margin:0 0 16px}.cs>div{min-width:0}.csi{flex:0 0 auto}.csi img{display:block;width:64px;height:64px;object-fit:cover;border-radius:8px}.cs b{display:block;color:var(--accent);font-size:14px;margin-bottom:2px}
 .cs a{color:var(--fg)}.cs span{color:var(--sub);font-size:13px}.cs .al{margin-left:8px;font-size:13px;color:var(--accent);white-space:nowrap}
 </style></head><body><div class="w">
@@ -44,16 +45,34 @@ Array.prototype.forEach.call(d.querySelectorAll('[data-b]'),function(b){b.onclic
 
 <div class="g"><a class="k" href="elo/speler.html"><b>Spelers</b><span>Per speler alles: volgende partijen, clubkampioenschap met kansen, interclub, Elo en toernooien</span></a><a class="k" href="club/stand.html"><b>Stand clubkampioenschap</b><span>Alle reeksen, met wat-als</span></a><a class="k" href="club/interclub.html"><b>Interclub</b><span>Stand en individuele uitslagen</span></a><a class="k" href="club/seizoensverslag.html"><b>Seizoensverslag</b><span>Kampioenen, standen en Elo van het seizoen</span></a><a class="k" href="elo/elo.html"><b>Elo-ratings</b><span>FIDE-ratings van alle leden, partijen en nog te verwerken</span></a><a class="k" href="elo/statistieken.html"><b>Statistieken</b><span>Ranglijsten en records</span></a><a class="k" href="elo/cartoons.html"><b>Cartoons van de column</b><span>Blader door de prenten bij de artikels op torrewachters.be</span></a><a class="k" href="https://lichess.org/study/GF8fIfKW" target="_blank" rel="noopener"><b>Partijen op lichess &#8599;</b><span>Studie KRST YouTube: partijen van clubleden, om na te spelen</span></a><a class="k" href="https://www.youtube.com/@krst-detorrewachtersbystev3706" target="_blank" rel="noopener"><b>YouTube-kanaal &#8599;</b><span>KRST De Torrewachters: besprekingen van partijen</span></a><a class="k" href="https://www.torrewachters.be/" target="_blank" rel="noopener"><b>Website van de club &#8599;</b><span>torrewachters.be: nieuws, kalender, tornooien, info en contact</span></a><a class="k" href="elo/blogs.html"><b>In de blogs</b><span>De blog van Roeselare op lichess en Schaken-Brabo: alle berichten over de club en clubleden</span></a><a class="k" href="uitleg.html"><b>Uitleg</b><span>Wat staat waar, en hoe lees je de kansen, kleuren en Elo?</span></a></div>
 <div id="twarch" class="ar"></div><script>(function(){var g=document.querySelector('.g'),z=document.getElementById('twarch');if(!g||!z)return;
-var K='tw-tegels-archief',lees=function(){try{return JSON.parse(localStorage.getItem(K)||'[]')||[]}catch(e){return []}},zet=function(a){try{localStorage.setItem(K,JSON.stringify(a))}catch(e){}};
-var e=function(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})},PIJL=String.fromCharCode(8599),KRUIS=String.fromCharCode(215),TERUG=String.fromCharCode(8634);
-var T=Array.prototype.slice.call(g.querySelectorAll('a.k')).map(function(a){var w=document.createElement('div');w.className='kw';a.parentNode.insertBefore(w,a);w.appendChild(a);
-  var n=(a.querySelector('b')||a).textContent.split(PIJL).join('').trim(),h=a.getAttribute('href'),b=document.createElement('button');b.type='button';b.className='ka';b.textContent=KRUIS;
-  b.title='Tegel archiveren (onderaan zet je hem terug)';b.setAttribute('aria-label','Tegel '+n+' archiveren');
-  b.onclick=function(){var L=lees();if(L.indexOf(h)<0)L.push(h);zet(L);teken();var v=z.querySelector('summary');if(v)v.focus()};w.appendChild(b);return {w:w,h:h,n:n}});
-var teken=function(){var L=lees(),A=T.filter(function(x){return L.indexOf(x.h)>=0});T.forEach(function(x){x.w.hidden=L.indexOf(x.h)>=0});
-  if(!A.length){z.innerHTML='';return}var open=z.querySelector('details');open=open&&open.open;
-  z.innerHTML='<details'+(open?' open':'')+'><summary>Gearchiveerde tegels ('+A.length+')</summary><div>'+A.map(function(x){return '<button type="button" data-h="'+e(x.h)+'" title="Weer actief zetten">'+TERUG+' '+e(x.n)+'</button>'}).join('')+(A.length>1?'<button type="button" data-alles="1">alles terugzetten</button>':'')+'</div></details>';
-  Array.prototype.forEach.call(z.querySelectorAll('button'),function(b){b.onclick=function(){var h=b.getAttribute('data-h');zet(b.getAttribute('data-alles')?[]:lees().filter(function(x){return x!==h}));teken();var s=z.querySelector('summary');if(s)s.focus()}})};
-teken()})()</script>
+var lj=function(k,d){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v}catch(x){return d}},sj=function(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v))}catch(x){}};
+var K='tw-tegels-archief',KV='tw-tegels-volgorde',lees=function(){return lj(K,[])},zet=function(a){sj(K,a)};
+var e=function(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})},C=String.fromCharCode,PIJL=C(8599),bewerk=false,sleep=null;
+/* elke tegel: x (archiveren) en, bij "Volgorde aanpassen", < > om te verschuiven (of slepen met de muis) */
+var knop=function(cls,txt,tit,f){var b=document.createElement('button');b.type='button';b.className=cls;b.textContent=txt;b.title=tit;b.setAttribute('aria-label',tit);b.onclick=f;return b};
+var T=Array.prototype.slice.call(g.querySelectorAll('a.k')).map(function(a,i){var w=document.createElement('div');w.className='kw';a.parentNode.insertBefore(w,a);w.appendChild(a);
+  var x={w:w,a:a,i:i,h:a.getAttribute('href'),n:(a.querySelector('b')||a).textContent.split(PIJL).join('').trim()};
+  w.appendChild(knop('ka',C(215),'Tegel '+x.n+' archiveren (onderaan zet je hem terug)',function(){var L=lees();if(L.indexOf(x.h)<0)L.push(x.h);zet(L);teken();var v=z.querySelector('summary');if(v)v.focus()}));
+  var s=document.createElement('span');s.className='kvs';s.appendChild(knop('kv',C(8249),x.n+' naar voren',function(){schuif(x,-1)}));s.appendChild(knop('kv',C(8250),x.n+' naar achteren',function(){schuif(x,1)}));w.appendChild(s);
+  a.addEventListener('click',function(ev){if(bewerk)ev.preventDefault()});
+  w.addEventListener('dragstart',function(ev){if(!bewerk)return;sleep=x;w.classList.add('sleep');try{ev.dataTransfer.setData('text/plain',x.h)}catch(y){}});
+  w.addEventListener('dragend',function(){w.classList.remove('sleep');sleep=null});
+  w.addEventListener('dragover',function(ev){if(bewerk&&sleep&&sleep!==x)ev.preventDefault()});
+  w.addEventListener('drop',function(ev){if(!bewerk||!sleep||sleep===x)return;ev.preventDefault();var O=T.slice(),van=O.indexOf(sleep);O.splice(van,1);var naar=O.indexOf(x);O.splice(van<=naar?naar+1:naar,0,sleep);bewaar(O)});
+  return x});
+var bewaar=function(O){sj(KV,O.map(function(x){return x.h}));orde();teken()};
+var orde=function(){var V=lj(KV,null),pos=function(x){var j=V?V.indexOf(x.h):-1;return j<0?1000+x.i:j};T.sort(function(p,q){return pos(p)-pos(q)});T.forEach(function(x){g.appendChild(x.w)})};
+var schuif=function(x,d){var Z=T.filter(function(y){return !y.w.hidden}),j=Z.indexOf(x),q=Z[j+d];if(!q)return;var O=T.filter(function(y){return y!==x});var k=O.indexOf(q);O.splice(d<0?k:k+1,0,x);bewaar(O);
+  var f=x.w.querySelectorAll('.kv')[d<0?0:1];if(f)f.focus()};
+var teken=function(){var L=lees(),A=T.filter(function(x){return L.indexOf(x.h)>=0});T.forEach(function(x){x.w.hidden=L.indexOf(x.h)>=0;x.w.draggable=bewerk});
+  g.className='g'+(bewerk?' bew':'');var open=z.querySelector('details');open=open&&open.open;
+  var h='<div class="arv"><button type="button" data-v="1">'+(bewerk?'Klaar':'&#8645; Volgorde aanpassen')+'</button>'+(bewerk?'<span>Klik op &#8249; &#8250; of sleep een tegel naar zijn plaats.</span>'+(lj(KV,null)?'<button type="button" data-std="1">standaardvolgorde</button>':''):'')+'</div>';
+  if(A.length)h='<details'+(open?' open':'')+'><summary>Gearchiveerde tegels ('+A.length+')</summary><div>'+A.map(function(x){return '<button type="button" data-h="'+e(x.h)+'" title="Weer actief zetten">&#8634; '+e(x.n)+'</button>'}).join('')+(A.length>1?'<button type="button" data-alles="1">alles terugzetten</button>':'')+'</div></details>'+h;
+  z.innerHTML=h};
+z.addEventListener('click',function(ev){var b=ev.target.closest?ev.target.closest('button'):null;if(!b)return;
+  if(b.getAttribute('data-v')){bewerk=!bewerk;teken();var f=z.querySelector('[data-v]');if(f)f.focus();return}
+  if(b.getAttribute('data-std')){sj(KV,null);T.sort(function(p,q){return p.i-q.i});T.forEach(function(x){g.appendChild(x.w)});teken();return}
+  var hh=b.getAttribute('data-h');zet(b.getAttribute('data-alles')?[]:lees().filter(function(x){return x!==hh}));teken();var s=z.querySelector('summary');if(s)s.focus()});
+orde();teken()})()</script>
 <p class="v">Bijgewerkt op 22/11/2026 06:27</p>
 </div><script src="elo/vast.js?v=4b14c4775e" data-start data-js="elo/data-elo.js?v=9f78b915fa|elo/elo-verwerk.js?v=139a115d28|club/data-club.js?v=fdc2401310|club/data-interclub.js?v=e4895a93ab|club/data-partijen.js?v=f748509119|club/verwerk.js?v=ef349255c3"></script><script>(function(){var t;function w(){clearTimeout(t);t=setTimeout(function(){if(document.visibilityState==="visible")location.href="elo/cartoons.html?diashow"},60000)}["click","scroll","wheel","keydown","touchstart","mousemove"].forEach(function(e){addEventListener(e,w,{passive:true})});document.addEventListener("visibilitychange",w);w()})()</script></body></html>
