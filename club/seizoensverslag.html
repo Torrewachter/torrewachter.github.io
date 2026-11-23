@@ -148,7 +148,7 @@ function eloDeel(){const E=window.ELO;if(!E||!E.leden)return;
 <div><h3>Beste prestatie (minstens 5 partijen)</h3>${top(R.filter(x=>x.pr).sort((a,b)=>b.pr-a.pr),x=>[esc(nice(x.p.n))+` <span class="na">${half(x.pt)}/${x.n}</span>`,x.pr])}</div>
 <div><h3>Grootste daling</h3>${top(daling,x=>[esc(nice(x.p.n))+` <span class="na">${x.a} → ${x.b}</span>`,'−'+Math.abs(x.d)])}</div>
 <div><h3>Grootste verschil wit en zwart</h3>${top(WZ,x=>[esc(nice(x.p.n))+` <span class="na">wit ${x.tw} (${x.nw}) · zwart ${x.tz} (${x.nz})</span>`,(x.d>0?'+':'−')+Math.abs(x.d)+(x.d>0?' wit':' zwart')])}<p class="na" style="font-size:12px;margin:4px 0 0">prestatie met wit en met zwart, minstens 5 partijen per kleur (tussen haakjes)</p></div></div>`}
-(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=e8c9212c6b';
+(function(){var a=document.createElement('script');a.src='../elo/data-elo.js?v=ef98d71cec';
 a.onload=function(){var b=document.createElement('script');b.src='../elo/elo-verwerk.js?v=139a115d28';b.onload=function(){try{eloDeel()}catch(e){}};document.head.appendChild(b)};document.head.appendChild(a)})();
 </script>
 <script src="../elo/vast.js?v=4b14c4775e"></script>
