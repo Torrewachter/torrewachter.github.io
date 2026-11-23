@@ -183,6 +183,15 @@ const NUOF=(n,e)=>{if(E&&E.rNu){const r=E.rNu(n,'',0);if(r)return r}return NUR[n
 const TOT=((window.BRON_CLUB||{}).instellingen||{})['elo verwerkt tot']||'';const RDAT=(V&&V.club&&V.club.rondes)||{};
 const VERW=(rd,a,b,r,key)=>{const RD=(key&&RAW[key]&&RAW[key].rondes)||RDAT;return !!(TOT&&RD[rd]&&RD[rd]<=TOT)||!!(E&&E.verwerkt&&RD[rd]&&E.verwerkt(a,b,RD[rd],r))};
 const PER=k=>(RAW[k]&&RAW[k].per)||5,PLD=k=>(RAW[k]&&RAW[k].played!=null)?RAW[k].played:PLAYED,NR=k=>(RAW[k]&&RAW[k].n)||ROUNDS;
+/* partijen in de lichess-studie uit het clubkampioenschap: reeks en ronde uit de uitslagen van SWAR; valt de datum in de studie niet op die speeldag
+   (inhaalpartij, vooraf gespeeld, of een vergissing in de studie), dan staat de speeldag erbij */
+(function(){const L=(window.ELO&&window.ELO.studie)||[];if(!L.length||!Object.keys(RAW).length)return;const tk=n=>nrm(n).replace(/[^a-z ,]/g,' ').split(/[ ,]+/).filter(Boolean);
+  const zelfde=(s,w)=>{const a=tk(s),b=tk(w);return a.length&&b.length&&(a.every(x=>b.includes(x))||b.every(x=>a.includes(x)))};
+  const P=[];for(const k of Object.keys(RAW)){const per=PER(k),R=RAW[k].rondes||RDAT,lab=(V.club.labels&&V.club.labels[k])||'reeks '+k;(RAW[k].r||[]).forEach((row,i)=>{const [a,,,b]=row.split('|');if(!a||!b||b==='Bye')return;const rd=Math.floor(i/per)+1;P.push({a,b,d:R[rd]||'',rd,lab})})}
+  const dm=d=>{const m=/^\d{4}-(\d\d)-(\d\d)/.exec(d||'');return m?(+m[2])+'/'+(+m[1]):''};
+  for(const g of L){if(g.e&&!/club|^ck\b/i.test(g.e))continue;const M=P.filter(x=>(zelfde(x.a,g.w)&&zelfde(x.b,g.b))||(zelfde(x.a,g.b)&&zelfde(x.b,g.w)));if(!M.length)continue;
+    const x=M.length===1?M[0]:M.slice().sort((p,q)=>Math.abs(Date.parse(p.d||0)-Date.parse(g.d||0))-Math.abs(Date.parse(q.d||0)-Date.parse(g.d||0)))[0];
+    g.e='Clubkampioenschap '+x.lab.replace(/^Reeks/,'reeks')+', ronde '+x.rd+(x.d&&g.d&&x.d!==g.d?' (speeldag '+dm(x.d)+')':'')}})();
 function build(key){
   const per=PER(key),PL=PLD(key);const rows=RAW[key].r.map((s,i)=>[Math.floor(i/per)+1,...s.split('|')]);
   const cnt={};rows.forEach(([rd,a,ea,res,b])=>{if(b==='Bye')return;for(const n of [a,b]){const c=cnt[n]??={all:0,ff:0};c.all++;if(res==='0ff-0ff')c.ff++}});
