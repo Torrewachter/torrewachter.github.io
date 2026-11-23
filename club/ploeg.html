@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Interclub - ploeg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#f3f5f2;--surface:#fff;--fg:#1b221e;--muted:#67716b;--line:#dbe1dc;
+  --win:#2e9b57;--win-soft:#d6eedd;--loss:#d0453a;--loss-soft:#f6dcd9;--warn:#a86b00;--warn-soft:#fbf0d2;--accent:#2f5d4b;--accent-soft:#e3ece7;
+  --display:"Saira Condensed","Arial Narrow",system-ui,sans-serif;--body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121715;--surface:#1a201d;--fg:#e6ece8;--muted:#97a29b;--line:#2b3430;--win:#4cc27a;--win-soft:#203a2a;--loss:#ef6d62;--loss-soft:#3e2522;--warn:#f0b45a;--warn-soft:#3a3020;--accent:#8fc5ad;--accent-soft:#22302a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121715;--surface:#1a201d;--fg:#e6ece8;--muted:#97a29b;--line:#2b3430;--win:#4cc27a;--win-soft:#203a2a;--loss:#ef6d62;--loss-soft:#3e2522;--warn:#f0b45a;--warn-soft:#3a3020;--accent:#8fc5ad;--accent-soft:#22302a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 var(--body)}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:16px;padding-block:24px 40px;display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-direction:column;gap:4px}
+.terug{font-size:14px;color:var(--accent);text-decoration:none;font-weight:600}.terug:hover{text-decoration:underline}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--display);font-size:clamp(30px,5vw,44px);line-height:1;margin:0}
+h2{font-family:var(--display);font-size:24px;margin:0}
+.sub{color:var(--muted);margin:0;max-width:75ch}
+.controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+select,button{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+button{cursor:pointer}button:hover{border-color:var(--accent)}
+button.on{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.controls label{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.kaart{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.box{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+thead th{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.l,th.l{text-align:left}
+tbody tr:last-child td{border-bottom:none}
+tr.gekozen td{background:var(--accent-soft)}
+tr.weg td{color:var(--muted)}
+.bs{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.bs button{border:0;border-radius:0;padding:3px 9px;font-size:13px;background:var(--surface)}
+.bs button+button{border-left:1px solid var(--line)}
+.bs button.ja.on{background:var(--win);color:#fff}.bs button.mis.on{background:var(--muted);color:#fff}.bs button.nee.on{background:var(--loss);color:#fff}
+.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600;margin-left:4px}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.na{color:var(--muted)}
+.op{display:flex;flex-direction:column;gap:6px}
+.bord{display:grid;grid-template-columns:2.2em 1fr auto auto;gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.bord .nr{font-family:var(--display);font-size:22px;color:var(--accent);text-align:center}
+.bord .r{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px;text-align:right}
+.bord .pijl{display:flex;gap:2px}.bord .pijl button{padding:1px 6px;font-size:12px}
+.bord.leeg{color:var(--muted);font-style:italic}
+.melding{padding:8px 10px;border-radius:8px;font-size:14px}
+.melding.fout{background:var(--loss-soft);color:var(--loss)}
+.melding.let{background:var(--warn-soft);color:var(--warn)}
+.melding.ok{background:var(--win-soft);color:var(--win)}
+.verw{display:grid;grid-template-columns:auto 1fr auto auto;gap:4px 10px;font-size:14px;font-variant-numeric:tabular-nums}
+.verw .h{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.bar{height:10px;border-radius:5px;background:var(--line);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.legend{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px;max-width:90ch}
+.legend p{margin:0}
+textarea{width:100%;font:13px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--line);border-radius:6px;padding:8px;background:var(--bg);color:var(--fg);resize:vertical}
+[hidden]{display:none!important}
+@media print{body{background:#fff}.controls,.bs,.pijl,#kopie,.terug{display:none!important}.grid{grid-template-columns:1fr 1fr}}
+.slot{max-width:460px}
+.slot form{display:flex;flex-direction:column;gap:10px}
+.slot input[type=password]{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.chip{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.chip.ja{background:var(--win-soft);color:var(--win)}.chip.nee{background:var(--loss-soft);color:var(--loss)}.chip.mis{background:var(--warn-soft);color:var(--warn)}.chip.leeg{color:var(--muted)}
+.tel{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
+.games{display:flex;flex-direction:column;gap:2px;font-size:13px;margin:6px 0 4px}
+.games div{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.games a{color:var(--accent)}
+details.sp{border-bottom:1px solid var(--line);padding:6px 0}details.sp summary{cursor:pointer}
+.kapt{border-left:4px solid var(--accent);background:var(--accent-soft);padding:10px 12px;border-radius:6px;white-space:pre-line}
+a{color:var(--accent)}
+.knop{display:inline-block;text-decoration:none;font-weight:700;padding:7px 14px;border-radius:8px;background:var(--accent);color:var(--surface)}
+</style>
+<script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="terug" href="index.html" id="terug">&larr; Clubkampioenschap en interclub</a>
+  <span class="eyebrow" id="eyebrow">Nationale interclub &middot; alleen voor de ploeg</span>
+  <h1 id="titel">Interclub &ndash; ploeg</h1>
+  <p class="sub">Wie kan spelen, de opstelling, het vervoer en de tegenstander. Deze pagina is afgeschermd met het wachtwoord van de ploeg.</p>
+</header>
+
+<div class="kaart slot" id="slot" hidden>
+  <h2>Wachtwoord</h2>
+  <form id="slotF">
+    <label for="pw" class="na">Het wachtwoord van de ploeg (vraag het aan de kapitein)</label>
+    <input type="password" id="pw" autocomplete="current-password" required>
+    <label class="na" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="onth" checked> onthouden op dit toestel</label>
+    <div><button type="submit" class="on">Openen</button> <span class="na" id="slotM" role="status"></span></div>
+  </form>
+</div>
+<div class="kaart" id="leeg" hidden></div>
+
+<div id="app" hidden style="display:flex;flex-direction:column;gap:18px">
+  <div class="controls">
+    <label>Ronde <select id="ronde"></select></label>
+    <a class="knop" id="invul" hidden target="_blank" rel="noopener">&#9998; Vul in of je kunt</a>
+    <span class="na" id="bron" style="font-size:13px"></span>
+    <button type="button" id="vergeet" style="margin-left:auto">Wachtwoord vergeten op dit toestel</button>
+  </div>
+  <div class="kapt" id="bericht" hidden></div>
+  <div class="grid">
+    <div class="kaart">
+      <h2>Wie kan spelen?</h2>
+      <div class="tel" id="tel"></div>
+      <div class="box"><table id="lijst"></table></div>
+      <button type="button" id="alle" style="align-self:flex-start"></button>
+      <p class="na" style="font-size:13px;margin:0">Volgorde van de spelerslijst (aangepaste interclubrating). <b>T</b> = titularis. &#128663; = rijdt (met het aantal vrije plaatsen).</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div class="kaart">
+        <h2 id="optitel">Opstelling</h2>
+        <p class="na" id="opuitleg" style="margin:0;font-size:13px"></p>
+        <div class="op" id="op"></div>
+        <div id="meld" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+      <div class="kaart">
+        <h2>Vervoer</h2>
+        <div id="vervoer"></div>
+      </div>
+      <div class="kaart" id="verwBox">
+        <h2>Verwachting</h2>
+        <div id="verw"></div>
+      </div>
+    </div>
+  </div>
+  <div class="kaart" id="tegen"></div>
+  <div class="legend">
+    <p><b>Regels</b> (wedstrijdreglement KBSB): in afdeling 4, 5 en 6 spelen 4 spelers per ploeg. De spelers staan in de volgorde van de spelerslijst; in een ploeg van 4 mag elke speler hoogstens 1 plaats opschuiven of zakken. Een reservespeler (geen titularis) mag geen FIDE-rating boven de grens van de afdeling hebben. Wie niet op de spelerslijst staat, mag niet spelen.</p>
+    <p><b>Zolang de kapitein geen opstelling koos</b>, toont de pagina een voorstel: de sterkste ploeg uit wie &#10003; gaf. <b>Verwachting</b>: per bord de verwachte score (FIDE-formule) tegen de waarschijnlijkste opstelling van de tegenstander.</p>
+  </div>
+</div>
+</div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nice=n=>{const [a,b]=String(n).split(', ');return b?b+' '+a:n};
+const kort=n=>{const [a,b]=String(n).split(', ');return b?b[0]+'. '+a:n};
+const fmt=x=>String(Math.round(x*10)/10).replace('.',',');
+const pc=x=>Math.round(x*100)+'%';
+const nrm=t=>String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const DAG=['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'],MND=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+const dlong=d=>{if(!d)return '';const x=new Date(d.slice(0,10)+'T12:00:00');return DAG[x.getDay()]+' '+x.getDate()+' '+MND[x.getMonth()]};
+const GRENS={1:2350,2:2200,3:2050,4:1950,5:1800,6:1700};
+const PK='tw-ploeg-pw';
+let P=null;
+
+/* ---------- ontsleutelen (wachtwoord van de ploeg; PBKDF2 + AES-GCM, gemaakt door ploeg.js op GitHub) ---------- */
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function ontsleutel(D,pw){
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(D.salt),iterations:D.it||250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(D.iv)},k,b64(D.ct));
+  const st=new Blob([pt]).stream().pipeThrough(new DecompressionStream('gzip'));return JSON.parse(await new Response(st).text())}
+const laadScript=src=>new Promise((ok,nok)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>nok(new Error(src));document.head.appendChild(s)});
+const lsG=k=>{try{return localStorage.getItem(k)||''}catch(e){return ''}},lsZ=(k,v)=>{try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}};
+
+async function begin(){
+  if(!window.ONLINE){$('terug').href='index.html';
+    try{await laadScript('data-interclub.js');await laadScript('chess.js');await laadScript('verwerk.js')}catch(e){}
+    P={txt:'',blad:'',lokaal:true};start();return}
+  $('terug').href='../index.html';$('terug').innerHTML='&larr; Startpagina';
+  let D=null;try{const r=await fetch('ploeg.dat?t='+Date.now(),{cache:'no-store'});if(r.ok)D=await r.json()}catch(e){}
+  if(!D){$('leeg').hidden=false;$('leeg').innerHTML='<h2>Nog niet klaar</h2><p class="na" style="margin:0">De ploegpagina wordt klaargezet bij het volgende automatisch bijwerken. Probeer later opnieuw.</p>';return}
+  const probeer=async(pw,onth)=>{$('slotM').textContent='Even geduld…';
+    try{P=await ontsleutel(D,pw)}catch(e){$('slotM').textContent='Dat wachtwoord klopt niet.';lsZ(PK,'');$('slot').hidden=false;$('pw').focus();return}
+    if(onth)lsZ(PK,pw);$('slot').hidden=true;
+    try{(0,eval)(P.ic);await laadScript('chess.js');await laadScript('verwerk.js')}catch(e){$('leeg').hidden=false;$('leeg').textContent='De gegevens konden niet geladen worden: '+e.message;return}
+    start()};
+  $('slotF').onsubmit=e=>{e.preventDefault();probeer($('pw').value,$('onth').checked)};
+  const pw=lsG(PK);if(pw)probeer(pw,true);else{$('slot').hidden=false;$('pw').focus()}}
+
+/* ---------- invoer: Google-blad (CSV) en interclub.txt ---------- */
+function csv(t){const R=[];let row=[],f='',q=false;t=String(t||'');for(let i=0;i<t.length;i++){const c=t[i];
+  if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+  else if(c==='"')q=true;else if(c===','){row.push(f);f=''}else if(c==='\n'){row.push(f);R.push(row);row=[];f=''}else if(c!=='\r')f+=c}
+  if(f||row.length){row.push(f);R.push(row)}return R}
+function stat(v){const s=nrm(v).trim();if(!s)return null;const o={};
+  if(/^(nee|neen|niet|kan niet|n\b)/.test(s)||s[0]==='\u2717'||s[0]==='\u2718')o.st='nee';
+  else if(/^(\?|misschien|mss|weet)/.test(s))o.st='mis';
+  else if(/^(ja|j\b|ok|kan|v\b|x\b|1\b)/.test(s)||s[0]==='\u2713'||s[0]==='\u2714')o.st='ja';
+  const m=/(rij|auto|wagen)\D{0,8}(\d)?/.exec(s);if(m)o.rij=m[2]?+m[2]:0;
+  return o.st||o.rij!=null?o:null}
+
+function start(){
+  const V=window.VERWERKT,B=window.BRON_IC;
+  if(!V||!V.ic||!V.ic.ok||!B){$('leeg').hidden=false;$('leeg').innerHTML='<p>Geen interclubgegevens.</p>';return}
+  $('app').hidden=false;
+  const IC=V.ic,S=IC.series,club=+(B.instellingen.club||309),ploeg=IC.team;
+  const afd=+String(S.key).replace(/\D.*$/,'')||4,NB=S.boards||4,grens=GRENS[afd]||0,schuif=Math.max(0,NB/2-1);
+  $('eyebrow').textContent='Nationale interclub \u00b7 '+ploeg+' \u00b7 '+IC.label+' \u00b7 alleen voor de ploeg';$('titel').textContent='Interclub '+ploeg+' \u2013 ploeg';document.title='Interclub '+ploeg+' - ploeg';
+  const dec=b=>{const s=atob(b);const u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return JSON.parse(new TextDecoder().decode(u))};
+  let CL=null;try{CL=dec(B.api['icclub_'+club])}catch(e){}
+  const SP=((CL&&CL.players)||[]).map(p=>({id:p.idnumber,n:p.last_name+', '+p.first_name,ar:p.assignedrating||0,fr:p.fiderating||0,tit:p.titular||''})).sort((a,b)=>b.ar-a.ar||b.fr-a.fr);SP.forEach((p,i)=>p.pos=i+1);
+  const GESP={};for(const g of IC.ind){(GESP[nrm(g.speler)]??=[]).push(g)}
+  for(const p of SP){const L=GESP[nrm(p.n)]||[];p.keer=L.length;p.borden=L.map(g=>g.bord)}
+  const mag=p=>!(grens&&p.tit!==ploeg&&p.fr>grens);
+  /* namen herkennen: "Achternaam, Voornaam", "Voornaam Achternaam", of een achternaam die maar een keer voorkomt */
+  const tk=n=>nrm(n).replace(/[^a-z0-9 ]+/g,' ').split(/\s+/).filter(Boolean);
+  const zoek=n=>{const t=tk(n);if(!t.length)return null;const key=t.slice().sort().join(' ');
+    let L=SP.filter(p=>tk(p.n).slice().sort().join(' ')===key);if(L.length===1)return L[0];
+    L=SP.filter(p=>{const q=tk(p.n);return t.every(x=>q.includes(x))});return L.length===1?L[0]:null};
+  const INV={},onbekend=new Set();const rnd=r=>INV[r]??={st:{},rij:{},op:null,vervoer:'',bericht:''};
+  const lijstN=v=>String(v||'').split(/[;\n\/]+/).map(x=>x.trim()).filter(Boolean);
+  function leesBlad(t){const R=csv(t);let kol=null;
+    for(const row of R){
+      if(!kol){const k={};row.forEach((c,i)=>{if(i){const m=/^\s*(?:r|ronde)?\s*\.?\s*(\d{1,2})\b/i.exec(c);if(m)k[i]=+m[1]}});if(Object.keys(k).length){kol=k}continue}
+      const eerste=String(row[0]||'').trim();if(!eerste)continue;
+      for(const [i,r] of Object.entries(kol)){const v=String(row[i]||'').trim();if(!v)continue;const I=rnd(r);
+        if(/^opstelling/i.test(eerste)){const L=lijstN(v).map(x=>{const p=zoek(x);if(!p)onbekend.add(x);return p}).filter(Boolean).map(p=>p.id);if(L.length)I.op=L}
+        else if(/^vervoer/i.test(eerste))I.vervoer=v;
+        else if(/^bericht/i.test(eerste))I.bericht=v;
+        else{const p=zoek(eerste);if(!p){onbekend.add(eerste);continue}const o=stat(v);if(!o)continue;if(o.st)I.st[p.id]=o.st;if(o.rij!=null)I.rij[p.id]=o.rij}}}}
+  let kapitein='';
+  function leesTxt(t){for(const r0 of String(t||'').split(/\r?\n/)){const r=r0.trim();if(!r||r[0]==='#')continue;
+    let m=/^kapitein\s*=\s*(.+)$/i.exec(r);if(m){kapitein=m[1].trim();continue}
+    m=/^ronde\s+(\d+)\s+(kan niet|niet|nee|kan|ja|misschien|rijdt|rijden|opstelling|vervoer|bericht)\s*=\s*(.*)$/i.exec(r);if(!m)continue;
+    const I=rnd(+m[1]),w=m[2].toLowerCase(),v=m[3].trim();if(!v)continue;
+    if(w==='vervoer')I.vervoer=v;else if(w==='bericht')I.bericht=v;
+    else if(w==='opstelling'){const L=lijstN(v).map(x=>{const p=zoek(x);if(!p)onbekend.add(x);return p}).filter(Boolean).map(p=>p.id);I.op=L}
+    else for(const x of lijstN(v)){const z=/^(.*?)\s*\((\d+)\)\s*$/.exec(x),n=z?z[1]:x;const p=zoek(n);if(!p){onbekend.add(n);continue}
+      if(w==='rijdt'||w==='rijden'){I.rij[p.id]=z?+z[2]:(I.rij[p.id]||0);if(!I.st[p.id])I.st[p.id]='ja'}
+      else I.st[p.id]=w==='misschien'?'mis':(w==='kan'||w==='ja')?'ja':'nee'}}}
+  const toon=(blad,live)=>{for(const k in INV)delete INV[k];onbekend.clear();leesBlad(blad);leesTxt(P.txt);
+    $('bron').textContent=(P.lokaal?'Op deze pc: zonder interclub.txt en Google-blad (die komen er online bij). ':'')+(P.bladCsv?(live?'Google-blad: net gelezen. ':'Google-blad: zoals bij het bijwerken van '+(P.tijd||'?')+'. '):'')+(P.icTijd?'Voorspelling van '+P.icTijd.replace('T',' ')+'.':'');render()};
+  if(P.bladEdit){$('invul').hidden=false;$('invul').href=P.bladEdit}
+  $('vergeet').hidden=!!P.lokaal;$('vergeet').onclick=()=>{lsZ(PK,'');location.reload()};
+  const R=IC.kalender||[];const ronde=$('ronde');
+  ronde.innerHTML=R.map(k=>`<option value="${k.r}">ronde ${k.r} \u00b7 ${esc(dlong(k.d))} \u00b7 ${k.thuis?'thuis tegen':'uit bij'} ${esc(k.opp)}</option>`).join('')||'<option value="0">geen rondes meer dit seizoen</option>';
+  ronde.onchange=render;let alle=false;$('alle').onclick=()=>{alle=!alle;render()};
+  const vol=IC.volgende,TG=V.tegen||{fide:{},games:[]};
+  function regels(L,I){const M=[];
+    if(L.length<NB)M.push(['fout',`Nog ${NB-L.length} speler${NB-L.length>1?'s':''} nodig: een ploeg in afdeling ${afd} speelt met ${NB}.`]);
+    const sorted=[...L].sort((a,b)=>a.pos-b.pos);
+    L.forEach((p,i)=>{const k=sorted.indexOf(p);if(Math.abs(k-i)>schuif)M.push(['fout',`${nice(p.n)} staat op bord ${i+1}, maar mag volgens de spelerslijst alleen op bord ${Math.max(1,k+1-schuif)}${schuif?' tot '+Math.min(NB,k+1+schuif):''} spelen.`])});
+    for(const p of L){if(!mag(p))M.push(['fout',`${nice(p.n)} is geen titularis van ${ploeg} en heeft FIDE ${p.fr}, boven de grens van ${grens} voor reservespelers.`]);
+      const b=I.st[p.id];if(b==='nee')M.push(['let',`${nice(p.n)} staat opgesteld maar gaf door dat hij niet kan.`]);else if(b!=='ja')M.push(['let',`${nice(p.n)} heeft nog niet bevestigd.`])}
+    if(!M.length&&L.length===NB)M.push(['ok','De opstelling voldoet aan de regels van de spelerslijst en de bordvolgorde.']);return M}
+  const Ex=(a,b)=>1/(1+10**((b-a)/400));
+  function verwachting(L,r){if(!vol||vol.ronde!==r||!vol.opstellingen||!vol.opstellingen.length){$('verwBox').hidden=true;return}$('verwBox').hidden=false;
+    const ids=Object.fromEntries(vol.spelers.map(p=>[p.id,p]));const O=vol.opstellingen[0];const T=O.ids.map(id=>ids[id]||{n:'?',ar:0,fr:0});
+    const rows=[];let tot=0;const kansen=[];
+    for(let i=0;i<NB;i++){const a=L[i],b=T[i];const ra=a?(a.fr||a.ar):0,rb=b?(b.fr||b.ar):0;const e=a?(b?Ex(ra,rb):1):0;tot+=e;const d=a&&b?.34*(1-Math.abs(2*e-1))+.06:0;const w=Math.max(0,e-d/2),l=Math.max(0,1-w-d);kansen.push([w,d,l]);rows.push([i+1,a,b,ra,rb,e])}
+    let dist=[1];for(const [w,d,l] of kansen){const n=new Array(dist.length+2).fill(0);dist.forEach((p,s)=>{n[s]+=p*l;n[s+1]+=p*d;n[s+2]+=p*w});dist=n}
+    let pw=0,pg=0,pv=0;dist.forEach((p,s)=>{if(s>NB)pw+=p;else if(s===NB)pg+=p;else pv+=p});
+    $('verw').innerHTML=`<p class="na" style="margin:0;font-size:13px">Tegen de waarschijnlijkste opstelling van ${esc(vol.opp)} (kans ${pc(O.p)}).</p>
+<div class="verw"><span class="h">Bord</span><span class="h">Wij \u2013 zij</span><span class="h">Rating</span><span class="h">Verwacht</span>${rows.map(([i,a,b,ra,rb,e])=>`<span>${i}</span><span>${a?esc(kort(a.n)):'<i class="na">leeg</i>'} \u2013 ${esc(kort(b.n))}</span><span class="na">${ra||'\u2013'} \u2013 ${rb||'\u2013'}</span><span><b>${fmt(e)}</b></span>`).join('')}<span></span><span><b>Totaal</b></span><span></span><span><b>${fmt(tot)}</b> \u2013 ${fmt(NB-tot)}</span></div>
+<div class="bar" aria-hidden="true"><i style="width:${pw*100}%;background:var(--win)"></i><i style="width:${pg*100}%;background:var(--muted)"></i><i style="width:${pv*100}%;background:var(--loss)"></i></div>
+<p style="margin:0;font-size:14px">Matchwinst <b>${pc(pw)}</b> \u00b7 gelijkspel <b>${pc(pg)}</b> \u00b7 verlies <b>${pc(pv)}</b></p>`}
+  /* partijen van de tegenstanders: bekijken op lichess (analysebord) of als PGN downloaden */
+  const START='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
+  const san=s=>{const m=/^(O-O-O|O-O|[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?)[+#]?/.exec(s);return m?m[0]:s.replace(/[^A-Za-z0-9+#=\-]/g,'')};
+  const zetten=g=>{let n=g.n0||1,w=!g.sb;const o=[];if(g.sb)o.push(n+'...');for(const [s] of g.m){if(w)o.push(n+'.');o.push(san(s));if(!w)n++;w=!w}return o};
+  const pgn=g=>`[Event "${g.e||'?'}"]\n[Date "${g.d||'?'}"]\n[Round "${g.rd||'?'}"]\n[White "${g.w||'?'}"]\n[Black "${g.b||'?'}"]\n[Result "${g.r||'*'}"]\n`+(g.we?`[WhiteElo "${g.we}"]\n`:'')+(g.be?`[BlackElo "${g.be}"]\n`:'')+(g.eco?`[ECO "${g.eco}"]\n`:'')+'\n'+zetten(g).join(' ').replace(/(\d+)\. /g,'$1. ')+' '+(g.r||'*')+'\n';
+  const lich=g=>g.f&&g.f[0]===START?'https://lichess.org/analysis/pgn/'+encodeURIComponent(zetten(g).join(' ').replace(/(\d+)\. /g,'$1.')).replace(/%20/g,'_'):'';
+  function tegenKaart(r){const box=$('tegen');
+    if(!vol){box.innerHTML='<h2>Tegenstander</h2><p class="na" style="margin:0">Geen volgende ronde meer.</p>';return}
+    if(vol.ronde!==r){box.innerHTML=`<h2>Tegenstander</h2><p class="na" style="margin:0">De voorspelling van de tegenstander is er voor de eerstvolgende ronde (ronde ${vol.ronde}, tegen ${esc(vol.opp)}).</p>`;return}
+    if(!vol.spelers||!vol.spelers.length){box.innerHTML=`<h2>${esc(vol.opp)}</h2><p class="na" style="margin:0">Nog geen voorspelling: die wordt op GitHub berekend na de vorige interclubronde.</p>`;return}
+    const ids=Object.fromEntries(vol.spelers.map(p=>[p.id,p]));const GB={};for(const g of TG.games||[])(GB[g.tg]??=[]).push(g);
+    const rij=p=>{const f=TG.fide[p.fide]||{games:0,lichess:[]};const lk=(f.lichess||[]).slice(0,2).map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.n.split('|')[0].trim())}</a>`).join(' ')+((f.lichess||[]).length>2?` <span class="na">+${f.lichess.length-2}</span>`:'');
+      return `<tr><td class="l">${esc(nice(p.n))}</td><td>${p.ar||'\u2013'}</td><td>${p.fr||'\u2013'}</td><td class="l">${esc(p.tit||'\u2013')}</td><td>${p.keer?p.keer+'\u00d7 (bord '+p.borden.join(', ')+')':'<span class="na">nog niet</span>'}</td><td><b>${pc(p.kans)}</b></td><td>${(GB[p.fide]||[]).length||'<span class="na">0</span>'}</td><td class="l">${lk||'<span class="na">\u2013</span>'}</td></tr>`};
+    const partijen=vol.spelers.filter(p=>(GB[p.fide]||[]).length).map(p=>{const G=GB[p.fide];
+      return `<details class="sp"><summary><b>${esc(nice(p.n))}</b> <span class="na">\u00b7 ${G.length} partij${G.length>1?'en':''} \u00b7 kans ${pc(p.kans)}</span></summary><div class="games">${G.slice(0,40).map(g=>{const u=lich(g);const wit=nrm(g.w).includes(nrm(p.n.split(', ')[0]));
+        return `<div><span class="na">${esc(String(g.d||'').replace(/\.\?\?/g,''))}</span><span>${wit?'\u26aa':'\u26ab'} ${esc(g.w)} \u2013 ${esc(g.b)}</span><b>${esc(g.r||'')}</b><span class="na">${esc([g.eco,g.op].filter(Boolean).join(' '))}${g.e?' \u00b7 '+esc(g.e):''}</span>${u?`<a href="${u}" target="_blank" rel="noopener">bekijken \u2197</a>`:''}</div>`}).join('')}</div><button type="button" data-pgn="${p.fide}">PGN downloaden (${G.length})</button></details>`}).join('');
+    box.innerHTML=`<span class="na">Ronde ${vol.ronde} \u00b7 ${esc(dlong(vol.datum))} \u00b7 ${vol.thuis?'thuis tegen':'uit bij'}</span><h2>${esc(vol.opp)}</h2>
+<p class="na" style="margin:0;font-size:13px">Wie van ${esc(vol.opp)} waarschijnlijk speelt (rekenmodel op hun opstellingen van dit en vorig seizoen).${vol.reserves>0?' '+vol.reserves+' andere spelers van hun lijst hebben een zeer kleine kans.':''}</p>
+<div class="box"><table><thead><tr><th class="l">Speler</th><th>IC</th><th>FIDE</th><th class="l">Titularis</th><th>Dit seizoen</th><th>Kans</th><th>Partijen</th><th class="l">Op lichess</th></tr></thead><tbody>${vol.spelers.map(rij).join('')}</tbody></table></div>
+${vol.opstellingen&&vol.opstellingen.length?`<h3 style="margin:6px 0 0;font-size:16px">Waarschijnlijke opstellingen</h3><div style="display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;font-size:14px">${vol.opstellingen.map(o=>`<span><b>${pc(o.p)}</b></span><span>${o.ids.map((id,i)=>`<b>${i+1}</b> ${esc(kort(ids[id]?ids[id].n:'?'))}`).join(' \u00b7 ')}</span><span class="na">gem. ${o.gem}</span>`).join('')}</div>`:''}
+<h3 style="margin:10px 0 0;font-size:16px">Hun partijen</h3>${partijen||'<p class="na" style="margin:0">Geen partijen gevonden (chess-results).</p>'}`;
+    box.querySelectorAll('button[data-pgn]').forEach(b=>b.onclick=()=>{const p=vol.spelers.find(x=>String(x.fide)===b.dataset.pgn);const t=(GB[b.dataset.pgn]||[]).map(pgn).join('\n');const u=URL.createObjectURL(new Blob([t],{type:'application/x-chess-pgn'}));const a=document.createElement('a');a.href=u;a.download=(p?p.n.split(', ')[0]:'partijen')+'.pgn';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)})}
+  function render(){const r=+ronde.value;const k=R.find(x=>x.r===r);const I=INV[r]||{st:{},rij:{},op:null,vervoer:'',bericht:''};
+    const kap=kapitein?zoek(kapitein):null;
+    $('bericht').hidden=!I.bericht;$('bericht').innerHTML=I.bericht?`<b>Bericht van de kapitein${kap?' ('+esc(nice(kap.n))+')':''}</b>\n${esc(I.bericht)}`:'';
+    /* wie kan spelen */
+    const tel={ja:0,mis:0,nee:0};for(const p of SP){const s=I.st[p.id];if(s)tel[s]++}
+    const rel=p=>p.tit===ploeg||p.keer||I.st[p.id]||I.rij[p.id]!=null||(I.op||[]).includes(p.id);
+    const toonL=alle?SP:SP.filter(rel);const open=SP.filter(p=>rel(p)&&!I.st[p.id]);
+    $('tel').innerHTML=`<span class="chip ja">${tel.ja} kunnen</span><span class="chip mis">${tel.mis} misschien</span><span class="chip nee">${tel.nee} niet</span><span class="na">${open.length?'nog geen antwoord: '+open.map(p=>esc(nice(p.n))).join(', '):'iedereen antwoordde'}</span>`;
+    const chip=s=>s==='ja'?'<span class="chip ja">\u2713 kan</span>':s==='nee'?'<span class="chip nee">\u2717 kan niet</span>':s==='mis'?'<span class="chip mis">? misschien</span>':'<span class="chip leeg">\u2013</span>';
+    let L,eigen=!!(I.op&&I.op.length);
+    if(eigen)L=I.op.map(id=>SP.find(p=>p.id===id)).filter(Boolean).slice(0,NB);else L=SP.filter(p=>I.st[p.id]==='ja'&&mag(p)).slice(0,NB);
+    $('lijst').innerHTML=`<thead><tr><th>#</th><th class="l">Speler</th><th title="aangepaste interclubrating">IC</th><th>FIDE</th><th class="l">Dit seizoen</th><th class="l">Kan spelen?</th><th>&#128663;</th></tr></thead><tbody>${toonL.map(p=>`<tr class="${L.includes(p)?'gekozen':''}${I.st[p.id]==='nee'?' weg':''}"><td>${p.pos}</td><td class="l">${esc(nice(p.n))}${p.tit===ploeg?'<span class="tag">T</span>':p.tit?`<span class="tag">${esc(p.tit)}</span>`:''}${!mag(p)?'<span class="tag warn" title="FIDE-rating boven de grens voor reservespelers">&gt; '+grens+'</span>':''}</td><td>${p.ar}</td><td>${p.fr||'<span class="na">\u2013</span>'}</td><td class="l">${p.keer?p.keer+'\u00d7':'<span class="na">\u2013</span>'}</td><td class="l">${chip(I.st[p.id])}</td><td>${I.rij[p.id]!=null?'\ud83d\ude97'+(I.rij[p.id]?' '+I.rij[p.id]:''):''}</td></tr>`).join('')}</tbody>`;
+    $('alle').textContent=alle?'Alleen de ploeg tonen':`Alle ${SP.length} spelers van de lijst tonen`;
+    /* opstelling */
+    $('optitel').textContent=k?`Opstelling ronde ${k.r} \u00b7 ${k.thuis?'thuis tegen':'uit bij'} ${k.opp}`:'Opstelling';
+    $('opuitleg').innerHTML=eigen?`<b>Gekozen door de kapitein.</b>`:`<b>Nog geen opstelling van de kapitein.</b> Voorstel: de sterkste ploeg uit wie \u2713 gaf.`;
+    $('op').innerHTML=Array.from({length:NB},(_,i)=>{const p=L[i];return p?`<div class="bord"><span class="nr">${i+1}</span><span><b>${esc(nice(p.n))}</b>${p.tit===ploeg?'<span class="tag">T</span>':''}</span><span class="r">${p.ar}${p.fr&&p.fr!==p.ar?' \u00b7 FIDE '+p.fr:''}</span><span></span></div>`:`<div class="bord leeg"><span class="nr">${i+1}</span><span>nog niemand</span><span></span><span></span></div>`}).join('');
+    const res=SP.filter(p=>I.st[p.id]==='ja'&&!L.includes(p));
+    $('meld').innerHTML=(eigen?regels(L,I):[]).map(([c,t])=>`<div class="melding ${c}">${c==='fout'?'\u2717 ':c==='let'?'! ':'\u2713 '}${esc(t)}</div>`).join('')+(res.length?`<div class="na" style="font-size:14px">Reserve: ${res.map(p=>esc(nice(p.n))).join(', ')}</div>`:'')+(onbekend.size?`<div class="melding let">Niet herkend (staat niet op de spelerslijst of is niet eenduidig): ${[...onbekend].map(esc).join(', ')}</div>`:'');
+    /* vervoer */
+    const rij=SP.filter(p=>I.rij[p.id]!=null);const plaatsen=rij.reduce((a,p)=>a+(I.rij[p.id]||0),0);const mee=L.filter(p=>I.rij[p.id]==null);
+    $('vervoer').innerHTML=k?(k.thuis?`<p style="margin:0">Thuismatch tegen ${esc(k.opp)}.</p>`:`<p style="margin:0">Uit bij <b>${esc(k.opp)}</b>, ${esc(dlong(k.d))}.</p>`)+
+      (I.vervoer?`<p style="margin:6px 0 0" class="kapt">${esc(I.vervoer)}</p>`:'')+
+      (rij.length?`<p style="margin:6px 0 0">&#128663; <b>Rijden:</b> ${rij.map(p=>esc(nice(p.n))+(I.rij[p.id]?` (${I.rij[p.id]} vrij)`:'')).join(', ')}</p>`:(k.thuis?'':'<p class="na" style="margin:6px 0 0">Nog niemand gaf door dat hij rijdt.</p>'))+
+      (!k.thuis&&mee.length&&rij.length?`<p style="margin:4px 0 0" class="${plaatsen>=mee.length?'':'na'}">${mee.length} van de opgestelde spelers rijden mee${plaatsen?': '+(plaatsen>=mee.length?'plaats genoeg':'nog '+(mee.length-plaatsen)+' plaats'+(mee.length-plaatsen>1?'en':'')+' nodig'):''}.</p>`:''):'';
+    verwachting(L,r);tegenKaart(r)}
+  toon(P.blad,false);
+  if(P.bladCsv&&window.ONLINE){const c=new AbortController();setTimeout(()=>c.abort(),8000);fetch(P.bladCsv,{signal:c.signal,cache:'no-store'}).then(x=>x.ok?x.text():null).then(t=>{if(t&&t.length>10)toon(t,true)}).catch(()=>{})}
+}
+begin();
+</script>
+<script src="../elo/vast.js?v=4b14c4775e"></script>
+</body>
+</html>
