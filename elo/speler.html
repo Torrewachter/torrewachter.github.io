@@ -634,7 +634,9 @@ function nieuwLijn(s){let m=null;try{m=JSON.parse(localStorage.getItem('tw-mijn'
     try{localStorage.setItem(K,JSON.stringify({d:new Date().toISOString().slice(0,10),s:nu,nws:N.map(a=>a.u),v:VV}));sessionStorage.setItem(K,JSON.stringify(R))}catch(e){return ''}}
   window.__twNw=R;return '<div id="nwlijn"></div>'}
 /* tekent de statuslijn; een nieuwe mededeling van de club (mededelingen.js, wordt door vast.js ingeladen) komt erbij zodra die binnen is */
-function nwTeken(){const d=$('nwlijn'),R=window.__twNw;if(!d||!R)return;const L=R.L.slice();
+function nwTeken(){const d=$('nwlijn'),R=window.__twNw;if(!d||!R)return;
+  /* oude regels 'In het nieuws' zonder link (van voor 23/11, ook uit het geheugen van deze browsersessie) niet meer tonen */
+  const L=R.L.filter(t=>!(typeof t==='string'&&t.startsWith('In het nieuws: ')&&!t.includes('\t')));
   const M=window.TW_MED;let g='';try{g=localStorage.getItem('tw-vast-med')||''}catch(e){}
   if(M&&M.tekst&&g!==M.id){const t=(String(M.tekst).split(/\r?\n/).map(r=>r.replace(/^!+\s*/,'').replace(/\*\*|__|\+\+|(^|\s)_|_(\s|$)/g,'$1$2').trim()).find(Boolean)||'').slice(0,90);L.unshift({med:t})}
   const x='<button type="button" onclick="this.parentNode.remove()" aria-label="sluiten" style="all:unset;cursor:pointer;float:right;padding:0 4px;color:var(--muted)">✕</button>';
