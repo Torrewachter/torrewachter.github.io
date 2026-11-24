@@ -147,9 +147,9 @@ const nmCR=x=>String(x||'').replace(/,\s*-\s*$/,'').replace(/\s+/g,' ').trim();
 const idCR=(n,fid)=>{if(fid&&FIDX[fid])return FIDX[fid];let id=idOf(n);if(id)return id;if(!n.includes(',')){const w=n.split(' ');for(let i=1;i<w.length;i++){id=idOf(w.slice(0,i).join(' ')+', '+w.slice(i).join(' '))||idOf(w.slice(i).join(' ')+', '+w.slice(0,i).join(' '));if(id)return id}}return null};
 const pars=b=>{try{return new DOMParser().parseFromString(dec(b),'text/html')}catch(e){return null}};
 /* speeltempo uit een tekst als "90 min + 30 s / move", "1h30 + [30'']", "12' + [3'']", "Rapid: 15+10": FIDE-grenzen voor 60 zetten */
-const tempoVan=x=>{x=String(x||'').toLowerCase();if(!x)return null;if(/blitz/.test(x))return 'blitz';if(/rapid|rapide/.test(x))return 'rapid';
+function tempoVan(x){x=String(x||'').toLowerCase();if(!x)return null;if(/blitz/.test(x))return 'blitz';if(/rapid|rapide/.test(x))return 'rapid';
   let base=null,m=/(\d+)\s*h\s*(\d+)?/.exec(x);if(m)base=+m[1]*60+(+m[2]||0);else{m=/(\d+)\s*(?:min|'|’|m\b|\+)/.exec(x);if(m)base=+m[1]}
-  if(base==null)return null;const inc=/\+\s*\[?\s*(\d+)\s*(?:s\b|sec|''|"|’’)/.exec(x)||/^\D*\d+\s*\+\s*(\d+)\s*$/.exec(x);const tot=base+(inc?+inc[1]:0);return tot>=60?'standaard':tot>10?'rapid':'blitz'};
+  if(base==null)return null;const inc=/\+\s*\[?\s*(\d+)\s*(?:s\b|sec|''|"|’’)/.exec(x)||/^\D*\d+\s*\+\s*(\d+)\s*$/.exec(x);const tot=base+(inc?+inc[1]:0);return tot>=60?'standaard':tot>10?'rapid':'blitz'}
 {
   const CR={};for(const [k,b64] of Object.entries(B.swar||{})){if(!k.startsWith('C:'))continue;const i=k.lastIndexOf('#');(CR[k.slice(2,i)]??={})[+k.slice(i+1)]=b64}
   for(const [naam,R] of Object.entries(CR)){const t=tInfo(naam,'chess-results');
