@@ -52,6 +52,7 @@ var css='.twv{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align
 +'.twp textarea{box-sizing:border-box;width:100%;min-height:200px;resize:vertical;font:14px/1.45 ui-monospace,Consolas,monospace;padding:8px;border:1px solid #c9d6cd;border-radius:8px;background:#fff;color:#1d2420}'
 +'.twp .rij{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.twp .rij button{all:unset;cursor:pointer;font-size:13px;color:#2f5d4b;border:1px solid #c9d6cd;border-radius:99px;padding:4px 11px}.twp .rij button:hover,.twp .rij button:focus-visible{background:#e8efea}.twp .rij button.warn{color:#c23b32;border-color:#e3b5b1}'
 +'.twp .st{font-size:12px;color:#5d6862;margin-top:6px;min-height:1em}.twmed{font-size:14px;line-height:1.5}.twmed p{margin:0 0 8px;color:inherit;font-size:14px}.twmed ul{margin:0 0 8px;padding-left:20px}.twmed a{color:#2f5d4b}.twmed .twk1{font-size:22px;line-height:1.2;font-weight:700;margin:2px 0 8px}.twmed .twk2{font-size:17px;font-weight:700;margin:2px 0 6px}.twmed .twgr{font-size:1.3em;font-weight:600}'
++'.twmn{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;margin:-2px 0 8px}.twmn button{all:unset;cursor:pointer;padding:0 9px;border:1px solid currentColor;border-radius:6px;opacity:.75;line-height:1.7}.twmn button:hover,.twmn button:focus-visible{opacity:1}.twmn button[disabled]{opacity:.25;cursor:default}.twmv{font-style:italic;opacity:.8}'
 +'.twmedk{background:var(--kaart,#fff);border:1px solid var(--lijn,#dfe4e0);border-left:4px solid var(--accent,#2f5d4b);border-radius:12px;padding:14px 16px;margin:0 0 20px}.twmedk h2{margin:0 0 6px;font-size:17px;color:var(--accent,#2f5d4b)}.twmedk .twmed p{color:var(--fg,#1d2420)}.twmedk .twmed a{color:var(--accent,#2f5d4b)}'
 +'.twm .eig{display:flex;flex-direction:column;gap:6px;margin:-4px 0 10px;padding:8px;border:1px solid #c9d6cd;border-radius:8px}.twm .eig label{flex-direction:column;gap:2px}.twm .eig input{font:inherit;font-size:13px;padding:5px 7px;border:1px solid #c9d6cd;border-radius:6px;background:#fff;color:#1d2420;width:100%;box-sizing:border-box}.twm .eig .rij2{display:flex;gap:6px}.twm .eig .rij2 button{all:unset;cursor:pointer;font-size:13px;padding:4px 11px;border-radius:99px;border:1px solid #c9d6cd;color:#2f5d4b}.twm .eig .rij2 button[type=submit]{background:#2f5d4b;color:#fff;border-color:#2f5d4b}.twm .eig .fout{font-size:12px;color:#c23b32;min-height:0}'
 +'.twm fieldset{border:0;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:3px}.twm legend{font-size:13px;font-weight:600;margin-bottom:3px;padding:0}'
@@ -82,8 +83,18 @@ function opmaak(t){/* lege regel = nieuwe alinea, "- " = opsomming, links worden
     if(!r.length)return uit;
     if(r.every(function(x){return /^\s*[-*•]\s+/.test(x)}))return uit+'<ul>'+r.map(function(x){return '<li>'+lk(x.replace(/^\s*[-*•]\s+/,''))+'</li>'}).join('')+'</ul>';
     return uit+'<p>'+r.map(lk).join('<br>')+'</p>'}).join('')+'</div>'}
-function tekenMed(){pan.innerHTML='<h2>Mededelingen</h2>'+opmaak(medTekst())+'<div class="ft"><span></span><button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';medGelezen()}
-function medStart(){var d=document.getElementById('twmed');if(!d)return;var t=medTekst();d.innerHTML=t?'<div class="twmedk"><h2>Mededelingen</h2>'+opmaak(t)+'</div>':'';if(t)medGelezen()}
+/* doorbladeren: eerst wat nu geldt, daarna wat nog komt (vanaf ...); een andere dan de eerste blijft hoogstens 20 seconden staan */
+function medPag(){var M=window.TW_MED,P=[];if(!M)return P;if(M.tekst)P.push({t:M.tekst,van:''});(M.later||[]).forEach(function(x){P.push(x)});return P}
+var medI={};
+function medBlok(k){var P=medPag();if(!P.length)return '';var i=Math.max(0,Math.min(medI[k]||0,P.length-1)),x=P[i];
+  var dm=function(d){var m=/^\d{4}-(\d\d)-(\d\d)/.exec(d||'');return m?(+m[2])+'/'+(+m[1]):''};
+  var nav=P.length>1?'<div class="twmn"><button type="button" data-mn="-1" aria-label="vorige mededeling"'+(i?'':' disabled')+'>&#8249;</button><span>'+(i+1)+' / '+P.length+'</span><button type="button" data-mn="1" aria-label="volgende mededeling"'+(i<P.length-1?'':' disabled')+'>&#8250;</button>'+(x.van?'<span class="twmv">verschijnt vanaf '+dm(x.van)+'</span>':'')+'</div>':'';
+  return nav+opmaak(x.t)}
+function medBind(el,k,her){Array.prototype.forEach.call(el.querySelectorAll('[data-mn]'),function(b){b.onclick=function(e){e.preventDefault();e.stopPropagation();var P=medPag(),r=b.getAttribute('data-mn');
+  medI[k]=Math.max(0,Math.min(P.length-1,(medI[k]||0)+(+r)));clearTimeout(medI['t'+k]);if(medI[k])medI['t'+k]=setTimeout(function(){medI[k]=0;her()},20000);her();
+  var f=el.querySelector('[data-mn="'+r+'"]');if(f&&!f.disabled)f.focus();else{f=el.querySelector('[data-mn]:not([disabled])');if(f)f.focus()}}})}
+function tekenMed(){pan.innerHTML='<h2>Mededelingen</h2>'+medBlok('p')+'<div class="ft"><span></span><button type="button" data-a="sluit" style="all:unset;cursor:pointer;color:inherit">Sluiten</button></div>';medBind(pan,'p',function(){if(!pan.hidden&&pan.dataset.k==='med')tekenMed()});medGelezen()}
+function medStart(){var d=document.getElementById('twmed');if(!d)return;var P=medPag();d.innerHTML=P.length?'<div class="twmedk"><h2>Mededelingen</h2>'+medBlok('s')+'</div>':'';if(P.length){medBind(d,'s',medStart);if(medTekst())medGelezen()}}
 (function(){var src=me&&me.src||'';if(!src)return;var x=document.createElement('script');x.src=src.replace(/[^\/]*$/,'')+'mededelingen.js?u='+Math.floor(Date.now()/600000);
   x.onload=function(){medStart();teken();if(!pan.hidden&&pan.dataset.k==='med')tekenMed()};document.head.appendChild(x)})();
 
@@ -121,7 +132,7 @@ function teken(){var m=mijn(),hierM=!!(m&&norm(m.u)===norm(hier()));
   /* is er een eigen pagina gekozen, dan staat het speldje alleen nog op die pagina (om ze af te zetten); elders niet meer */
   var pin=!m||hierM;
   bar.innerHTML=(pin?'<button type="button" data-a="menu" aria-expanded="'+!menu.hidden+'" aria-controls="twv-menu" title="'+(m?(hierM?'Dit is je pagina: de site opent meteen hier':'Mijn pagina: '+esc(m.t)):'Kies een pagina waar de site meteen mee opent, bv. je eigen spelerspagina')+'">📌'+(m?(hierM?' ✓':''):' Mijn pagina')+'</button>'
-    +'<span class="sep" aria-hidden="true"></span>':'')+(medTekst()?'<button type="button" data-a="med" aria-expanded="'+(!pan.hidden&&pan.dataset.k==='med')+'" aria-controls="twv-paneel" title="Mededelingen van de club'+(medNieuw()?' (nieuw)':'')+'">📢'+(medNieuw()?'<span class="dot" aria-label="nieuw"></span>':'')+'</button>':'')
+    +'<span class="sep" aria-hidden="true"></span>':'')+(medPag().length?'<button type="button" data-a="med" aria-expanded="'+(!pan.hidden&&pan.dataset.k==='med')+'" aria-controls="twv-paneel" title="Mededelingen van de club'+(medNieuw()?' (nieuw)':'')+'">📢'+(medNieuw()?'<span class="dot" aria-label="nieuw"></span>':'')+'</button>':'')
     +'<button type="button" data-a="notes" aria-expanded="'+(!pan.hidden&&pan.dataset.k==='notes')+'" aria-controls="twv-paneel" title="Mijn notities (alleen voor jou)">📝</button>';
   if(!pin&&!menu.hidden)menu.hidden=true;
   if(!menu.hidden)tekenMenu()}
