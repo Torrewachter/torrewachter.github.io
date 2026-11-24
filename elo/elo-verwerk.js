@@ -70,28 +70,34 @@ const elo=s=>{const m=/\((\d+)\)/.exec(s||'');return m?+m[1]:0};
 /* SWAR (en OpenResults, chess-results, FFE) tonen de rating van bij de start van het toernooi, maar de FIDE-ratings veranderen elke maand.
    Nog niet verwerkte partijen worden verwerkt met de rating van de laatste FIDE-lijst: voor een clublid (of een andere speler met een
    gekende FIDE-geschiedenis) nemen we daarom die rating; anders die van het toernooi. */
-const rNu=(n,dt,r0)=>{const id=idOf(n);const m=id&&LED[id];if(!m)return r0;const c=m.fide&&CH[m.fide];
-  if(c&&c[laatste])return c[laatste][0]||0;   /* staat niet (meer) met een rating op de laatste lijst: geen rating */
-  return m.fr||r0};
+/* tp: 0 = standaard, 1 = rapid, 2 = blitz (de rating van dat tempo op de laatste lijst) */
+const rNu=(n,dt,r0,tp=0)=>{const id=idOf(n);const m=id&&LED[id];if(!m)return r0;const c=m.fide&&CH[m.fide];
+  if(c&&c[laatste])return c[laatste][2*tp]||(tp?r0:0);   /* standaard: staat niet (meer) met een rating op de laatste lijst: geen rating */
+  return tp?r0:(m.fr||r0)};
 /* Al verwerkt? FIDE zet elke partij in de berekening van de maandlijst waarin ze verwerkt werd. Een partij telt als verwerkt
    als er bij de speler in een lijst na de maand van de partij een standaardpartij staat tegen dezelfde tegenstander
    (achternaam, en voorletter als die er is) met dezelfde uitslag. Zo wordt per toernooi en per partij nagegaan wat al
    op een FIDE-lijst staat, ook als een arbiter nog niet (alles) doorgestuurd heeft. */
 const vNaam=x=>{x=nrm(x);const i=x.indexOf(',');return i>=0?[x.slice(0,i).trim(),x.slice(i+1).trim().charAt(0)]:[x,'']};
-const verwerkt=(n,o,dt,r)=>{const id=idOf(n);const m=id&&LED[id];const P=m&&m.fide&&CALC[m.fide];if(!P||!dt||!o)return false;const ym=String(dt).slice(0,7);
+const verwerkt=(n,o,dt,r,tp=0)=>{const id=idOf(n);const m=id&&LED[id];const P=m&&m.fide&&CALC[m.fide];if(!P||!dt||!o)return false;const ym=String(dt).slice(0,7);
   const [oa,ov]=vNaam(o);const geen=oa.indexOf(' ')>0&&o.indexOf(',')<0;   /* naam zonder komma (bv. "Bol Pierre"): achternaam zit erin */
   /* ook de lijst van de maand van de ronde zelf: een partij die vooraf gespeeld werd (bv. op een inhaaldag), staat al op die lijst */
-  for(const g of P[0]){if(g.ym<ym)continue;const [ga,gv]=vNaam(g.o);
+  for(const g of (P[tp]||[])){if(g.ym<ym)continue;const [ga,gv]=vNaam(g.o);
     if(geen?!(oa.startsWith(ga+' ')||oa.endsWith(' '+ga)||oa===ga):ga!==oa)continue;if(gv&&ov&&gv!==ov&&!geen)continue;
     if(r!=null&&g.r!=null&&Math.abs(g.r-r)>.01)continue;return true}return false};
 const VWK={};   /* per toernooi: aantal partijen dat al op een FIDE-lijst staat */
-const pend={},rest={};const add=(n,x)=>{if(x.r!=null&&verwerkt(n,x.o,x.dt,x.r)){const t=String(x.tour||'').replace(/ r\d+( ·.*)?$/,'');VWK[t]=(VWK[t]||0)+1;return}(pend[nrm(n)]??=[]).push(x)};const addR=(n,x)=>(rest[nrm(n)]??=[]).push(x);
+const pend={},rest={};const add=(n,x)=>{if(x.r!=null&&verwerkt(n,x.o,x.dt,x.r,x.tp||0)){const t=String(x.tour||'').replace(/ r\d+( ·.*)?$/,'');VWK[t]=(VWK[t]||0)+1;return}(pend[nrm(n)]??=[]).push(x)};const addR=(n,x)=>(rest[nrm(n)]??=[]).push(x);
 /* volgende partij per lid en per gekoppeld toernooi: de laagste ronde die al gepaard is maar nog geen uitslag heeft (bezig of nog te spelen) */
 const VOLG={};const addV=(n,x)=>{const L=(VOLG[n]??=[]);const j=L.findIndex(y=>y.tour===x.tour);if(j<0)L.push(x);else if(x.rn<L[j].rn)L[j]=x};
 const urlT=naam=>(B.toernooien||{})[naam]||'';
 const Ex=(a,b)=>1/(1+10**(Math.max(-400,Math.min(400,b-a))/400));
 const lastK={};for(const m of eigen){const P=CALC[m.fide];if(P&&P[0].length){const g=P[0][P[0].length-1];lastK[nrm(m.n)]=g.K}}
-const Kof=(n,r)=>{const id=idOf(n);const by=id&&LED[id]?LED[id].by:0;if((r||0)>=2400)return 10;if(by&&by>=seizoen-18&&(r||0)<2300)return 40;return lastK[nrm(n)]||20};
+const Kof=(n,r,tp=0)=>{if(tp)return 20;   /* FIDE: rapid en blitz altijd K 20 */
+  const id=idOf(n);const by=id&&LED[id]?LED[id].by:0;if((r||0)>=2400)return 10;if(by&&by>=seizoen-18&&(r||0)<2300)return 40;return lastK[nrm(n)]||20};
+/* tempo van een gekoppeld toernooi: staat 'rapid' of 'blitz' (niet allebei) in de naam in instellingen.txt, dan dat; anders wat het toernooi zelf zegt */
+const tpNaam=naam=>{const x=String(naam||'').toLowerCase(),r=/\brapid/.test(x),b=/\bblitz/.test(x);return r&&!b?1:b&&!r?2:null};
+const tpVan=(naam,tmp)=>{const n=tpNaam(naam);if(n!=null)return n;return tmp==='rapid'?1:tmp==='blitz'?2:0};
+const TPN=['standaard','rapid','blitz'];
 const ddmm=d=>d.slice(8,10)+'/'+d.slice(5,7);
 let clubInfo=[];
 /* gekoppelde toernooien (instellingen.txt: toernooi <naam> = <adres>), voor het overzicht op elo.html */
@@ -100,7 +106,7 @@ const isLid=n=>{const id=idOf(n);return !!(id&&LED[id]&&LED[id].club===club)};
 /* clublid of gevolgde speler (extern): voor de volgende partij */
 const isVolg=n=>{const id=idOf(n);return !!(id&&LED[id]&&(LED[id].club===club||LED[id].ext))};
 const telT=(naam,rn,dt,leden)=>{const t=tInfo(naam);t.rondes=Math.max(t.rondes,rn);if(dt>t.laatste)t.laatste=dt;for(const n of leden){t.partijen++;t.sp.add(n)}};
-for(const [k,b64] of Object.entries(B.swar||{})){if(/^[OCF]:/.test(k))continue;const html=dec(b64);const ander=k.startsWith('T:');const naamT=rn=>ander?k.slice(2)+' r'+rn:'Clubkampioenschap '+seizoen+' reeks '+k+' r'+rn;if(!/tr id=.Round/.test(html)){fouten.push('SWAR-pagina '+k+' onleesbaar');continue}
+for(const [k,b64] of Object.entries(B.swar||{})){if(/^[OCF]:/.test(k))continue;const html=dec(b64);const ander=k.startsWith('T:');const tpT=ander?tpVan(k.slice(2),null):0;const naamT=rn=>ander?k.slice(2)+' r'+rn:'Clubkampioenschap '+seizoen+' reeks '+k+' r'+rn;if(!/tr id=.Round/.test(html)){fouten.push('SWAR-pagina '+k+' onleesbaar');continue}
   const d=new DOMParser().parseFromString(html,'text/html');let laatsteR=0;
   for(const tr of d.querySelectorAll('tr[id^="Round"]')){const rn=+tr.id.slice(5);const dt=iso(tr.textContent)||vandaag;const t=tr.closest('table');
     for(const r of t.querySelectorAll('tr')){if(r===tr)continue;const c=[...r.children].map(x=>x.textContent.replace(/\s+/g,' ').trim());if(c.length<6||c[1]===''||/Naam/.test(c[1]))continue;
@@ -109,26 +115,28 @@ for(const [k,b64] of Object.entries(B.swar||{})){if(/^[OCF]:/.test(k))continue;c
       if(res===''||res==='-'){/* nog te spelen: voor de prognose (alleen het clubkampioenschap) */if(c[5]&&!ander){const a=c[1],b=c[5],ra=rNu(a,'',elo(c[3])),rb=rNu(b,'',elo(c[7]));for(const [me,rm,op,ro] of [[a,ra,b,rb],[b,rb,a,ra]])addR(me,{dt,tour:naamT(rn),o:op,or:ro||null,ro:rm||null,K:Kof(me,rm)})}continue}
       if(/ff|\+|^-/i.test(res))continue;const sa=/^1-0$/.test(res)?1:/^0-1$/.test(res)?0:/^(½|0[.,]5)-(½|0[.,]5)$/.test(res)?.5:null;if(sa==null)continue;
       if(tot&&dt<=tot)continue;laatsteR=Math.max(laatsteR,rn);
-      const a=c[1],b=c[5],ra=rNu(a,dt,elo(c[3])),rb=rNu(b,dt,elo(c[7]));const when=dt>vandaag?'vooraf (r'+rn+')':ddmm(dt);
+      const a=c[1],b=c[5],ra=rNu(a,dt,elo(c[3]),tpT),rb=rNu(b,dt,elo(c[7]),tpT);const when=dt>vandaag?'vooraf (r'+rn+')':ddmm(dt);
       if(ander){tInfo(k.slice(2),'SWAR');telT(k.slice(2),rn,dt,[a,b].filter(isLid))}
-      for(const [me,rm,op,ro,sc] of [[a,ra,b,rb,sa],[b,rb,a,ra,1-sa]]){const K=Kof(me,rm);add(me,{d:when,dt,tour:naamT(rn),o:op,or:ro||null,ro:rm||null,r:sc,K,chg:(rm&&ro)?Math.round(K*(sc-Ex(rm,ro))*10)/10:null})}}}
+      for(const [me,rm,op,ro,sc] of [[a,ra,b,rb,sa],[b,rb,a,ra,1-sa]]){const K=Kof(me,rm,tpT);add(me,{d:when,dt,tour:naamT(rn),o:op,or:ro||null,ro:rm||null,r:sc,K,tp:tpT,chg:(rm&&ro)?Math.round(K*(sc-Ex(rm,ro))*10)/10:null})}}}
   clubInfo.push((ander?k.slice(2):k)+(laatsteR?' (tot ronde '+laatsteR+')':''))}
 
 // ---------- OpenResults (openresults.zerotwo.cloud): een pagina per ronde, tabel "pairings" ----------
 {const OR={};
-  for(const [k,b64] of Object.entries(B.swar||{})){if(!k.startsWith('O:'))continue;const i=k.lastIndexOf('#');const naam=k.slice(2,i),rn=+k.slice(i+1);
+  /* "O:<naam>#0": tempo van het toernooi (elo.ps1) */
+  const OTP={};for(const [k,b64] of Object.entries(B.swar||{})){if(!k.startsWith('O:')||!k.endsWith('#0'))continue;const naam=k.slice(2,-2);const x=dec(b64);const m=/tw-tempo">([^<]*)</.exec(x);OTP[naam]=tpVan(naam,tempoVan(m?m[1]:''));if(OTP[naam])tInfo(naam,'OpenResults').opm.push(TPN[OTP[naam]]+': telt voor de '+TPN[OTP[naam]]+'rating (K 20)')}
+  for(const [k,b64] of Object.entries(B.swar||{})){if(!k.startsWith('O:'))continue;const i=k.lastIndexOf('#');const naam=k.slice(2,i),rn=+k.slice(i+1);if(!rn)continue;const tpO=OTP[naam]??tpVan(naam,null);
     let d;try{d=new DOMParser().parseFromString(dec(b64),'text/html')}catch(e){fouten.push('OpenResults '+naam+' ronde '+rn+' onleesbaar');continue}
     const h2=d.querySelector('main section h2')||d.querySelector('h2');const dm=/(\d{4}-\d\d-\d\d)/.exec(h2?h2.textContent:'');const dt=dm?dm[1]:vandaag;
     const T=d.querySelector('table.pairings');if(!T){fouten.push('OpenResults '+naam+' ronde '+rn+': geen paringen gevonden');continue}
     for(const tr of T.querySelectorAll('tbody tr')){const nm=q=>{const e=tr.querySelector(q);return e?e.textContent.replace(/\s+/g,' ').trim():''};
       const a=nm('.seat-white .name')||nm('.seat-white'),b=nm('.seat-black .name')||nm('.seat-black');if(!a||!b)continue;
-      const R=[...tr.querySelectorAll('td.col-rating')].map(x=>parseInt(x.textContent,10)||0);const ra=rNu(a,dt,R[0]||0),rb=rNu(b,dt,R[1]||0);
+      const R=[...tr.querySelectorAll('td.col-rating')].map(x=>parseInt(x.textContent,10)||0);const ra=rNu(a,dt,R[0]||0,tpO),rb=rNu(b,dt,R[1]||0,tpO);
       const res=(nm('.col-result .token')||nm('.col-result')).replace(/\s+/g,'').replace(/½/g,'1/2');
       const sa=res==='1-0'?1:res==='0-1'?0:res==='1/2-1/2'?.5:null;
       if(sa==null){if(res===''||res==='-'||res==='–'){const bo=nm('.col-board')||nm('td.col-table')||'';for(const [me,op,ro,kl] of [[a,b,R[1],'w'],[b,a,R[0],'z']])if(isVolg(me))addV(me,{tour:naam,rn,dt,o:op,or:ro||null,c:kl,bo,url:urlT(naam)})}continue}   /* nog te spelen (volgende partij), forfait of bye */
       if(tot&&dt<=tot)continue;(OR[naam]??={r:0}).r=Math.max(OR[naam].r,rn);const when=dt>vandaag?'vooraf (r'+rn+')':ddmm(dt);
       tInfo(naam,'OpenResults');telT(naam,rn,dt,[a,b].filter(isLid));
-      for(const [me,rm,op,ro,sc] of [[a,ra,b,rb,sa],[b,rb,a,ra,1-sa]]){if(!idOf(me))continue;const K=Kof(me,rm);add(me,{d:when,dt,tour:naam+' r'+rn,o:op,or:ro||null,ro:rm||null,r:sc,K,chg:(rm&&ro)?Math.round(K*(sc-Ex(rm,ro))*10)/10:null})}}}
+      for(const [me,rm,op,ro,sc] of [[a,ra,b,rb,sa],[b,rb,a,ra,1-sa]]){if(!idOf(me))continue;const K=Kof(me,rm,tpO);add(me,{d:when,dt,tour:naam+' r'+rn,o:op,or:ro||null,ro:rm||null,r:sc,K,tp:tpO,chg:(rm&&ro)?Math.round(K*(sc-Ex(rm,ro))*10)/10:null})}}}
   for(const [n,o] of Object.entries(OR))clubInfo.push(n+(o.r?' (tot ronde '+o.r+')':''))}
 
 // ---------- chess-results: "C:<naam>#0" = toernooi-info met spelerslijst (art=0), "C:<naam>#<n>" = paringen van ronde n (art=2) ----------
@@ -153,7 +161,7 @@ const tempoVan=x=>{x=String(x||'').toLowerCase();if(!x)return null;if(/blitz/.te
       if(inf['Rating calculation'])fideOk=/international/i.test(inf['Rating calculation']);const dm=/(\d{4})\/(\d\d)\/(\d\d)/.exec(inf['Date']||'');if(dm)datum1=dm[1]+'-'+dm[2]+'-'+dm[3];
       for(const tr of d0.querySelectorAll('table.CRs1 tr')){const c=[...tr.cells].map(x=>x.textContent.trim());const h=[...(d0.querySelector('table.CRs1 tr')||{cells:[]}).cells].map(x=>x.textContent.trim());const iN=h.indexOf('Name'),iF=h.indexOf('FideID'),iS=h.indexOf('No.');if(iN<0||iF<0||c[iN]==='Name')continue;if(/^\d{3,}$/.test(c[iF])){FID[nmCR(c[iN])]=c[iF];if(iS>=0)FID['#'+c[iS]]=c[iF]}}}
     if(fideOk===false){t.opm.push('niet FIDE-gerateerd volgens chess-results: niet meegeteld');continue}
-    if(tmp&&tmp!=='standaard'){t.opm.push(tmp+' ('+tmp+'-rating): niet meegeteld, alleen standaardpartijen tellen');continue}
+    const tpC=tpVan(naam,tmp);if(tpC)t.opm.push(TPN[tpC]+': telt voor de '+TPN[tpC]+'rating (K 20)');
     if(fideOk===null&&!Object.keys(FID).length)t.opm.push('niet zeker of dit toernooi FIDE-gerateerd is: kijk het na op chess-results');
     for(const [rs,b64] of Object.entries(R)){const rn=+rs;if(!rn)continue;const d=pars(b64);if(!d)continue;
       const kop=[...d.querySelectorAll('h3,td,th')].map(x=>x.textContent).find(x=>/Round\s+\d+\s+on\s+\d{4}\/\d\d\/\d\d/.test(x));const dm=kop&&/(\d{4})\/(\d\d)\/(\d\d)/.exec(kop);const dt=dm?dm[1]+'-'+dm[2]+'-'+dm[3]:(datum1||vandaag);
@@ -170,9 +178,9 @@ const tempoVan=x=>{x=String(x||'').toLowerCase();if(!x)return null;if(/blitz/.te
             continue}   /* nog te spelen (volgende partij), forfait (+ - -) of bye */
           const rOf=i=>{if(!rt.length)return 0;const j=rt.reduce((x,y)=>Math.abs(y-i)<Math.abs(x-i)?y:x);return parseInt(c[j],10)||0};const ra0=rOf(iW),rb0=rOf(iB);
           const fa=FID[a]||(iNw>=0&&FID['#'+c[iNw]])||'',fb=FID[b]||(iNb>=0&&FID['#'+c[iNb]])||'';
-          const ida=idCR(a,fa),idb=idCR(b,fb);const leden=[ida,idb].filter(id=>id&&LED[id].club===club).map(id=>LED[id].n);const ra=ida?rNu(LED[ida].n,dt,ra0):ra0,rb=idb?rNu(LED[idb].n,dt,rb0):rb0;
+          const ida=idCR(a,fa),idb=idCR(b,fb);const leden=[ida,idb].filter(id=>id&&LED[id].club===club).map(id=>LED[id].n);const ra=ida?rNu(LED[ida].n,dt,ra0,tpC):ra0,rb=idb?rNu(LED[idb].n,dt,rb0,tpC):rb0;
           telT(naam,rn,dt,leden);if(tot&&dt<=tot)continue;const when=dt>vandaag?'vooraf (r'+rn+')':ddmm(dt);
-          for(const [id,rm,op,ro,sc] of [[ida,ra,b,rb,sa],[idb,rb,a,ra,1-sa]]){if(!id)continue;const me=LED[id].n;const K=Kof(me,rm);add(me,{d:when,dt,tour:naam+' r'+rn,o:op,or:ro||null,ro:rm||null,r:sc,K,chg:(rm&&ro)?Math.round(K*(sc-Ex(rm,ro))*10)/10:null})}}}}
+          for(const [id,rm,op,ro,sc] of [[ida,ra,b,rb,sa],[idb,rb,a,ra,1-sa]]){if(!id)continue;const me=LED[id].n;const K=Kof(me,rm,tpC);add(me,{d:when,dt,tour:naam+' r'+rn,o:op,or:ro||null,ro:rm||null,r:sc,K,tp:tpC,chg:(rm&&ro)?Math.round(K*(sc-Ex(rm,ro))*10)/10:null})}}}}
     if(t.rondes)clubInfo.push(naam+' (tot ronde '+t.rondes+')')}}
 
 // ---------- FFE (echecs.asso.fr): "F:<naam>#0" = fiche van het toernooi, "F:<naam>#<n>" = ronde n ----------
@@ -184,7 +192,7 @@ const tempoVan=x=>{x=String(x||'').toLowerCase();if(!x)return null;if(/blitz/.te
     const efm=/([a-zéû]+)\s+(\d{4})/i.exec(nrm(sp('LabelEloFide')));const lijst=efm&&MND[efm[1]]?efm[2]+'-'+String(MND[efm[1]]).padStart(2,'0'):'';
     const tmp=sp('LabelEloRapide')?(tempoVan(sp('LabelCadence'))==='blitz'?'blitz':'rapid'):tempoVan(sp('LabelCadence'));
     if(d0&&!sp('LabelEloFide')){t.opm.push('niet FIDE-gerateerd volgens de FFE: niet meegeteld');continue}
-    if(tmp&&tmp!=='standaard'){t.opm.push(tmp+': niet meegeteld, alleen standaardpartijen tellen');continue}
+    const tpF=tpVan(naam,tmp);if(tpF)t.opm.push(TPN[tpF]+': telt voor de '+TPN[tpF]+'rating (K 20)');
     if(lijst&&lijst<=laatste){t.opm.push('staat al op de FIDE-lijst van '+lijst.slice(5)+'/'+lijst.slice(0,4)+': niet meer meegeteld (haal het toernooi weg)');continue}
     if(lijst)t.opm.push('komt op de FIDE-lijst van '+lijst.slice(5)+'/'+lijst.slice(0,4));
     /* de rondepagina's hebben geen datum: verdelen over de speeldagen van het toernooi */
@@ -202,9 +210,9 @@ const tempoVan=x=>{x=String(x||'').toLowerCase();if(!x)return null;if(/blitz/.te
             for(const [id,op,ro,kl] of [[ida,b,rO(iB),'w'],[idb,a,rO(iW),'z']])if(id&&(LED[id].club===club||LED[id].ext))addV(LED[id].n,{tour:naam,rn,dt,o:op,or:ro||null,c:kl,bo:c[0]||'',url:urlT(naam)})}
           continue}   /* nog te spelen (volgende partij), forfait (F) of vrij */
         const rOf=j=>{const m=/^(\d+)\s*F$/.exec(c[j+1]||'');return m?+m[1]:0};const ra0=rOf(iW),rb0=rOf(iB);   /* alleen FIDE-ratings (F), niet nationaal (N) of geschat (E) */
-        const ida=idCR(a),idb=idCR(b);const ra=ida?rNu(LED[ida].n,dt,ra0):ra0,rb=idb?rNu(LED[idb].n,dt,rb0):rb0;const leden=[ida,idb].filter(id=>id&&LED[id].club===club).map(id=>LED[id].n);
+        const ida=idCR(a),idb=idCR(b);const ra=ida?rNu(LED[ida].n,dt,ra0,tpF):ra0,rb=idb?rNu(LED[idb].n,dt,rb0,tpF):rb0;const leden=[ida,idb].filter(id=>id&&LED[id].club===club).map(id=>LED[id].n);
         telT(naam,rn,dt,leden);if(tot&&dt<=tot)continue;const when=dt>vandaag?'vooraf (r'+rn+')':ddmm(dt);
-        for(const [id,rm,op,ro,sc] of [[ida,ra,b,rb,sa],[idb,rb,a,ra,1-sa]]){if(!id)continue;const me=LED[id].n;const K=Kof(me,rm||LED[id].fr);add(me,{d:when,dt,tour:naam+' r'+rn,o:op,or:ro||null,ro:rm||LED[id].fr||null,r:sc,K,chg:((rm||LED[id].fr)&&ro)?Math.round(K*(sc-Ex(rm||LED[id].fr,ro))*10)/10:null})}}}
+        for(const [id,rm0,op,ro,sc] of [[ida,ra,b,rb,sa],[idb,rb,a,ra,1-sa]]){if(!id)continue;const me=LED[id].n;const rm=rm0||(tpF?0:LED[id].fr);const K=Kof(me,rm,tpF);add(me,{d:when,dt,tour:naam+' r'+rn,o:op,or:ro||null,ro:rm||null,r:sc,K,tp:tpF,chg:(rm&&ro)?Math.round(K*(sc-Ex(rm,ro))*10)/10:null})}}}
     if(t.rondes)clubInfo.push(naam+' (tot ronde '+t.rondes+')')}}
 
 // ---------- zelf ingevulde partijen (extra-partijen.txt): datum; toernooi; speler; tegenstander; rating tegenstander; uitslag [; eigen rating] ----------

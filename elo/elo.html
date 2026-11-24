@@ -175,9 +175,9 @@ a.spn{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}a
   <small>De lijst komt in de PDF zoals ze nu op het scherm staat (periode, tempo, filters, opengeklapte spelers). Kies in het afdrukvenster <i>Opslaan als PDF</i>.</small>
 </div>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=ef98d71cec"></script>
+<script src="data-elo.js?v=d3626312cb"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
-<script src="elo-verwerk.js?v=139a115d28"></script>
+<script src="elo-verwerk.js?v=e06b7e02bd"></script>
 <script>
 (function(){
 'use strict';
@@ -200,7 +200,7 @@ const dp=p=>{p=Math.max(0,Math.min(1,p));if(p>=1)return 800;if(p<=0)return -800;
 {const T=E.toernooien||[];const ex=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const dm=d=>d?(+d.slice(8,10))+'/'+(+d.slice(5,7))+'/'+d.slice(0,4):'';
   $('tnv').hidden=false;$('tnvk').textContent=T.length?'Gekoppelde toernooien ('+T.length+'): '+T.map(t=>t.naam).join(', '):'Gekoppelde toernooien: nog geen';
   $('tnvi').innerHTML=(T.length?`<div style="overflow-x:auto"><table><thead><tr><th>Toernooi</th><th>Site</th><th>Rondes</th><th>Partijen clubleden</th><th>Al verwerkt</th><th>Laatste ronde</th><th>Opmerking</th></tr></thead><tbody>${T.map(t=>`<tr><td>${t.url?`<a href="${ex(t.url)}" target="_blank" rel="noopener" style="color:var(--accent)">${ex(t.naam)}</a>`:ex(t.naam)}</td><td>${ex(t.soort)}</td><td>${t.rondes||'–'}</td><td>${t.partijen}${t.spelers.length?` <span class="sp">(${ex(t.spelers.map(n=>{const [a,b]=n.split(', ');return b?b+' '+a:n}).join(', '))})</span>`:''}</td><td>${t.verwerkt||'–'}</td><td>${dm(t.laatste)}</td><td class="opm">${ex(t.opm.join('; '))}</td></tr>`).join('')}</tbody></table></div>`:'')
-   +(window.ONLINE?`<p>Partijen van clubleden in deze toernooien tellen ook mee bij <i>Te verwerken</i>, tot ze op een FIDE-lijst staan (kolom <i>Al verwerkt</i>). Rapid, blitz en niet-FIDE-gerateerde toernooien tellen niet mee. Speel je zelf een toernooi dat hier ontbreekt? Geef de link door aan de verantwoordelijke van de website.</p>`:`<p><b>Zelf gezocht</b>: Elo bijwerken zoekt elke dag (één keer) op chess-results, OpenResults en bij de Franse bond FFE (in heel Frankrijk, of in de departementen van <i>ffe departementen</i> in instellingen.txt) naar toernooien van clubleden die nog bezig zijn of nog moeten beginnen, en zet nieuwe hier vanzelf bij. Dat gebeurt bij <b>Website bijwerken.bat</b>. Rapid, blitz en niet-FIDE-gerateerde toernooien worden niet meegeteld (ze staan als commentaar in instellingen.txt). Een toernooi dat je weghaalt, komt niet terug. SWAR-pagina's kunnen niet doorzocht worden: die voeg je zelf toe.</p><p><b>Toernooi toevoegen of weghalen</b>: dubbelklik in deze map op <b>Toernooi toevoegen.bat</b> en plak de link van het toernooi op <b>chess-results</b>, bij de Franse bond <b>FFE</b> (echecs.asso.fr), op <b>OpenResults</b> of van een <b>SWAR</b>-pagina. Daarna wordt alles bijgewerkt; druk dan F5. De gespeelde partijen van clubleden tellen mee bij <i>Te verwerken</i>, tot ze op een FIDE-lijst staan: dat wordt per partij nagekeken in de FIDE-berekeningen (kolom <i>Al verwerkt</i>). Staat het hele toernooi op een FIDE-lijst, dan kun je het weghalen met dezelfde bat.</p>`)}
+   +(window.ONLINE?`<p>Partijen van clubleden in deze toernooien tellen ook mee bij <i>Te verwerken</i>, tot ze op een FIDE-lijst staan (kolom <i>Al verwerkt</i>). Rapid- en blitztoernooien tellen bij <i>Tempo</i> rapid of blitz (K 20); niet-FIDE-gerateerde toernooien tellen niet mee. Speel je zelf een toernooi dat hier ontbreekt? Geef de link door aan de verantwoordelijke van de website.</p>`:`<p><b>Zelf gezocht</b>: Elo bijwerken zoekt elke dag (één keer) op chess-results, OpenResults en bij de Franse bond FFE (in heel Frankrijk, of in de departementen van <i>ffe departementen</i> in instellingen.txt) naar toernooien van clubleden die nog bezig zijn of nog moeten beginnen, en zet nieuwe hier vanzelf bij. Dat gebeurt bij <b>Website bijwerken.bat</b>. Rapid, blitz en niet-FIDE-gerateerde toernooien worden niet meegeteld (ze staan als commentaar in instellingen.txt). Een toernooi dat je weghaalt, komt niet terug. SWAR-pagina's kunnen niet doorzocht worden: die voeg je zelf toe.</p><p><b>Toernooi toevoegen of weghalen</b>: dubbelklik in deze map op <b>Toernooi toevoegen.bat</b> en plak de link van het toernooi op <b>chess-results</b>, bij de Franse bond <b>FFE</b> (echecs.asso.fr), op <b>OpenResults</b> of van een <b>SWAR</b>-pagina. Daarna wordt alles bijgewerkt; druk dan F5. De gespeelde partijen van clubleden tellen mee bij <i>Te verwerken</i>, tot ze op een FIDE-lijst staan: dat wordt per partij nagekeken in de FIDE-berekeningen (kolom <i>Al verwerkt</i>). Staat het hele toernooi op een FIDE-lijst, dan kun je het weghalen met dezelfde bat.</p>`)}
 
 /* ---------- periode en tempo ---------- */
 const opts=M.slice(1).map(ym=>`<option value="${ym}">${mlab(ym)}</option>`).join('');
@@ -226,8 +226,8 @@ function bereken(){const t=+$('tempo').value;let van=$('van').value,tot=$('tot')
     const tpr=n>=3&&avg?avg+dp(sc):null;
     /* prestatie met wit en met zwart: vanaf 5 partijen met die kleur tegen spelers met rating */
     const kl=c=>{const K=G.filter(x=>x.c===c&&x.or);if(K.length<5)return null;return Math.round(K.reduce((a,x)=>a+x.or,0)/K.length)+dp(K.reduce((a,x)=>a+x.r,0)/K.length)},tw=kl('w'),tz=kl('b');
-    const P=t===0?p.pend:[];const pd=P.length?Math.round(P.reduce((a,x)=>a+(x.chg||0),0)*10)/10:null;
-    const cur0=p.s[0][M.length-1];const est=t===0&&P.length&&cur0!=null?Math.round(cur0+pd):null;
+    const P=(p.pend||[]).filter(x=>(x.tp||0)===t);   /* te verwerken voor dit tempo (rapid- en blitztoernooien bij rapid en blitz) */const pd=P.length?Math.round(P.reduce((a,x)=>a+(x.chg||0),0)*10)/10:null;
+    const cur0=p.s[t][M.length-1];const est=P.length&&cur0!=null?Math.round(cur0+pd):null;
     /* prognose: huidig + te verwerken + bereik van de nog te spelen clubpartijen (alles verliezen .. alles winnen) */
     const RS=t===0?(p.rest||[]).map(x=>{if(!x.or||!x.ro)return {...x,telt:false};const e=1/(1+10**(Math.max(-400,Math.min(400,x.or-x.ro))/400));return {...x,telt:true,w:x.K*(1-e),l:-x.K*e,dr:x.K*(.5-e)}}):[];
     const RT=RS.filter(x=>x.telt);const basis=est??cur0;const pmin=t===0&&RT.length&&basis!=null?Math.round(basis+RT.reduce((a,x)=>a+x.l,0)):null,pmax=t===0&&RT.length&&basis!=null?Math.round(basis+RT.reduce((a,x)=>a+x.w,0)):null;
@@ -239,7 +239,7 @@ function bereken(){const t=+$('tempo').value;let van=$('van').value,tot=$('tot')
     const r={...p,t,i0,i1,cur,beg,begM,dlt:(cur!=null&&beg!=null)?cur-beg:null,d12:(cur!=null&&yr>=0&&s[yr]!=null)?cur-s[yr]:null,hi,hiM,lo,loM,G,W,D,L,sc,avg,tpr,tw,tz,kc:n?Math.round(kc*10)/10:null,w,l,d,
       wd:w?w.d:null,ld:l?l.d:null,dd:d?d.d:null,fx:[...land].join(', '),P,pd,est,RS,pmin,pmax,cor,K:Ks,toer:n?toer:null,age:p.by?E.seizoen-p.by:null,
       rap:p.s[1][i1],bli:p.s[2][i1],std:p.s[0][i1],
-      ng:G.length,heeft:s.some(v=>v!=null),wijz};
+      ng:G.length,heeft:s.some(v=>v!=null)||P.length>0,wijz};   /* ook wie nog geen rapid- of blitzrating heeft maar partijen te verwerken */
     for(let i=i0;i<=i1;i++){r['m'+M[i]]=s[i]}
     return r})}
 
@@ -374,7 +374,7 @@ function partT(r){const G=r.G;if(!G.length)return '';let h=`<tr class="kind"><td
 /* volgende partij in een lopend toernooi (al gepaard, nog geen uitslag) */
 function volgT(r){const V=((window.ELO&&ELO.volgend)||{})[r.n]||[];if(!V.length)return '';const vd=(ELO.vandaag||'');const MN=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
   return V.map(v=>`<div class="pnsp">▶ <b>Volgende partij</b> (${v.dt===vd?'vandaag':v.dt<vd?'nu bezig':(+v.dt.slice(8,10))+' '+MN[+v.dt.slice(5,7)-1]}): ${v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.tour)}</a>`:esc(v.tour)}, ronde ${v.rn} · ${v.c==='w'?'met wit':'met zwart'} tegen ${esc(v.o)}${v.or?' ('+v.or+')':''}${v.bo?' · bord '+esc(v.bo):''}</div>`).join('')}
-function detail(r,n){r._gebruikt=new Set();const pt=r.t===0?pendT(r)+restT(r):'',ft=partT(r);return `<tr class="det"><td colspan="${n}"><div class="detbox">${grafiek(r)}${volgT(r)}${(FP[r.fide]||[]).length&&$('pnaan').checked?`<div class="pnsp">♟ Links naar de partijen van ${esc(r.n)} <button type="button" class="pnt pnp${PNSP.has(r.n)?' uit':''}" data-n="${esc(r.n)}" title="${PNSP.has(r.n)?'links voor deze speler weer tonen':'alle links voor deze speler verbergen'}">♟ ${PNSP.has(r.n)?'uit':'aan'}</button></div>`:''}<table class="res"><thead><tr><th>Tegenstander</th><th>Rating</th><th>Verschil</th><th>Uitslag</th><th>± Elo</th><th>Eigen Elo</th></tr></thead><tbody>${pt}${ft}${andereT(r,r._gebruikt)}</tbody></table></div></td></tr>`}
+function detail(r,n){r._gebruikt=new Set();const pt=pendT(r)+(r.t===0?restT(r):''),ft=partT(r);return `<tr class="det"><td colspan="${n}"><div class="detbox">${grafiek(r)}${volgT(r)}${(FP[r.fide]||[]).length&&$('pnaan').checked?`<div class="pnsp">♟ Links naar de partijen van ${esc(r.n)} <button type="button" class="pnt pnp${PNSP.has(r.n)?' uit':''}" data-n="${esc(r.n)}" title="${PNSP.has(r.n)?'links voor deze speler weer tonen':'alle links voor deze speler verbergen'}">♟ ${PNSP.has(r.n)?'uit':'aan'}</button></div>`:''}<table class="res"><thead><tr><th>Tegenstander</th><th>Rating</th><th>Verschil</th><th>Uitslag</th><th>± Elo</th><th>Eigen Elo</th></tr></thead><tbody>${pt}${ft}${andereT(r,r._gebruikt)}</tbody></table></div></td></tr>`}
 
 /* ---------- samenvatting ---------- */
 function stats(list){const R=rows.filter(r=>r.cur!=null);const up=R.filter(r=>r.dlt>0).length,down=R.filter(r=>r.dlt<0).length;const avg=R.length?Math.round(R.reduce((a,r)=>a+r.cur,0)/R.length):'–';

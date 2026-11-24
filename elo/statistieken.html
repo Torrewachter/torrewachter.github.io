@@ -95,9 +95,9 @@ tbody tr:hover td{background:var(--accent-soft)}
 </div>
 <button type="button" class="pdfbtn" id="pdfbtn" title="Opent het afdrukvenster; kies daar Opslaan als PDF">Opslaan als PDF</button>
 <script>window.ONLINE=/^https?:$/.test(location.protocol)</script>
-<script src="data-elo.js?v=ef98d71cec"></script>
+<script src="data-elo.js?v=d3626312cb"></script>
 <script src="partijen-elo.js?v=e2087a950e"></script>
-<script src="elo-verwerk.js?v=139a115d28"></script>
+<script src="elo-verwerk.js?v=e06b7e02bd"></script>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
@@ -119,7 +119,7 @@ const ALLE=[];
 for(const p of E.leden){
   p.games.forEach((L,t)=>{for(const g of L){const d=/^\d{4}-\d\d-\d\d$/.test(g.d1||'')?g.d1:g.ym+'-01';
     ALLE.push({p,t,d,tour:g.tour,ev:'f'+g.ev,pl:g.pl||'',land:g.land||'',c:g.c,o:g.o,or:g.or||0,ro:g.ro||0,r:g.r,kc:g.kc??0,nv:false})}});
-  for(const g of p.pend||[])if(g.r!=null)ALLE.push({p,t:0,d:g.dt,tour:g.tour.replace(/ r\d+.*$/,''),ev:'p'+g.tour.replace(/ r\d+.*$/,''),pl:/^Interclub/.test(g.tour)?'thuis en uit':'Roeselare BEL',land:'BEL',c:'',o:g.o,or:g.or||0,ro:g.ro||0,r:g.r,kc:g.chg??0,nv:true})}
+  for(const g of p.pend||[])if(g.r!=null)ALLE.push({p,t:g.tp||0,d:g.dt,tour:g.tour.replace(/ r\d+.*$/,''),ev:'p'+g.tour.replace(/ r\d+.*$/,''),pl:/^Interclub/.test(g.tour)?'thuis en uit':'Roeselare BEL',land:'BEL',c:'',o:g.o,or:g.or||0,ro:g.ro||0,r:g.r,kc:g.chg??0,nv:true})}
 // ---------- periodes ----------
 const seiz=d=>{const y=+d.slice(0,4),m=+d.slice(5,7);return m>=7?y:y-1};
 const S=[...new Set(ALLE.map(g=>seiz(g.d)))].sort((a,b)=>b-a);
